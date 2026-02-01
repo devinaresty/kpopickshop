@@ -1,0 +1,60 @@
+<template>
+  <Form :validation-schema="loginValidationSchema" @submit="onSubmit" class="space-y-2.5 sm:space-y-3">
+    <!-- Email Field -->
+    <div>
+      <Field name="email" as="div" class="space-y-1">
+        <label class="block text-xs sm:text-sm font-medium text-gray-900">Email Address</label>
+        <input
+          type="email"
+          class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-transparent transition-all text-sm sm:text-base"
+          placeholder="name@example.com"
+        />
+        <ErrorMessage name="email" class="text-xs text-red-500" />
+      </Field>
+    </div>
+
+    <!-- Password Field -->
+    <div>
+      <Field name="password" as="div" class="space-y-1">
+        <label class="block text-xs sm:text-sm font-medium text-gray-900">Password</label>
+        <input
+          type="password"
+          class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-transparent transition-all text-sm sm:text-base"
+          placeholder="••••••••"
+        />
+        <ErrorMessage name="password" class="text-xs text-red-500" />
+      </Field>
+    </div>
+
+    <!-- Remember Me & Forgot Password -->
+    <div class="flex items-center justify-between text-xs sm:text-sm gap-2">
+      <label class="flex items-center gap-2 cursor-pointer">
+        <input type="checkbox" class="w-3 h-3 sm:w-4 sm:h-4 rounded border-gray-300" />
+        <span class="text-gray-700">Remember me</span>
+      </label>
+      <a href="#" class="text-black hover:text-gray-700 font-medium">Forgot password?</a>
+    </div>
+
+    <!-- Submit Button -->
+    <button
+      type="submit"
+      class="w-full px-3 sm:px-4 py-2 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors duration-200 text-sm sm:text-base"
+    >
+      Sign In
+    </button>
+  </Form>
+</template>
+
+<script setup lang="ts">
+import { Form, Field, ErrorMessage } from 'vee-validate'
+import { loginValidationSchema } from '../../utils/validationSchemas'
+
+const onSubmit = async (values: any) => {
+  try {
+    // TODO: Call login API
+    console.log('Login attempt:', values)
+  } catch (error) {
+    console.error('Login error:', error)
+  }
+}
+</script>
