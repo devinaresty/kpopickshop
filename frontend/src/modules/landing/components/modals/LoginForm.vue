@@ -2,10 +2,11 @@
   <Form :validation-schema="loginValidationSchema" @submit="onSubmit" class="space-y-2.5 sm:space-y-3">
     <!-- Email Field -->
     <div>
-      <Field name="email" as="div" class="space-y-1">
+      <Field name="email" v-slot="{ field }" class="space-y-1">
         <label class="block text-xs sm:text-sm font-medium text-gray-900">Email Address</label>
         <input
           type="email"
+          v-bind="field"
           class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-transparent transition-all text-sm sm:text-base"
           placeholder="name@example.com"
         />
@@ -15,15 +16,21 @@
 
     <!-- Password Field -->
     <div>
-      <Field name="password" as="div" class="space-y-1">
+      <Field name="password" v-slot="{ field }" class="space-y-1">
         <label class="block text-xs sm:text-sm font-medium text-gray-900">Password</label>
         <input
           type="password"
+          v-bind="field"
           class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-transparent transition-all text-sm sm:text-base"
           placeholder="••••••••"
         />
         <ErrorMessage name="password" class="text-xs text-red-500" />
       </Field>
+    </div>
+
+    <!-- Error Message -->
+    <div v-if="authStore.error" class="p-3 bg-red-50 border border-red-200 rounded-lg text-xs sm:text-sm text-red-700">
+      {{ authStore.error }}
     </div>
 
     <!-- Remember Me & Forgot Password -->
@@ -38,21 +45,30 @@
     <!-- Submit Button -->
     <button
       type="submit"
-      class="w-full px-3 sm:px-4 py-2 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors duration-200 text-sm sm:text-base"
+      :disabled="authStore.isLoading"
+      class="w-full px-3 sm:px-4 py-2 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors duration-200 text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
     >
-      Sign In
+      {{ authStore.isLoading ? 'Signing in...' : 'Sign In' }}
     </button>
   </Form>
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router'
 import { Form, Field, ErrorMessage } from 'vee-validate'
 import { loginValidationSchema } from '../../utils/validationSchemas'
+import { useAuthStore } from '../../../../stores/auth.store'
 
-const onSubmit = async (values: any) => {
+const router = useRouter()
+const authStore = useAuthStore()
+
+const onSubmit = async (values: Record<string, any>) => {
   try {
-    // TODO: Call login API
-    console.log('Login attempt:', values)
+    const { email, password } = values as { email: string; password: string }
+    await authStore.login(email, password)
+    console.log('Login berhasil!')
+    // Redirect ke home page setelah login
+    router.push('/')
   } catch (error) {
     console.error('Login error:', error)
   }

@@ -1,127 +1,121 @@
 <template>
-  <section class="py-16 sm:py-20 bg-gradient-to-b from-gray-50 to-white">
-    <div class="max-w-full px-3 sm:px-4 lg:px-8">
-      <!-- Section Header -->
-      <div class="mb-8 sm:mb-12">
-        <h2 class="text-2xl sm:text-3xl lg:text-4xl font-black text-black mb-2">Popular Artists</h2>
-        <p class="text-xs sm:text-sm lg:text-base text-gray-600">Discover amazing K-pop artists and groups</p>
+  <section class="py-12 sm:py-16 px-4 sm:px-6 lg:px-8 bg-white">
+    <div class="max-w-7xl mx-auto">
+      <!-- Section Title -->
+      <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">Popular Artists</h2>
+      
+      <!-- Section Description -->
+      <p class="text-lg sm:text-xl text-gray-600 mb-10">Temukan K-pop artist favorit Anda</p>
+
+      <!-- Artists Pills/Capsules Grid -->
+      <div class="flex flex-wrap gap-3 sm:gap-4 justify-start">
+        <!-- Artist Pills -->
+        <button
+          v-for="artist in displayedArtists"
+          :key="artist.id"
+          @click="handleArtistClick(artist)"
+          class="artist-pill px-6 py-2.5 rounded-full font-medium text-base transition-all duration-300 ease-out"
+        >
+          {{ artist.name }}
+        </button>
       </div>
 
-      <!-- First Carousel - Scroll Left -->
-      <div class="mb-8 sm:mb-12 overflow-hidden">
-        <div class="flex gap-4 sm:gap-6 animate-scroll-left">
-          <div
-            v-for="artist in [...artists, ...artists]"
-            :key="`left-${artist.id}`"
-            class="flex-shrink-0 w-32 sm:w-40 md:w-48 group"
-          >
-            <div
-              class="bg-gradient-to-br from-gray-300 to-gray-400 aspect-square rounded-lg overflow-hidden mb-4 cursor-pointer relative"
-            >
-              <!-- Artist Image Placeholder -->
-              <div
-                class="w-full h-full flex items-center justify-center text-white text-6xl font-black opacity-50"
-              >
-                {{ artist.name.charAt(0) }}
-              </div>
-
-              <!-- Hover Overlay -->
-              <div
-                class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4"
-              >
-                <button
-                  class="w-full px-4 py-2 bg-white text-black rounded-lg text-sm font-semibold hover:bg-gray-100 transition-colors"
-                >
-                  View Profile
-                </button>
-              </div>
-            </div>
-
-            <!-- Artist Info -->
-            <h3 class="font-bold text-black mb-1 truncate text-xs sm:text-sm">{{ artist.name }}</h3>
-            <p class="text-xs sm:text-sm text-gray-600 truncate">K-pop Artist</p>
-          </div>
-        </div>
+      <!-- Loading State (optional) -->
+      <div v-if="isLoading" class="text-center py-8">
+        <p class="text-gray-500">Loading artists...</p>
       </div>
 
-      <!-- Second Carousel - Scroll Right -->
-      <div class="overflow-hidden">
-        <div class="flex gap-4 sm:gap-6 animate-scroll-right">
-          <div
-            v-for="artist in [...artists.slice().reverse(), ...artists.slice().reverse()]"
-            :key="`right-${artist.id}`"
-            class="flex-shrink-0 w-32 sm:w-40 md:w-48 group"
-          >
-            <div
-              class="bg-gradient-to-br from-gray-300 to-gray-400 aspect-square rounded-lg overflow-hidden mb-4 cursor-pointer relative"
-            >
-              <!-- Artist Image Placeholder -->
-              <div
-                class="w-full h-full flex items-center justify-center text-white text-6xl font-black opacity-50"
-              >
-                {{ artist.name.charAt(0) }}
-              </div>
-
-              <!-- Hover Overlay -->
-              <div
-                class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4"
-              >
-                <button
-                  class="w-full px-4 py-2 bg-white text-black rounded-lg text-sm font-semibold hover:bg-gray-100 transition-colors"
-                >
-                  View Profile
-                </button>
-              </div>
-            </div>
-
-            <!-- Artist Info -->
-            <h3 class="font-bold text-black mb-1 truncate text-xs sm:text-sm">{{ artist.name }}</h3>
-            <p class="text-xs sm:text-sm text-gray-600 truncate">K-pop Artist</p>
-          </div>
-        </div>
+      <!-- Empty State (optional) -->
+      <div v-if="!isLoading && displayedArtists.length === 0" class="text-center py-8">
+        <p class="text-gray-500">No artists found</p>
       </div>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import type { Artist } from '@/modules/landing/domain/landing.types'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { apiClient } from '@/lib/api'
 
-const artists = ref<Artist[]>([
-  { id: '1', name: 'TWICE' },
-  { id: '2', name: 'BTS' },
-  { id: '3', name: 'BLACKPINK' },
-  { id: '4', name: 'Stray Kids' },
-  { id: '5', name: 'NewJeans' },
-  { id: '6', name: 'IVE' }
-])
+interface Artist {
+  id: number
+  name: string
+  slug: string
+  description?: string
+}
+
+// Router and state
+const router = useRouter()
+const isLoading = ref(false)
+const allArtists = ref<Artist[]>([])
+
+// Get max 8 artists for display
+const displayedArtists = computed(() => {
+  return allArtists.value.slice(0, 8)
+})
+
+// Fetch artists on mount
+onMounted(async () => {
+  try {
+    isLoading.value = true
+    // TODO: Replace with actual API call to get artist categories
+    // Current approach: fetch all categories and filter for artists
+    const categories = await apiClient.getCategories()
+    
+    // Filter to get only artist-related categories
+    // This depends on your backend structure - adjust as needed
+    const artists = categories.filter((cat: any) => {
+      return cat.slug?.includes('group') || cat.parent_slug?.includes('group')
+    })
+    
+    allArtists.value = artists.slice(0, 8)
+  } catch (error) {
+    console.error('Failed to fetch artists:', error)
+  } finally {
+    isLoading.value = false
+  }
+})
+
+// Handle artist click - navigate to search with filter
+const handleArtistClick = (artist: Artist) => {
+  router.push({
+    name: 'search',
+    query: { 
+      artist: artist.slug,
+      type: 'artist'
+    }
+  })
+}
 </script>
 
 <style scoped>
-@keyframes scroll-left {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(calc(-50% - 12px));
-  }
+/* Artist pill base styling */
+.artist-pill {
+  background-color: #f3f4f6;
+  color: #111827;
+  border: 2px solid transparent;
+  
+  /* Smooth animations */
+  transition: all 0.3s ease-out;
 }
 
-@keyframes scroll-right {
-  0% {
-    transform: translateX(calc(-50% - 12px));
-  }
-  100% {
-    transform: translateX(0);
-  }
+/* Hover state - dark background with white text */
+.artist-pill:hover {
+  background-color: #111827;
+  color: white;
+  box-shadow: 0 4px 12px rgba(17, 24, 39, 0.15);
+  transform: translateY(-2px);
 }
 
-.animate-scroll-left {
-  animation: scroll-left 30s linear infinite;
+/* Active/Focus state for accessibility */
+.artist-pill:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
 }
 
-.animate-scroll-right {
-  animation: scroll-right 30s linear infinite;
+/* Smooth scale animation on click */
+.artist-pill:active {
+  transform: translateY(-1px) scale(0.98);
 }
 </style>

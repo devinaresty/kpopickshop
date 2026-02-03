@@ -2,12 +2,7 @@
 import { useForwardPropsEmits } from 'radix-vue'
 import { HoverCardRoot, type HoverCardRootEmits, type HoverCardRootProps } from 'radix-vue'
 
-const props = withDefaults(
-  defineProps<HoverCardRootProps>(),
-  {
-    delayDuration: 700,
-  }
-)
+const props = defineProps<HoverCardRootProps>()
 
 const emits = defineEmits<HoverCardRootEmits>()
 

@@ -3,14 +3,14 @@
     <!-- Hero Section -->
     <HeroSection />
 
-    <!-- Product Grid -->
-    <ProductGridSection />
-
     <!-- Popular Artists -->
     <PopularArtistsSection />
 
     <!-- Recommendations -->
     <RecommendationSection />
+
+    <!-- View More For You -->
+    <ViewMoreForYouSection />
 
     <!-- Footer -->
     <footer class="bg-black text-white py-8 sm:py-12">
@@ -82,7 +82,7 @@
 
 <script setup lang="ts">
 import HeroSection from '@/modules/landing/components/sections/HeroSection.vue'
-import ProductGridSection from '@/modules/landing/components/sections/ProductGridSection.vue'
 import PopularArtistsSection from '@/modules/landing/components/sections/PopularArtistsSection.vue'
 import RecommendationSection from '@/modules/landing/components/sections/RecommendationSection.vue'
+import ViewMoreForYouSection from '@/modules/landing/components/sections/ViewMoreForYouSection.vue'
 </script>

@@ -11,8 +11,8 @@
       />
     </div>
 
-    <!-- Content -->
-    <div class="relative z-10 max-w-full px-3 sm:px-4 lg:px-8 text-center py-8 sm:py-10 lg:py-12">
+
+    <div class="relative z-10 max-w-full px-3 sm:px-4 lg:px-8 text-center py-16 sm:py-20 lg:py-24">
       <!-- Main Title -->
       <h1 class="text-4xl sm:text-5xl lg:text-7xl font-black text-black mb-4 sm:mb-6 leading-tight">
         Discover Your

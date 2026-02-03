@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { HoverCardContent } from 'radix-vue'
-import { cn } from '@/lib/utils'
 
 withDefaults(
   defineProps<{
