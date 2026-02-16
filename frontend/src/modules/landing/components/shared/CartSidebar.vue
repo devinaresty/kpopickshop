@@ -56,7 +56,7 @@
 
         <!-- Item Info -->
         <div class="flex-1">
-          <h4 class="font-semibold text-xs sm:text-sm line-clamp-2 mb-1">{{ item.title }}</h4>
+          <h4 class="font-semibold text-xs sm:text-sm line-clamp-2 mb-1">{{ item.name }}</h4>
           <p class="text-xs text-gray-600 mb-2">{{ item.category }}</p>
           <div class="flex items-center justify-between">
             <span class="font-bold text-xs sm:text-sm">${{ item.price.toFixed(2) }}</span>
@@ -110,7 +110,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useLandingStore } from '@/modules/landing/stores/landing.store'
-import type { Product } from '@/modules/landing/domain/landing.types'
+import type { Product } from '@/modules/landing/types'
 
 const landingStore = useLandingStore()
 

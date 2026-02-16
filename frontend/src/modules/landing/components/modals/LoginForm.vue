@@ -68,7 +68,7 @@ const onSubmit = async (values: Record<string, any>) => {
     await authStore.login(email, password)
     console.log('Login berhasil!')
     // Redirect ke home page setelah login
-    router.push('/')
+    router.push({ name: 'home' })
   } catch (error) {
     console.error('Login error:', error)
   }

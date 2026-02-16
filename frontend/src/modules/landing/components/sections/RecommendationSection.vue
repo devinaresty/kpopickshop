@@ -1,13 +1,13 @@
 <template>
-  <section class="py-16 sm:py-20 bg-white">
-    <div class="max-w-full px-3 sm:px-4 lg:px-8">
+  <section class="py-4 sm:py-6 lg:py-8 bg-gray-100">
+    <div class="mx-auto px-3 sm:px-4 lg:px-6 max-w-7xl bg-white rounded-lg py-6 sm:py-8 lg:py-10">
       <!-- Tabs -->
-      <div class="flex gap-2 sm:gap-4 mb-6 sm:mb-8 border-b border-gray-200">
+      <div class="flex gap-2 sm:gap-3 mb-4 sm:mb-6 border-b border-gray-200">
         <button
           v-for="tab in tabs"
           :key="tab"
           @click="activeTab = tab"
-          class="px-3 sm:px-6 py-2 sm:py-4 font-semibold text-xs sm:text-sm transition-all duration-300"
+          class="px-2 sm:px-3 lg:px-4 py-1 sm:py-2 font-semibold text-xs sm:text-sm lg:text-base transition-all duration-300"
           :class="
             activeTab === tab
               ? 'text-black border-b-2 border-black'
@@ -18,77 +18,101 @@
         </button>
       </div>
 
-      <!-- Content Grid -->
-      <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
+      <!-- Loading State -->
+      <div v-if="isLoading" class="flex justify-center items-center py-12">
+        <div class="text-center">
+          <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
+          <p class="text-gray-600">Loading products...</p>
+        </div>
+      </div>
+
+      <!-- Error State -->
+      <div v-else-if="error" class="flex justify-center items-center py-12">
+        <div class="text-center">
+          <p class="text-red-600 font-semibold mb-4">{{ error }}</p>
+          <button @click="reloadProducts()" class="px-4 py-2 bg-black text-white rounded hover:bg-gray-800">
+            Retry
+          </button>
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div v-else-if="displayedProducts.length === 0" class="flex justify-center items-center py-12">
+        <div class="text-center">
+          <p class="text-gray-600 font-semibold">No products available</p>
+        </div>
+      </div>
+
+      <!-- Content Grid with Responsive Scaling -->
+      <div v-else class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-1 sm:gap-1.5 lg:gap-2">
         <div
           v-for="(product, index) in displayedProducts"
           :key="product.id"
-          class="group"
+          class="group cursor-pointer transition-transform duration-300 hover:scale-105"
           :style="{ animation: `fadeInUp 0.5s ease-out forwards`, animationDelay: `${index * 50}ms` }"
         >
-          <div
-            class="relative bg-gray-100 rounded-lg overflow-hidden cursor-pointer"
-            @mouseenter="hoveredProduct = product.id"
-            @mouseleave="hoveredProduct = null"
-          >
-            <!-- Product Image -->
-            <div class="aspect-square bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-gray-400 relative">
-              <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <!-- Entire Card Container -->
+          <div class="bg-white border border-gray-300 rounded overflow-hidden flex flex-col h-full">
+            <!-- Product Image Section - Fixed Aspect Ratio -->
+            <div class="aspect-square bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-gray-400 relative flex-shrink-0 overflow-hidden"
+              @mouseenter="hoveredProduct = String(product.id)"
+              @mouseleave="hoveredProduct = null">
+              <!-- Display product image if available -->
+              <img
+                v-if="product.imageUrl"
+                :src="product.imageUrl"
+                :alt="product.name"
+                class="w-full h-full object-cover"
+              />
+              <!-- Fallback icon if no image -->
+              <svg v-else class="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
               </svg>
 
-              <!-- Flash Sale Badge -->
+              <!-- Flash Sale Badge - Dynamic from product data -->
               <div
-                v-if="activeTab === 'Flash Sale'"
-                class="absolute top-3 left-3 bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold"
+                v-if="product.discountPercentage && product.discountPercentage > 0"
+                class="absolute top-1 left-1 bg-red-500 text-white px-1.5 py-0.5 rounded-full text-xs font-bold"
               >
-                -30%
+                -{{ product.discountPercentage }}%
+              </div>
+
+              <!-- Hover Overlay -->
+              <div
+                class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 transition-opacity duration-300"
+                :class="{ 'opacity-100': hoveredProduct === String(product.id) }"
+              >
+                <button
+                  class="px-2 sm:px-3 py-1 bg-white text-black rounded text-xs font-semibold hover:bg-gray-100 transition-colors"
+                >
+                  Add to Cart
+                </button>
               </div>
             </div>
 
-            <!-- Hover Overlay -->
-            <div
-              class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 transition-opacity duration-300"
-              :class="{ 'opacity-100': hoveredProduct === product.id }"
-            >
-              <button
-                class="px-6 py-2 bg-white text-black rounded-lg font-semibold hover:bg-gray-100 transition-colors"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-
-          <!-- Product Info -->
-          <div class="mt-4">
-            <p class="text-sm text-gray-500 mb-1">{{ product.category }}</p>
-            <h3 class="font-semibold text-gray-900 text-sm line-clamp-2 mb-2">
-              {{ product.title }}
-            </h3>
-            <div class="flex items-center justify-between">
-              <div>
-                <p class="text-lg font-bold text-black">
+            <!-- Product Info Section - Flexible Growth -->
+            <div class="px-1 sm:px-1.5 py-2 sm:py-2.5 lg:py-3 flex flex-col flex-grow">
+              <p class="text-xs text-gray-500 mb-0.5">{{ product.category }}</p>
+              <h3 class="font-semibold text-gray-900 text-xs line-clamp-2 mb-1.5 sm:mb-2 flex-grow">
+                {{ product.name }}
+              </h3>
+              <div class="flex items-center justify-between pt-1.5 sm:pt-2 border-t border-gray-200">
+                <p class="text-xs font-bold text-black">
                   ${{ product.price.toFixed(2) }}
                 </p>
-                <p
-                  v-if="activeTab === 'Flash Sale'"
-                  class="text-xs text-gray-500 line-through"
-                >
-                  ${{ (product.price * 1.43).toFixed(2) }}
-                </p>
+                <span class="text-xs text-gray-500">
+                  {{ product.stock }} in stock
+                </span>
               </div>
-              <span class="text-xs text-gray-500">
-                {{ product.sold }} sold
-              </span>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- View All -->
-      <div class="mt-8 sm:mt-12 text-center">
+      <!-- View All Button -->
+      <div class="mt-6 sm:mt-8 lg:mt-10 text-center">
         <button
-          class="px-6 sm:px-8 py-3 border-2 border-black text-black rounded-lg font-semibold hover:bg-black hover:text-white transition-all duration-300 text-sm sm:text-base"
+          class="px-5 sm:px-6 lg:px-7 py-2 sm:py-2.5 lg:py-3 border border-gray-300 text-black rounded-md text-xs sm:text-sm lg:text-base font-semibold hover:border-black hover:bg-black hover:text-white transition-all duration-300"
         >
           View More {{ activeTab }}
         </button>
@@ -98,82 +122,75 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import type { Product } from '../../domain/landing.types'
+import { ref, computed, onMounted } from 'vue'
+import type { Product } from '@/modules/landing/types'
 
 const activeTab = ref('For You')
 const hoveredProduct = ref<string | null>(null)
 const tabs = ['For You', 'Flash Sale']
 
-const forYouProducts = ref<Product[]>([
-  {
-    id: '5',
-    title: 'Seventeen "God\'s Menu" CD',
-    price: 22.99,
-    image: '',
-    sold: 142,
-    category: 'Albums'
-  },
-  {
-    id: '6',
-    title: 'LOONA Official Merch Set',
-    price: 55.00,
-    image: '',
-    sold: 76,
-    category: 'Merchandise'
-  },
-  {
-    id: '7',
-    title: 'Aespa Lightstick Bundles',
-    price: 50.00,
-    image: '',
-    sold: 98,
-    category: 'Merchandise'
-  },
-  {
-    id: '8',
-    title: 'Red Velvet Poster Collection',
-    price: 15.99,
-    image: '',
-    sold: 64,
-    category: 'Posters'
-  }
-])
+const forYouProducts = ref<Product[]>([])
+const flashSaleProducts = ref<Product[]>([])
+const isLoading = ref(true)
+const error = ref<string | null>(null)
 
-const flashSaleProducts = ref<Product[]>([
-  {
-    id: '9',
-    title: 'TXT "Minisode" Vinyl Record',
-    price: 20.99,
-    image: '',
-    sold: 195,
-    category: 'Albums'
-  },
-  {
-    id: '10',
-    title: 'Seventeen Official Lightstick',
-    price: 35.00,
-    image: '',
-    sold: 143,
-    category: 'Merchandise'
-  },
-  {
-    id: '11',
-    title: 'ENHYPEN Concert Merchandise',
-    price: 40.00,
-    image: '',
-    sold: 112,
-    category: 'Merchandise'
-  },
-  {
-    id: '12',
-    title: 'itzy Album Set Complete',
-    price: 24.99,
-    image: '',
-    sold: 187,
-    category: 'Albums'
+// Hardcoded products for 3 rows (6 cols × 3 = 18 items on desktop)
+const createMockProducts = (): Product[] => {
+  const baseProduct: Product = {
+    id: 1,
+    name: 'ILLIT : AFTER THE GLITTER DAY PHOTOBOOK',
+    price: 299000,
+    stock: 50,
+    imageUrl: '/images/produk1.webp',
+    category: 'Photobook',
+    rating: 5,
+    description: 'Official ILLIT Photobook',
+    badge: 'New',
+    artist: 'ILLIT',
   }
-])
+  
+  // Create 18 items with varied discount data
+  return Array.from({ length: 18 }, (_, index) => ({
+    ...baseProduct,
+    id: index + 1,
+    // Every 3rd item is Flash Sale with discount
+    isFlashSale: index % 3 === 0,
+    discountPercentage: index % 3 === 0 ? 30 : 0,
+    badge: index % 3 === 0 ? 'Flash Sale' : (index % 2 === 0 ? 'New' : 'Hot'),
+  }))
+}
+
+const reloadProducts = async () => {
+  try {
+    isLoading.value = true
+    error.value = null
+    
+    // Get all products
+    const allProducts = createMockProducts()
+    
+    // FOR YOU: Products without discount (default products)
+    forYouProducts.value = allProducts.filter(
+      product => !product.isFlashSale && (!product.discountPercentage || product.discountPercentage === 0)
+    )
+    
+    // FLASH SALE: Products with isFlashSale OR discountPercentage > 0
+    flashSaleProducts.value = allProducts.filter(
+      product => product.isFlashSale === true || (product.discountPercentage && product.discountPercentage > 0)
+    )
+    
+    console.log('RecommendationSection - For You:', forYouProducts.value.length, 'items')
+    console.log('RecommendationSection - Flash Sale:', flashSaleProducts.value.length, 'items')
+  } catch (err) {
+    console.error('Failed to fetch recommendation products:', err)
+    error.value = err instanceof Error ? err.message : 'Failed to load products'
+  } finally {
+    isLoading.value = false
+  }
+}
+
+onMounted(() => {
+  reloadProducts()
+})
 
 const displayedProducts = computed(() => {
   return activeTab.value === 'For You' ? forYouProducts.value : flashSaleProducts.value

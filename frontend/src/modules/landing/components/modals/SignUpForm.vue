@@ -1,13 +1,13 @@
 <template>
-  <Form :validation-schema="signupValidationSchema" @submit="onSubmit" class="space-y-2.5 sm:space-y-3">
+  <Form :validation-schema="signupValidationSchema" @submit="onSubmit" class="space-y-2">
     <!-- Full Name Field -->
     <div>
-      <Field name="name" v-slot="{ field }" class="space-y-1">
-        <label class="block text-xs sm:text-sm font-medium text-gray-900">Full Name</label>
+      <Field name="name" v-slot="{ field }" class="space-y-0.5">
+        <label class="block text-xs font-medium text-gray-900">Full Name</label>
         <input
           type="text"
           v-bind="field"
-          class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-transparent transition-all text-sm sm:text-base"
+          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-transparent transition-all text-xs"
           placeholder="John Doe"
         />
         <ErrorMessage name="name" class="text-xs text-red-500" />
@@ -16,12 +16,12 @@
 
     <!-- Email Field -->
     <div>
-      <Field name="email" v-slot="{ field }" class="space-y-1">
-        <label class="block text-xs sm:text-sm font-medium text-gray-900">Email Address</label>
+      <Field name="email" v-slot="{ field }" class="space-y-0.5">
+        <label class="block text-xs font-medium text-gray-900">Email Address</label>
         <input
           type="email"
           v-bind="field"
-          class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-transparent transition-all text-sm sm:text-base"
+          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-transparent transition-all text-xs"
           placeholder="name@example.com"
         />
         <ErrorMessage name="email" class="text-xs text-red-500" />
@@ -30,12 +30,12 @@
 
     <!-- Password Field -->
     <div>
-      <Field name="password" v-slot="{ field }" class="space-y-1">
-        <label class="block text-xs sm:text-sm font-medium text-gray-900">Password</label>
+      <Field name="password" v-slot="{ field }" class="space-y-0.5">
+        <label class="block text-xs font-medium text-gray-900">Password</label>
         <input
           type="password"
           v-bind="field"
-          class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-transparent transition-all text-sm sm:text-base"
+          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-transparent transition-all text-xs"
           placeholder="••••••••"
         />
         <ErrorMessage name="password" class="text-xs text-red-500" />
@@ -44,12 +44,12 @@
 
     <!-- Confirm Password Field -->
     <div>
-      <Field name="confirmPassword" v-slot="{ field }" class="space-y-1">
-        <label class="block text-xs sm:text-sm font-medium text-gray-900">Confirm Password</label>
+      <Field name="confirmPassword" v-slot="{ field }" class="space-y-0.5">
+        <label class="block text-xs font-medium text-gray-900">Confirm Password</label>
         <input
           type="password"
           v-bind="field"
-          class="w-full px-3 sm:px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-transparent transition-all text-sm sm:text-base"
+          class="w-full px-3 py-1.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 focus:border-transparent transition-all text-xs"
           placeholder="••••••••"
         />
         <ErrorMessage name="confirmPassword" class="text-xs text-red-500" />
@@ -57,13 +57,13 @@
     </div>
 
     <!-- Error Message -->
-    <div v-if="authStore.error" class="p-3 bg-red-50 border border-red-200 rounded-lg text-xs sm:text-sm text-red-700">
+    <div v-if="authStore.error" class="p-2 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
       {{ authStore.error }}
     </div>
 
     <!-- Terms Agreement -->
-    <label class="flex items-start gap-2 cursor-pointer text-xs sm:text-sm">
-      <input type="checkbox" class="w-3 h-3 sm:w-4 sm:h-4 rounded border-gray-300 mt-1" />
+    <label class="flex items-start gap-2 cursor-pointer text-xs">
+      <input type="checkbox" class="w-3 h-3 rounded border-gray-300 mt-0.5" />
       <span class="text-gray-700">
         I agree to the
         <a href="#" class="font-medium text-black hover:text-gray-700">Terms of Service</a>
@@ -76,7 +76,7 @@
     <button
       type="submit"
       :disabled="authStore.isLoading"
-      class="w-full px-3 sm:px-4 py-2 sm:py-3 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors duration-200 text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+      class="w-full px-3 py-1.5 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition-colors duration-200 text-xs disabled:opacity-50 disabled:cursor-not-allowed"
     >
       {{ authStore.isLoading ? 'Creating Account...' : 'Create Account' }}
     </button>

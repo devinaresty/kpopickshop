@@ -1,40 +1,36 @@
 <template>
-  <nav class="sticky top-0 z-50 backdrop-blur-md bg-white/5 border-b border-white/10">
-    <!-- Main Navbar Container -->
+  <nav class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md bg-transparent border-b border-white/10">
+
     <div class="max-w-7xl mx-auto px-3 sm:px-4 lg:px-8">
       <div class="flex items-center justify-between h-14 sm:h-16">
-        <!-- Logo -->
+ 
         <div class="flex-shrink-0 flex items-center w-8 h-8 sm:w-10 sm:h-10 overflow-visible">
           <img src="/logo (3).png" alt="K Logo" class="w-12 h-12 sm:w-14 sm:h-14 object-contain" />
         </div>
 
-        <!-- Search Bar - Center (Hidden on mobile) -->
-        <div class="hidden md:flex flex-1 max-w-md mx-4 lg:mx-8">
-          <div class="relative w-full">
+        <div class="hidden md:block">
+          <div v-if="!isSearchFocused" class="w-10 h-10 rounded-full bg-gray-500/15 border border-gray-400/30 flex items-center justify-center cursor-pointer hover:bg-gray-500/25 transition-all duration-300" @click="isSearchFocused = true">
+            <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+
+          <div v-else class="relative w-48 transition-all duration-300">
             <input
               type="text"
-              placeholder="Search"
-              class="w-full px-4 py-2 rounded-full bg-gray-100/80 border border-gray-200/50 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-black/20 focus:bg-white transition-all duration-300"
+              v-model="searchQuery"
+              placeholder="Search products..."
+              @blur="isSearchFocused = false"
+              autofocus
+              class="w-full px-4 py-2 rounded-full bg-gray-500/15 border border-gray-400/30 text-xs focus:outline-none focus:ring-2 focus:ring-black/20 focus:bg-gray-500/25 transition-all duration-300"
             />
-            <svg
-              class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
+            <svg class="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </div>
         </div>
 
-        <!-- Right Actions -->
         <div class="flex items-center gap-2 sm:gap-4 lg:gap-6">
-        <!-- Categories with HoverCard -->
           <HoverCard>
             <HoverCardTrigger as-child>
               <button class="hidden sm:block text-xs sm:text-sm font-medium text-gray-600 hover:text-black transition-colors">
@@ -54,7 +50,6 @@
             </HoverCardContent>
           </HoverCard>
 
-          <!-- Sign In with HoverCard -->
           <HoverCard>
             <HoverCardTrigger as-child>
               <button class="hidden sm:block text-xs sm:text-sm font-medium text-gray-600 hover:text-black transition-colors">
@@ -71,7 +66,6 @@
             </HoverCardContent>
           </HoverCard>
 
-          <!-- Log In with HoverCard -->
           <HoverCard>
             <HoverCardTrigger as-child>
               <button class="hidden sm:block text-xs sm:text-sm font-medium text-gray-600 hover:text-black transition-colors">
@@ -88,7 +82,6 @@
             </HoverCardContent>
           </HoverCard>
 
-          <!-- Cart with HoverCard (Icon) -->
           <HoverCard>
             <HoverCardTrigger as-child>
               <button
@@ -129,14 +122,17 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card'
 import { useLandingStore } from '@/modules/landing/stores/landing.store'
 
 const landingStore = useLandingStore()
+const isSearchFocused = ref(false)
+const searchQuery = ref('')
 </script>
 
 <style scoped>
-/* Modern Blur Navbar */
+
 @supports (backdrop-filter: blur(10px)) {
   nav {
     background: rgba(255, 255, 255, 0.7);
