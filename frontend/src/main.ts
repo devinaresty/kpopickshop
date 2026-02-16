@@ -3,11 +3,10 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-// Import Tailwind CSS
 import './assets/styles/global.css'
 
 const app = createApp(App)
 
 app.use(createPinia())
-app.use(router)
+app.use(router as any)
 app.mount('#app')

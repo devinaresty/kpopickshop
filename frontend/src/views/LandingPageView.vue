@@ -1,22 +1,14 @@
 <template>
-  <div class="bg-white">
-    <!-- Hero Section -->
+  <div class="bg-gray-100 min-h-screen">
     <HeroSection />
 
-    <!-- Popular Artists -->
-    <PopularArtistsSection />
+    <PopularAlbumArtistSection />
 
-    <!-- Recommendations -->
     <RecommendationSection />
 
-    <!-- View More For You -->
-    <ViewMoreForYouSection />
-
-    <!-- Footer -->
     <footer class="bg-black text-white py-8 sm:py-12">
       <div class="max-w-full px-3 sm:px-4 lg:px-8">
         <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
-          <!-- Brand -->
           <div>
             <div class="flex items-center overflow-visible mb-3 sm:mb-4">
               <img src="/logo (3).png" alt="K Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
@@ -26,7 +18,6 @@
             </p>
           </div>
 
-          <!-- Links -->
           <div>
             <h4 class="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Shop</h4>
             <ul class="space-y-1 sm:space-y-2 text-gray-400 text-xs sm:text-sm">
@@ -37,7 +28,6 @@
             </ul>
           </div>
 
-          <!-- Support -->
           <div>
             <h4 class="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Support</h4>
             <ul class="space-y-1 sm:space-y-2 text-gray-400 text-xs sm:text-sm">
@@ -48,7 +38,6 @@
             </ul>
           </div>
 
-          <!-- Social -->
           <div>
             <h4 class="font-semibold mb-3 sm:mb-4 text-sm sm:text-base">Follow</h4>
             <div class="flex gap-3 sm:gap-4">
@@ -82,7 +71,6 @@
 
 <script setup lang="ts">
 import HeroSection from '@/modules/landing/components/sections/HeroSection.vue'
-import PopularArtistsSection from '@/modules/landing/components/sections/PopularArtistsSection.vue'
+import PopularAlbumArtistSection from '@/modules/landing/components/sections/PopularAlbumArtistSection.vue'
 import RecommendationSection from '@/modules/landing/components/sections/RecommendationSection.vue'
-import ViewMoreForYouSection from '@/modules/landing/components/sections/ViewMoreForYouSection.vue'
 </script>
