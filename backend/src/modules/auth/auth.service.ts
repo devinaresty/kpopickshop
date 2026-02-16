@@ -1,11 +1,15 @@
-import { Injectable, BadRequestException, UnauthorizedException } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcryptjs';
-import { PrismaService } from '../../prisma/prisma.service';
-import { RegisterDto } from './dto/register.dto';
-import { LoginDto } from './dto/login.dto';
-import { UserResponseDto } from './dto/user.response.dto';
-import { AuthResponseDto } from './dto/auth.response.dto';
+import {
+  Injectable,
+  BadRequestException,
+  UnauthorizedException,
+} from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import * as bcrypt from "bcryptjs";
+import { PrismaService } from "../../prisma/prisma.service";
+import { RegisterDto } from "./dto/register.dto";
+import { LoginDto } from "./dto/login.dto";
+import { UserResponseDto } from "./dto/user.response.dto";
+import { AuthResponseDto } from "./dto/auth.response.dto";
 
 @Injectable()
 export class AuthService {
@@ -21,7 +25,7 @@ export class AuthService {
     });
 
     if (existingUser) {
-      throw new BadRequestException('Email already exists');
+      throw new BadRequestException("Email already exists");
     }
 
     // Hash password
@@ -53,13 +57,16 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException("Invalid email or password");
     }
 
-    const isPasswordValid = await bcrypt.compare(loginDto.password, user.password);
+    const isPasswordValid = await bcrypt.compare(
+      loginDto.password,
+      user.password,
+    );
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid email or password');
+      throw new UnauthorizedException("Invalid email or password");
     }
 
     const userResponse = this.mapUserToResponse(user);
@@ -95,7 +102,7 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      throw new UnauthorizedException("User not found");
     }
 
     return this.mapUserToResponse(user);
@@ -104,8 +111,8 @@ export class AuthService {
   private generateAccessToken(user: any): string {
     const payload = { email: user.email, sub: user.id };
     return this.jwtService.sign(payload, {
-      secret: process.env.JWT_SECRET || 'your-secret-key',
-      expiresIn: '24h',
+      secret: process.env.JWT_SECRET || "your-secret-key",
+      expiresIn: "24h",
     });
   }
 

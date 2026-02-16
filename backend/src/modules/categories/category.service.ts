@@ -1,7 +1,11 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { CreateCategoryDto } from './dto/create-category.dto';
-import { UpdateCategoryDto } from './dto/update-category.dto';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from "@nestjs/common";
+import { PrismaService } from "../../prisma/prisma.service";
+import { CreateCategoryDto } from "./dto/create-category.dto";
+import { UpdateCategoryDto } from "./dto/update-category.dto";
 
 @Injectable()
 export class CategoryService {
@@ -13,7 +17,7 @@ export class CategoryService {
     });
 
     if (existingCategory) {
-      throw new BadRequestException('Slug already exists');
+      throw new BadRequestException("Slug already exists");
     }
 
     return this.prisma.category.create({
@@ -35,7 +39,7 @@ export class CategoryService {
     });
 
     if (!category) {
-      throw new NotFoundException('Category not found');
+      throw new NotFoundException("Category not found");
     }
 
     return category;
@@ -48,7 +52,7 @@ export class CategoryService {
     });
 
     if (!category) {
-      throw new NotFoundException('Category not found');
+      throw new NotFoundException("Category not found");
     }
 
     return category;
@@ -60,7 +64,7 @@ export class CategoryService {
     });
 
     if (!category) {
-      throw new NotFoundException('Category not found');
+      throw new NotFoundException("Category not found");
     }
 
     if (updateCategoryDto.slug && updateCategoryDto.slug !== category.slug) {
@@ -69,7 +73,7 @@ export class CategoryService {
       });
 
       if (existingCategory) {
-        throw new BadRequestException('Slug already exists');
+        throw new BadRequestException("Slug already exists");
       }
     }
 
@@ -86,7 +90,7 @@ export class CategoryService {
     });
 
     if (!category) {
-      throw new NotFoundException('Category not found');
+      throw new NotFoundException("Category not found");
     }
 
     return this.prisma.category.delete({

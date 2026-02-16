@@ -1,7 +1,11 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
-import { CreateProductDto } from './dto/create-product.dto';
-import { UpdateProductDto } from './dto/update-product.dto';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from "@nestjs/common";
+import { PrismaService } from "../../prisma/prisma.service";
+import { CreateProductDto } from "./dto/create-product.dto";
+import { UpdateProductDto } from "./dto/update-product.dto";
 
 @Injectable()
 export class ProductService {
@@ -14,7 +18,7 @@ export class ProductService {
     });
 
     if (existingProduct) {
-      throw new BadRequestException('Slug already exists');
+      throw new BadRequestException("Slug already exists");
     }
 
     // Check if category exists
@@ -23,7 +27,7 @@ export class ProductService {
     });
 
     if (!category) {
-      throw new NotFoundException('Category not found');
+      throw new NotFoundException("Category not found");
     }
 
     return this.prisma.product.create({
@@ -56,7 +60,7 @@ export class ProductService {
     });
 
     if (!product) {
-      throw new NotFoundException('Product not found');
+      throw new NotFoundException("Product not found");
     }
 
     return product;
@@ -69,13 +73,17 @@ export class ProductService {
     });
 
     if (!product) {
-      throw new NotFoundException('Product not found');
+      throw new NotFoundException("Product not found");
     }
 
     return product;
   }
 
-  async findByCategory(categoryId: number, skip: number = 0, take: number = 10) {
+  async findByCategory(
+    categoryId: number,
+    skip: number = 0,
+    take: number = 10,
+  ) {
     const products = await this.prisma.product.findMany({
       where: { categoryId },
       skip,
@@ -121,7 +129,7 @@ export class ProductService {
     });
 
     if (!product) {
-      throw new NotFoundException('Product not found');
+      throw new NotFoundException("Product not found");
     }
 
     // Check if new slug already exists
@@ -131,7 +139,7 @@ export class ProductService {
       });
 
       if (existingProduct) {
-        throw new BadRequestException('Slug already exists');
+        throw new BadRequestException("Slug already exists");
       }
     }
 
@@ -148,7 +156,7 @@ export class ProductService {
     });
 
     if (!product) {
-      throw new NotFoundException('Product not found');
+      throw new NotFoundException("Product not found");
     }
 
     return this.prisma.product.delete({

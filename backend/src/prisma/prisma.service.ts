@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { Injectable } from "@nestjs/common";
+import { PrismaClient } from "@prisma/client";
 
 let prismaInstance: PrismaClient | null = null;
 
@@ -42,5 +42,3 @@ export class PrismaService {
     }
   }
 }
-
-
