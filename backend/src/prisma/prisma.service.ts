@@ -35,6 +35,10 @@ export class PrismaService {
     return this.prisma.orderItem;
   }
 
+  $transaction(callback: (tx: PrismaClient) => Promise<any>) {
+    return this.prisma.$transaction(callback);
+  }
+
   async disconnect() {
     if (prismaInstance) {
       await prismaInstance.$disconnect();

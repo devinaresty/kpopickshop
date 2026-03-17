@@ -9,7 +9,7 @@ async function bootstrap() {
   // Enable CORS
   app.enableCors();
 
-  // Global validation pipe
+  // Global body parser - handles all requests including webhooks
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -33,8 +33,27 @@ async function bootstrap() {
   SwaggerModule.setup("api/docs", app, document);
 
   const port = process.env.PORT ?? 3000;
-  await app.listen(port);
+  const server = await app.listen(port);
   console.log(`🚀 Server running at http://localhost:${port}`);
   console.log(`📖 Swagger documentation at http://localhost:${port}/api/docs`);
+
+  const shutdown = async (signal: string) => {
+    console.log(`\n${signal} received. Shutting down gracefully...`);
+    server.close(async () => {
+      console.log('Server closed');
+      await app.close();
+      console.log('Application closed');
+      process.exit(0);
+    });
+    
+    setTimeout(() => {
+      console.error('Forced shutdown after 10 seconds');
+      process.exit(1);
+    }, 10000);
+  };
+
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
 }
+
 bootstrap();

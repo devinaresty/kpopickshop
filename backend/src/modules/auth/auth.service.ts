@@ -109,7 +109,7 @@ export class AuthService {
   }
 
   private generateAccessToken(user: any): string {
-    const payload = { email: user.email, sub: user.id };
+    const payload = { email: user.email, sub: user.id, role: user.role };
     return this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET || "your-secret-key",
       expiresIn: "24h",
@@ -121,6 +121,7 @@ export class AuthService {
       id: user.id,
       email: user.email,
       name: user.name,
+      role: user.role,
       phone: user.phone,
       address: user.address,
       createdAt: user.createdAt,

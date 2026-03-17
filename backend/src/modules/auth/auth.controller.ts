@@ -13,6 +13,7 @@ import {
   ApiTags,
   ApiResponse,
   ApiBearerAuth,
+  ApiBody,
 } from "@nestjs/swagger";
 import { AuthService } from "./auth.service";
 import { RegisterDto } from "./dto/register.dto";
@@ -30,6 +31,17 @@ export class AuthController {
   @Post("register")
   @HttpCode(201)
   @ApiOperation({ summary: "Register a new user" })
+  @ApiBody({
+    schema: {
+      example: {
+        email: "user@example.com",
+        name: "John Doe",
+        password: "password123",
+        phone: "08123456789",
+        address: "Jl. K-pop No. 123"
+      }
+    }
+  })
   @ApiResponse({
     status: 201,
     description: "User registered successfully",
@@ -42,6 +54,14 @@ export class AuthController {
   @Post("login")
   @HttpCode(200)
   @ApiOperation({ summary: "Login user" })
+  @ApiBody({
+    schema: {
+      example: {
+        email: "user@example.com",
+        password: "password123"
+      }
+    }
+  })
   @ApiResponse({
     status: 200,
     description: "Login successful",
