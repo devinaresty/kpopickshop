@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  CanActivate,
-  ExecutionContext,
-  ForbiddenException,
-} from "@nestjs/common";
+import { Injectable, CanActivate, ExecutionContext, ForbiddenException, } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { ROLES_KEY } from "../decorators/roles.decorator";
 
@@ -27,7 +22,6 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException("No role information provided");
     }
 
-    // Convert to lowercase for case-insensitive comparison
     const userRole = user.role.toLowerCase();
     const hasRole = requiredRoles.some(role => role.toLowerCase() === userRole);
 

@@ -1,4 +1,4 @@
-import { IsString, IsOptional } from "class-validator";
+import { IsString, IsOptional, IsNumber } from "class-validator";
 
 export class UpdateCategoryDto {
   @IsString()
@@ -16,4 +16,8 @@ export class UpdateCategoryDto {
   @IsString()
   @IsOptional()
   image?: string;
+
+  @IsNumber()
+  @IsOptional()
+  parentId?: number;
 }

@@ -7,77 +7,124 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum OrderStatus {
+  WAITING_PAYMENT
+  PAID
+  PROCESSING
+  SHIPPED
+  COMPLETED
+  CANCELLED
+}
+
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
   password  String
-  name      String
+  name      String?
+  role      UserRole @default(USER)
   phone     String?
   address   String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  role      UserRole @default(USER)
+
   orders    Order[]
+  addresses UserAddress[]
+}
+
+model UserAddress {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  
+  fullName    String
+  phone       String
+  address     String
+  detail      String?
+  latitude    Float?
+  longitude   Float?
+  
+  isDefault   Boolean  @default(false)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Category {
-  id          Int        @id @default(autoincrement())
-  name        String     @unique
-  slug        String     @unique
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  slug        String    @unique
   description String?
   image       String?
   parentId    Int?
-  createdAt   DateTime   @default(now())
-  updatedAt   DateTime   @updatedAt
-  parent      Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
-  children    Category[] @relation("CategoryHierarchy")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
   products    Product[]
+  parent      Category? @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children    Category[] @relation("CategoryHierarchy")
 }
 
 model Product {
-  id          Int         @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
-  slug        String      @unique
+  slug        String    @unique
   description String?
-  price       Float
-  stock       Int         @default(0)
+  price       Float     
+  stock       Int       @default(0)
   image       String?
   imageUrl    String?
-  rating      Float       @default(0)
+  rating      Float     @default(0)
+  isPromoted  Boolean   @default(false)
   categoryId  Int
-  isPromoted  Boolean     @default(false)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  category    Category    @relation(fields: [categoryId], references: [id])
   orderItems  OrderItem[]
-  category    Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  images      ProductImage[]
+}
+
+model ProductImage {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  imageUrl  String
+  createdAt DateTime @default(now())
 }
 
 model Order {
-  id         Int         @id @default(autoincrement())
-  userId     Int
-  totalPrice Float
-  status     String      @default("pending")
-  createdAt  DateTime    @default(now())
-  updatedAt  DateTime    @updatedAt
-  metadata   String?
-  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  items      OrderItem[]
+  id              Int         @id @default(autoincrement())
+  userId          Int
+  user            User        @relation(fields: [userId], references: [id])
+  
+  totalPrice      Float
+  
+  status          String      @default("WAITING_PAYMENT")
+  
+  metadata        String?
+
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  items           OrderItem[]
 }
 
 model OrderItem {
-  id        Int      @id @default(autoincrement())
+  id        Int     @id @default(autoincrement())
   orderId   Int
+  order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
   productId Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
   quantity  Int
   price     Float
   createdAt DateTime @default(now())
-  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([orderId, productId])
-}
-
-enum UserRole {
-  USER
-  ADMIN
 }

@@ -38,7 +38,6 @@ export class PaymentController {
       throw new BadRequestException('orderId is required');
     }
 
-    // Verify order exists and belongs to user
     const order = await this.prisma.order.findUnique({
       where: { id: orderId },
       include: { items: true },
@@ -56,7 +55,6 @@ export class PaymentController {
       throw new BadRequestException(`Order #${orderId} is already ${order.status}, cannot create new payment`);
     }
 
-    // Create Xendit invoice
     const invoice = await this.paymentService.createInvoice(
       orderId,
       order.totalPrice,
@@ -99,15 +97,12 @@ export class PaymentController {
       throw new BadRequestException('You can only check payment status for your own orders');
     }
 
-    // Query Xendit API directly to check invoice status
     const externalId = `order-${orderId}`;
     
     try {
-      // Get invoice status from Xendit using external_id
       const invoiceStatus = await this.paymentService.getInvoiceByExternalId(externalId);
       
       if (invoiceStatus && invoiceStatus.status === 'PAID') {
-        // If Xendit says it's PAID, update our database
         if (order.status !== 'PAID') {
           await this.prisma.order.update({
             where: { id: parseInt(orderId) },
@@ -165,7 +160,6 @@ export class PaymentController {
     console.log('🔍 Webhook received from Xendit');
     console.log('📦 Body:', JSON.stringify(body, null, 2));
 
-    // Verify webhook token (optional for local dev)
     const callbackToken = req.headers['x-callback-token'] as string;
     const expectedToken = process.env.XENDIT_CALLBACK_TOKEN;
     const isLocalhost = req.hostname === 'localhost' || req.hostname === '127.0.0.1';
@@ -180,7 +174,6 @@ export class PaymentController {
 
     console.log('✅ Webhook verified');
 
-    // Check if payment status is PAID
     if (body.status !== 'PAID') {
       console.log(`⏭️ Skipping - status is ${body.status}, not PAID`);
       return { success: true, message: 'Event received but not processed' };
@@ -191,7 +184,6 @@ export class PaymentController {
       throw new BadRequestException('Invalid external_id');
     }
 
-    // Extract order ID from external_id (e.g., "order-2" → 2)
     let orderId: number | null = null;
 
     if (externalId.startsWith('order-')) {
@@ -211,7 +203,6 @@ export class PaymentController {
       };
     }
 
-    // Find and update order
     const order = await this.prisma.order.findUnique({
       where: { id: orderId },
     });
@@ -225,7 +216,6 @@ export class PaymentController {
       };
     }
 
-    // Update order status to PAID
     const updatedOrder = await this.prisma.order.update({
       where: { id: orderId },
       data: { status: 'PAID' },

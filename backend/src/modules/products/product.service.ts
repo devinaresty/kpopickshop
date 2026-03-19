@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  BadRequestException,
-} from "@nestjs/common";
+import { Injectable, NotFoundException, BadRequestException,} from "@nestjs/common";
 import { PrismaService } from "../../prisma/prisma.service";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
@@ -12,7 +8,6 @@ export class ProductService {
   constructor(private prisma: PrismaService) {}
 
   async create(createProductDto: CreateProductDto) {
-    // Check if slug already exists
     const existingProduct = await this.prisma.product.findUnique({
       where: { slug: createProductDto.slug },
     });
@@ -21,7 +16,6 @@ export class ProductService {
       throw new BadRequestException("Slug already exists");
     }
 
-    // Check if category exists
     const category = await this.prisma.category.findUnique({
       where: { id: createProductDto.categoryId },
     });
@@ -40,7 +34,7 @@ export class ProductService {
     const products = await this.prisma.product.findMany({
       skip,
       take,
-      include: { category: true },
+      include: { category: true, images: true },
     });
 
     const total = await this.prisma.product.count();
@@ -56,7 +50,7 @@ export class ProductService {
   async findById(id: number) {
     const product = await this.prisma.product.findUnique({
       where: { id },
-      include: { category: true },
+      include: { category: true, images: true },
     });
 
     if (!product) {
@@ -69,7 +63,7 @@ export class ProductService {
   async findBySlug(slug: string) {
     const product = await this.prisma.product.findUnique({
       where: { slug },
-      include: { category: true },
+      include: { category: true, images: true },
     });
 
     if (!product) {
@@ -88,7 +82,7 @@ export class ProductService {
       where: { categoryId },
       skip,
       take,
-      include: { category: true },
+      include: { category: true, images: true },
     });
 
     const total = await this.prisma.product.count({
@@ -108,7 +102,7 @@ export class ProductService {
       where: { isPromoted: true },
       skip,
       take,
-      include: { category: true },
+      include: { category: true, images: true },
     });
 
     const total = await this.prisma.product.count({
@@ -132,7 +126,6 @@ export class ProductService {
       throw new NotFoundException("Product not found");
     }
 
-    // Check if new slug already exists
     if (updateProductDto.slug && updateProductDto.slug !== product.slug) {
       const existingProduct = await this.prisma.product.findUnique({
         where: { slug: updateProductDto.slug },

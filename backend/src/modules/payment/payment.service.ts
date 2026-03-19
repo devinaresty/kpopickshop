@@ -93,7 +93,6 @@ export class PaymentService {
     try {
       const auth = Buffer.from(`${this.xenditSecretKey}:`).toString('base64');
 
-      // Query invoices by external_id
       const response = await axios.default.get(
         `${this.xenditApiUrl}?external_id=${externalId}`,
         {
@@ -104,7 +103,6 @@ export class PaymentService {
       );
 
       if (response.data && Array.isArray(response.data) && response.data.length > 0) {
-        // Return the most recent invoice for this external_id
         return response.data[0];
       }
 

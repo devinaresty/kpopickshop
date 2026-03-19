@@ -6,10 +6,8 @@ import { AppModule } from "./app.module";
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Enable CORS
   app.enableCors();
 
-  // Global body parser - handles all requests including webhooks
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -18,7 +16,6 @@ async function bootstrap() {
     }),
   );
 
-  // Setup Swagger
   const config = new DocumentBuilder()
     .setTitle("KPopick API")
     .setDescription("K-Pop Products E-Commerce API")

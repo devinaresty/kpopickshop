@@ -14,7 +14,6 @@ export class PrismaService {
     this.prisma = prismaInstance;
   }
 
-  // Proxy methods to PrismaClient
   get user() {
     return this.prisma.user;
   }

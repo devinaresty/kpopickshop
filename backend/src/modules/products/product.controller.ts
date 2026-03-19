@@ -1,28 +1,6 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Put,
-  Param,
-  Delete,
-  Query,
-  UseGuards,
-  ParseIntPipe,
-  UseInterceptors,
-  UploadedFile,
-  BadRequestException,
-} from "@nestjs/common";
+import { Controller,  Get,  Post,  Body,   Put, Param, Delete, Query, UseGuards, ParseIntPipe, UseInterceptors, UploadedFile, BadRequestException, } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import {
-  ApiOperation,
-  ApiTags,
-  ApiResponse,
-  ApiBearerAuth,
-  ApiQuery,
-  ApiBody,
-  ApiConsumes,
-} from "@nestjs/swagger";
+import { ApiOperation, ApiTags, ApiResponse, ApiBearerAuth, ApiQuery, ApiBody, ApiConsumes,} from "@nestjs/swagger";
 import { ProductService } from "./product.service";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";

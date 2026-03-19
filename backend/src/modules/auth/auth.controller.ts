@@ -1,20 +1,5 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  Post,
-  UseGuards,
-  Request,
-  BadRequestException,
-} from "@nestjs/common";
-import {
-  ApiOperation,
-  ApiTags,
-  ApiResponse,
-  ApiBearerAuth,
-  ApiBody,
-} from "@nestjs/swagger";
+import { Body, Controller, Get, HttpCode, Post, UseGuards, Request, BadRequestException, } from "@nestjs/common";
+import { ApiOperation, ApiTags, ApiResponse, ApiBearerAuth, ApiBody,} from "@nestjs/swagger";
 import { AuthService } from "./auth.service";
 import { RegisterDto } from "./dto/register.dto";
 import { LoginDto } from "./dto/login.dto";
