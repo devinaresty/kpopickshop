@@ -1,191 +1,273 @@
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 interface LoginRequest {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }
 
 interface LoginResponse {
-  access_token: string
+  access_token: string;
   user: {
-    id: number
-    email: string
-    name: string
-    phone?: string
-    address?: string
-    createdAt: string
-    updatedAt: string
-  }
+    id: number;
+    email: string;
+    name: string;
+    role: 'USER' | 'ADMIN';
+    phone?: string;
+    address?: string;
+    createdAt: string;
+    updatedAt: string;
+  };
 }
 
 interface ApiErrorResponse {
-  statusCode: number
-  message: string
-  error: string
+  statusCode: number;
+  message: string;
+  error: string;
 }
 
 // Product API response types
 interface Category {
-  id: number
-  name: string
-  slug: string
-  description?: string
-  image?: string
-  parentId?: number
-  createdAt: string
-  updatedAt: string
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+  image?: string;
+  parentId?: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface ProductFromAPI {
-  id: number
-  name: string
-  slug: string
-  description?: string
-  price: number
-  stock: number
-  image?: string
-  imageUrl?: string
-  rating: number
-  categoryId: number
-  isPromoted: boolean
-  createdAt: string
-  updatedAt: string
-  category: Category
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+  price: number;
+  stock: number;
+  image?: string;
+  imageUrl?: string;
+  rating: number;
+  categoryId: number;
+  isPromoted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  category: Category;
 }
 
 interface ProductListResponse {
-  data: ProductFromAPI[]
-  total: number
-  skip: number
-  take: number
+  data: ProductFromAPI[];
+  total: number;
+  skip: number;
+  take: number;
 }
 
 interface SingleProductResponse {
-  id: number
-  name: string
-  slug: string
-  description?: string
-  price: number
-  stock: number
-  image?: string
-  imageUrl?: string
-  rating: number
-  categoryId: number
-  isPromoted: boolean
-  createdAt: string
-  updatedAt: string
-  category: Category
+  id: number;
+  name: string;
+  slug: string;
+  description?: string;
+  price: number;
+  stock: number;
+  image?: string;
+  imageUrl?: string;
+  rating: number;
+  categoryId: number;
+  isPromoted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  category: Category;
 }
 
 class ApiClient {
-  private baseUrl: string
+  private baseUrl: string;
 
   constructor(baseUrl: string) {
-    this.baseUrl = baseUrl
+    this.baseUrl = baseUrl;
   }
 
-  private async request<T>(endpoint: string, options?: RequestInit): Promise<T> {
-    const url = `${this.baseUrl}${endpoint}`
+  private async request<T>(
+    endpoint: string,
+    options?: RequestInit,
+  ): Promise<T> {
+    const url = `${this.baseUrl}${endpoint}`;
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
-    }
+      "Content-Type": "application/json",
+    };
 
     // Add token jika ada
-    const token = localStorage.getItem('token')
+    const token = localStorage.getItem("token");
     if (token) {
-      headers['Authorization'] = `Bearer ${token}`
+      headers["Authorization"] = `Bearer ${token}`;
     }
 
     // Merge dengan options headers
-    if (options?.headers && typeof options.headers === 'object') {
-      Object.assign(headers, options.headers)
+    if (options?.headers && typeof options.headers === "object") {
+      Object.assign(headers, options.headers);
     }
 
     const response = await fetch(url, {
       ...options,
       headers,
-    })
+    });
 
-    if (!response.ok) {
-      const error = (await response.json()) as ApiErrorResponse
-      console.error('API Error:', { status: response.status, error }) // DEBUG
-      throw new Error(error.message || `HTTP ${response.status}`)
+    // Handle session timeout (401 Unauthorized)
+    if (response.status === 401) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+      // Redirect to login if in browser
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      }
+      throw new Error("Session expired. Please login again.");
     }
 
-    const data = await response.json() as T
-    console.log('API Response:', { endpoint, data }) // DEBUG
-    return data
+    if (!response.ok) {
+      const error = (await response.json()) as ApiErrorResponse;
+      console.error("API Error:", { status: response.status, error }); // DEBUG
+      throw new Error(error.message || `HTTP ${response.status}`);
+    }
+
+    const data = (await response.json()) as T;
+    console.log("API Response:", { endpoint, data }); // DEBUG
+    return data;
   }
 
   async login(data: LoginRequest): Promise<LoginResponse> {
-    return this.request<LoginResponse>('/auth/login', {
-      method: 'POST',
+    return this.request<LoginResponse>("/auth/login", {
+      method: "POST",
       body: JSON.stringify(data),
-    })
+    });
   }
 
   async register(data: any): Promise<LoginResponse> {
-    return this.request<LoginResponse>('/auth/register', {
-      method: 'POST',
+    return this.request<LoginResponse>("/auth/register", {
+      method: "POST",
       body: JSON.stringify(data),
-    })
+    });
   }
 
   async getCurrentUser(): Promise<any> {
-    return this.request('/auth/me', {
-      method: 'GET',
-    })
+    return this.request("/auth/me", {
+      method: "GET",
+    });
   }
 
   async getCategories(): Promise<any[]> {
-    return this.request<any[]>('/categories', {
-      method: 'GET',
-    })
+    return this.request<any[]>("/categories", {
+      method: "GET",
+    });
   }
 
   async getCategoryBySlug(slug: string): Promise<any> {
     return this.request(`/categories/slug/${slug}`, {
-      method: 'GET',
-    })
+      method: "GET",
+    });
   }
 
   async getCategoryById(id: number): Promise<any> {
     return this.request(`/categories/${id}`, {
-      method: 'GET',
-    })
+      method: "GET",
+    });
   }
 
   // Product Methods
-  async getProducts(skip: number = 0, take: number = 10): Promise<ProductListResponse> {
-    return this.request<ProductListResponse>(`/products?skip=${skip}&take=${take}`, {
-      method: 'GET',
-    })
+  async getProducts(
+    skip: number = 0,
+    take: number = 10,
+  ): Promise<ProductListResponse> {
+    return this.request<ProductListResponse>(
+      `/products?skip=${skip}&take=${take}`,
+      {
+        method: "GET",
+      },
+    );
   }
 
   async getProductById(id: string | number): Promise<SingleProductResponse> {
     return this.request<SingleProductResponse>(`/products/${id}`, {
-      method: 'GET',
-    })
+      method: "GET",
+    });
   }
 
   async getProductBySlug(slug: string): Promise<SingleProductResponse> {
     return this.request<SingleProductResponse>(`/products/slug/${slug}`, {
-      method: 'GET',
-    })
+      method: "GET",
+    });
   }
 
-  async getPromotedProducts(skip: number = 0, take: number = 10): Promise<ProductListResponse> {
-    return this.request<ProductListResponse>(`/products/promoted?skip=${skip}&take=${take}`, {
-      method: 'GET',
-    })
+  async getPromotedProducts(
+    skip: number = 0,
+    take: number = 10,
+  ): Promise<ProductListResponse> {
+    return this.request<ProductListResponse>(
+      `/products/promoted?skip=${skip}&take=${take}`,
+      {
+        method: "GET",
+      },
+    );
   }
 
-  async getProductsByCategory(categoryId: string | number, skip: number = 0, take: number = 10): Promise<ProductListResponse> {
-    return this.request<ProductListResponse>(`/products/category/${categoryId}?skip=${skip}&take=${take}`, {
-      method: 'GET',
-    })
+  async getProductsByCategory(
+    categoryId: string | number,
+    skip: number = 0,
+    take: number = 10,
+  ): Promise<ProductListResponse> {
+    return this.request<ProductListResponse>(
+      `/products/category/${categoryId}?skip=${skip}&take=${take}`,
+      {
+        method: "GET",
+      },
+    );
+  }
+
+  // Order Methods
+  async getAllOrders(): Promise<any[]> {
+    return this.request<any[]>("/orders", {
+      method: "GET",
+    });
+  }
+
+  async getAllOrdersAdmin(): Promise<any[]> {
+    return this.request<any[]>("/orders/admin/all", {
+      method: "GET",
+    });
+  }
+
+  async getOrderById(id: string | number): Promise<any> {
+    return this.request(`/orders/${id}`, {
+      method: "GET",
+    });
+  }
+
+  async updateOrderStatus(id: string | number, status: string): Promise<any> {
+    return this.request(`/orders/${id}/status`, {
+      method: "PUT",
+      body: JSON.stringify({ status }),
+    });
+  }
+
+  async createOrder(data: any): Promise<any> {
+    return this.request("/orders", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  // Payment Methods
+  async createPayment(orderId: number): Promise<any> {
+    return this.request("/payments/create", {
+      method: "POST",
+      body: JSON.stringify({ orderId }),
+    });
+  }
+
+  async checkPaymentStatus(orderId: string | number): Promise<any> {
+    return this.request(`/payments/status/${orderId}`, {
+      method: "GET",
+    });
   }
 }
 
-export const apiClient = new ApiClient(API_BASE_URL)
+export const apiClient = new ApiClient(API_BASE_URL);

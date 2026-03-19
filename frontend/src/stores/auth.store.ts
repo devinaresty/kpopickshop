@@ -6,6 +6,7 @@ interface User {
   id: number
   email: string
   name: string
+  role: 'USER' | 'ADMIN'
   phone?: string
   address?: string
   createdAt: string

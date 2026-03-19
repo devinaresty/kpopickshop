@@ -1,5 +1,6 @@
 <template>
-  <div class="min-h-screen bg-gray-100 flex flex-col">
+  <!-- Landing Layout -->
+  <div v-if="!isAdminRoute" class="min-h-screen bg-gray-100 flex flex-col">
     <nav class="w-full sticky top-0 z-40 py-2.5 sm:py-3 lg:py-4 px-3 sm:px-4 md:px-5 lg:px-8">
       <div class="flex items-center justify-center">
         <div class="rounded-lg sm:rounded-xl border border-gray-300/50 backdrop-blur-sm bg-gray-300/40 px-3.5 sm:px-4 md:px-5 py-2.5 sm:py-3 flex items-center gap-3 sm:gap-3.5 md:gap-5 max-w-max">
@@ -82,12 +83,38 @@
     <!-- Cart Sidebar -->
     <CartSidebar />
   </div>
+
+  <!-- Admin Layout -->
+  <div v-else>
+    <router-view />
+  </div>
 </template>
 
 <script setup lang="ts">
 import { useLandingStore } from '@/modules/landing/stores/landing.store'
+import { useAuthStore } from '@/stores/auth.store'
 import AuthModal from '@/modules/landing/components/modals/AuthModal.vue'
 import CartSidebar from '@/modules/landing/components/shared/CartSidebar.vue'
+import { useRoute } from 'vue-router'
+import { computed, onMounted } from 'vue'
 
 const landingStore = useLandingStore()
+const authStore = useAuthStore()
+const route = useRoute()
+
+const isAdminRoute = computed(() => {
+  return route.path.startsWith('/admin')
+})
+
+// Initialize user data from backend if token exists
+onMounted(async () => {
+  if (authStore.token && !authStore.user) {
+    try {
+      await authStore.getCurrentUser()
+      console.log('User data loaded from backend')
+    } catch (err) {
+      console.error('Failed to initialize user data:', err)
+    }
+  }
+})
 </script>
