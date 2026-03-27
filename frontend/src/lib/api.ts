@@ -271,3 +271,43 @@ class ApiClient {
 }
 
 export const apiClient = new ApiClient(API_BASE_URL);
+
+// Composable hook for using API in components
+export function useApi() {
+  return {
+    get: async (endpoint: string) => {
+      try {
+        // Handle different endpoints generically
+        if (endpoint === '/products') {
+          const response = await apiClient.getProducts(0, 100);
+          // ProductListResponse has { data: ProductFromAPI[] }
+          return { data: response.data };
+        } else if (endpoint === '/categories') {
+          const response = await apiClient.getCategories();
+          // getCategories returns Category[] directly
+          return { data: response };
+        } else {
+          // Fallback for other endpoints
+          throw new Error(`Unsupported endpoint: ${endpoint}`);
+        }
+      } catch (error) {
+        throw error;
+      }
+    },
+    post: async (endpoint: string, payload: any) => {
+      try {
+        let data;
+        if (endpoint === '/orders') {
+          data = await apiClient.createOrder(payload);
+        } else if (endpoint === '/payments/create') {
+          data = await apiClient.createPayment(payload.orderId);
+        } else {
+          throw new Error(`Unsupported endpoint: ${endpoint}`);
+        }
+        return { data };
+      } catch (error) {
+        throw error;
+      }
+    },
+  };
+}

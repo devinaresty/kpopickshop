@@ -59,7 +59,7 @@
           <h4 class="font-semibold text-xs sm:text-sm line-clamp-2 mb-1">{{ item.name }}</h4>
           <p class="text-xs text-gray-600 mb-2">{{ item.category }}</p>
           <div class="flex items-center justify-between">
-            <span class="font-bold text-xs sm:text-sm">${{ item.price.toFixed(2) }}</span>
+            <span class="font-bold text-xs sm:text-sm">Rp {{ item.price.toLocaleString('id-ID') }}</span>
             <button
               @click="removeFromCart(item.id)"
               class="text-gray-400 hover:text-red-500 transition-colors"
@@ -78,7 +78,7 @@
       <!-- Subtotal -->
       <div class="flex justify-between text-xs sm:text-sm">
         <span class="text-gray-600">Subtotal</span>
-        <span class="font-semibold">${{ subtotal.toFixed(2) }}</span>
+        <span class="font-semibold">Rp {{ subtotal.toLocaleString('id-ID') }}</span>
       </div>
 
       <!-- Shipping -->
@@ -90,13 +90,13 @@
       <!-- Tax -->
       <div class="flex justify-between text-xs sm:text-sm">
         <span class="text-gray-600">Tax</span>
-        <span class="font-semibold">${{ (subtotal * 0.1).toFixed(2) }}</span>
+        <span class="font-semibold">Rp {{ (subtotal * 0.1).toLocaleString('id-ID') }}</span>
       </div>
 
       <!-- Total -->
       <div class="flex justify-between text-base sm:text-lg border-t border-gray-200 pt-3 sm:pt-4">
         <span class="font-bold">Total</span>
-        <span class="font-black">${{ (subtotal * 1.1).toFixed(2) }}</span>
+        <span class="font-black">Rp {{ (subtotal * 1.1).toLocaleString('id-ID') }}</span>
       </div>
 
       <!-- Checkout Button -->

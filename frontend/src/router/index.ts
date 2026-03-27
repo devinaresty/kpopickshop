@@ -27,13 +27,16 @@ const routes: RouteRecordRaw[] = [
     path: '/search',
     name: 'search',
     component: () => import('@/views/SearchView.vue'),
-    meta: { requiresAuth: true },
   },
   {
     path: '/products',
     name: 'products',
     component: () => import('@/views/ProductsView.vue'),
-    meta: { requiresAuth: true },
+  },
+  {
+    path: '/products/:id',
+    name: 'product-detail',
+    component: () => import('@/views/ProductDetailView.vue'),
   },
   {
     path: '/categories',
@@ -102,6 +105,8 @@ const router = createRouter({
  * - Redirect ke /home jika sudah login dan akses landing
  * - Redirect ke / jika belum login dan akses route yang dilindungi
  * - Redirect ke /home jika user bukan admin dan coba akses admin routes
+ * 
+ * IMPORTANT: Gunakan replace: true untuk semua redirect agar tidak create new history entry
  */
 router.beforeEach((to, _from, next) => {
   const authStore = useAuthStore()
@@ -113,21 +118,21 @@ router.beforeEach((to, _from, next) => {
   // Jika user sudah login dan coba akses landing page
   if (to.meta.requiresGuest && isAuthenticated) {
     console.log('User sudah login, redirect ke /home') // DEBUG
-    next({ name: 'home' })
+    next({ name: 'home', replace: true })
     return
   }
 
   // Jika user belum login dan coba akses route yang dilindungi
   if (to.meta.requiresAuth && !isAuthenticated) {
     console.log('User belum login, redirect ke /') // DEBUG
-    next({ name: 'landing' })
+    next({ name: 'landing', replace: true })
     return
   }
 
   // Jika route memerlukan admin tapi user bukan admin atau belum login
   if (to.meta.requiresAdmin && (!isAuthenticated || userRole !== 'ADMIN')) {
     console.log('User tidak memiliki akses admin, redirect ke /') // DEBUG
-    next({ name: 'landing' })
+    next({ name: 'landing', replace: true })
     return
   }
 

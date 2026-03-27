@@ -2,8 +2,37 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { CartItem } from '@/modules/landing/types'
 
+const CART_STORAGE_KEY = 'kpopick_cart'
+
 export const useCartStore = defineStore('cart', () => {
   const items = ref<CartItem[]>([])
+
+  /**
+   * Load cart from localStorage
+   */
+  const loadCartFromStorage = () => {
+    try {
+      const stored = localStorage.getItem(CART_STORAGE_KEY)
+      if (stored) {
+        items.value = JSON.parse(stored)
+        console.log('Cart loaded from localStorage:', items.value.length, 'items')
+      }
+    } catch (err) {
+      console.error('Failed to load cart from localStorage:', err)
+    }
+  }
+
+  /**
+   * Save cart to localStorage
+   */
+  const saveCartToStorage = () => {
+    try {
+      localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items.value))
+      console.log('Cart saved to localStorage:', items.value.length, 'items')
+    } catch (err) {
+      console.error('Failed to save cart to localStorage:', err)
+    }
+  }
 
   /**
    * Add product to cart or increase quantity if already exists
@@ -19,6 +48,7 @@ export const useCartStore = defineStore('cart', () => {
         quantity
       })
     }
+    saveCartToStorage()
     console.log('Added to cart:', product.name, 'Quantity:', quantity) // DEBUG
   }
 
@@ -34,6 +64,7 @@ export const useCartStore = defineStore('cart', () => {
       }
       items.value.splice(index, 1)
     }
+    saveCartToStorage()
   }
 
   /**
@@ -46,6 +77,7 @@ export const useCartStore = defineStore('cart', () => {
         removeFromCart(productId)
       } else {
         item.quantity = quantity
+        saveCartToStorage()
       }
       console.log('Updated quantity for product:', productId, 'New quantity:', quantity) // DEBUG
     }
@@ -56,6 +88,7 @@ export const useCartStore = defineStore('cart', () => {
    */
   const clearCart = () => {
     items.value = []
+    saveCartToStorage()
     console.log('Cart cleared') // DEBUG
   }
 
@@ -85,8 +118,13 @@ export const useCartStore = defineStore('cart', () => {
    */
   const isEmpty = computed(() => items.value.length === 0)
 
+  // Load cart from localStorage on store initialization
+  loadCartFromStorage()
+
   return {
     items,
+    loadCartFromStorage,
+    saveCartToStorage,
     addToCart,
     removeFromCart,
     updateQuantity,
