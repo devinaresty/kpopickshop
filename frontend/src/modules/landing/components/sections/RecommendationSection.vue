@@ -98,8 +98,8 @@
           </div>
         </div>
 
-        <!-- Login Overlay - Blur Background (Fade starting from row 3, full at row 4+) -->
-        <div class="absolute left-0 right-0 bottom-0 backdrop-blur-sm flex items-center justify-center pointer-events-auto"
+        <!-- Login Overlay - Blur Background (Only for non-logged-in users) -->
+        <div v-if="!isUserLoggedIn" class="absolute left-0 right-0 bottom-0 backdrop-blur-sm flex items-center justify-center pointer-events-auto"
              :style="{ 
                'top': overlayTop,
                'background': 'linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.2) 100%)'
@@ -121,9 +121,11 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import type { Product } from '@/modules/landing/types'
 import { apiClient } from '@/lib/api'
+import { useAuthStore } from '@/stores/auth.store'
 import { useLandingStore } from '@/modules/landing/stores/landing.store'
 
 const router = useRouter()
+const authStore = useAuthStore()
 const landingStore = useLandingStore()
 
 const activeTab = ref('For You')
@@ -191,6 +193,10 @@ const reloadProducts = async () => {
 
 const displayedProducts = computed(() => {
   return activeTab.value === 'For You' ? forYouProducts.value : flashSaleProducts.value
+})
+
+const isUserLoggedIn = computed(() => {
+  return authStore.token && authStore.user
 })
 
 // Calculate overlay top position - start fading blur from row 3

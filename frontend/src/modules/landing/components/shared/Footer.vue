@@ -1,6 +1,6 @@
 <template>
   <footer class="bg-gray-200 text-gray-900 py-8 sm:py-12">
-    <div class="max-w-full px-3 sm:px-4 lg:px-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
         <!-- Logo & Description -->
         <div>

@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-gray-100 py-2 sm:py-3 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-7xl mx-auto">
+    <div class="max-w-7xl mx-auto mb-16 sm:mb-20 lg:mb-24">
       <!-- Product Details -->
       <div v-if="product && !isLoading && !error" class="bg-white rounded-lg shadow-md overflow-hidden">
         <!-- Home Button Inside Container -->
@@ -183,6 +183,7 @@
       </div>
     </div>
   </div>
+  <Footer />
 </template>
 
 <script setup lang="ts">
@@ -192,6 +193,7 @@ import type { Product } from '@/modules/landing/types'
 import { apiClient } from '@/lib/api'
 import { useCartStore } from '@/stores/cart.store'
 import { useUIStore } from '@/stores/ui.store'
+import Footer from '@/modules/landing/components/shared/Footer.vue'
 
 const router = useRouter()
 const route = useRoute()

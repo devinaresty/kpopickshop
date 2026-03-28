@@ -1,6 +1,6 @@
 <template>
   <section class="py-4 sm:py-6 lg:py-8 bg-gray-100">
-    <div class="mx-auto px-3 sm:px-4 lg:px-6 max-w-7xl">
+    <div class="mx-auto px-3 sm:px-4 lg:px-6 max-w-7xl mb-16 sm:mb-20 lg:mb-24">
       <!-- Filters & Products Layout -->
       <div class="flex gap-3 sm:gap-4 lg:gap-6">
         <!-- Sidebar Filters Container - Separate white container -->
@@ -12,56 +12,66 @@
               <div class="space-y-2">
                 <label class="flex items-center gap-3 cursor-pointer">
                   <input
-                    type="radio"
+                    type="checkbox"
                     name="category"
                     value=""
                     v-model="categoryFilter"
                     @change="updateQuery"
-                    class="w-4 h-4"
+                    :class="{ 'animate-burst': animatingCheckboxes.has('semua') }"
+                    class="w-4 h-4 rounded-md appearance-none border-2 border-gray-400 cursor-pointer checked:bg-black checked:border-black transition-all"
+                    style="accent-color: black;"
                   />
                   <span class="text-xs lg:text-sm text-gray-700">Semua Kategori</span>
                 </label>
                 <label class="flex items-center gap-3 cursor-pointer">
                   <input
-                    type="radio"
+                    type="checkbox"
                     name="category"
                     value="albums"
                     v-model="categoryFilter"
                     @change="updateQuery"
-                    class="w-4 h-4"
+                    :class="{ 'animate-burst': animatingCheckboxes.has('albums') }"
+                    class="w-4 h-4 rounded-md appearance-none border-2 border-gray-400 cursor-pointer checked:bg-black checked:border-black transition-all"
+                    style="accent-color: black;"
                   />
                   <span class="text-xs lg:text-sm text-gray-700">Albums</span>
                 </label>
                 <label class="flex items-center gap-3 cursor-pointer">
                   <input
-                    type="radio"
+                    type="checkbox"
                     name="category"
                     value="lightstick"
                     v-model="categoryFilter"
                     @change="updateQuery"
-                    class="w-4 h-4"
+                    :class="{ 'animate-burst': animatingCheckboxes.has('lightstick') }"
+                    class="w-4 h-4 rounded-md appearance-none border-2 border-gray-400 cursor-pointer checked:bg-black checked:border-black transition-all"
+                    style="accent-color: black;"
                   />
                   <span class="text-xs lg:text-sm text-gray-700">Lightstick</span>
                 </label>
                 <label class="flex items-center gap-3 cursor-pointer">
                   <input
-                    type="radio"
+                    type="checkbox"
                     name="category"
                     value="photobook"
                     v-model="categoryFilter"
                     @change="updateQuery"
-                    class="w-4 h-4"
+                    :class="{ 'animate-burst': animatingCheckboxes.has('photobook') }"
+                    class="w-4 h-4 rounded-md appearance-none border-2 border-gray-400 cursor-pointer checked:bg-black checked:border-black transition-all"
+                    style="accent-color: black;"
                   />
                   <span class="text-xs lg:text-sm text-gray-700">Photobook</span>
                 </label>
                 <label class="flex items-center gap-3 cursor-pointer">
                   <input
-                    type="radio"
+                    type="checkbox"
                     name="category"
                     value="accessories"
                     v-model="categoryFilter"
                     @change="updateQuery"
-                    class="w-4 h-4"
+                    :class="{ 'animate-burst': animatingCheckboxes.has('accessories') }"
+                    class="w-4 h-4 rounded-md appearance-none border-2 border-gray-400 cursor-pointer checked:bg-black checked:border-black transition-all"
+                    style="accent-color: black;"
                   />
                   <span class="text-xs lg:text-sm text-gray-700">Accessories</span>
                 </label>
@@ -74,45 +84,49 @@
               <div class="space-y-2">
                 <label class="flex items-center gap-3 cursor-pointer">
                   <input
-                    type="radio"
+                    type="checkbox"
                     name="sort"
                     value=""
                     v-model="sortFilter"
                     @change="updateQuery"
-                    class="w-4 h-4"
+                    class="w-4 h-4 rounded-md appearance-none border-2 border-gray-400 cursor-pointer checked:bg-black checked:border-black transition-all"
+                    style="accent-color: black;"
                   />
                   <span class="text-xs lg:text-sm text-gray-700">Paling Sesuai</span>
                 </label>
                 <label class="flex items-center gap-3 cursor-pointer">
                   <input
-                    type="radio"
+                    type="checkbox"
                     name="sort"
                     value="newest"
                     v-model="sortFilter"
                     @change="updateQuery"
-                    class="w-4 h-4"
+                    class="w-4 h-4 rounded-md appearance-none border-2 border-gray-400 cursor-pointer checked:bg-black checked:border-black transition-all"
+                    style="accent-color: black;"
                   />
                   <span class="text-xs lg:text-sm text-gray-700">Terbaru</span>
                 </label>
                 <label class="flex items-center gap-3 cursor-pointer">
                   <input
-                    type="radio"
+                    type="checkbox"
                     name="sort"
                     value="price-low"
                     v-model="sortFilter"
                     @change="updateQuery"
-                    class="w-4 h-4"
+                    class="w-4 h-4 rounded-md appearance-none border-2 border-gray-400 cursor-pointer checked:bg-black checked:border-black transition-all"
+                    style="accent-color: black;"
                   />
                   <span class="text-xs lg:text-sm text-gray-700">Harga Terendah</span>
                 </label>
                 <label class="flex items-center gap-3 cursor-pointer">
                   <input
-                    type="radio"
+                    type="checkbox"
                     name="sort"
                     value="price-high"
                     v-model="sortFilter"
                     @change="updateQuery"
-                    class="w-4 h-4"
+                    class="w-4 h-4 rounded-md appearance-none border-2 border-gray-400 cursor-pointer checked:bg-black checked:border-black transition-all"
+                    style="accent-color: black;"
                   />
                   <span class="text-xs lg:text-sm text-gray-700">Harga Tertinggi</span>
                 </label>
@@ -125,23 +139,25 @@
               <div class="space-y-2">
                 <label class="flex items-center gap-3 cursor-pointer">
                   <input
-                    type="radio"
+                    type="checkbox"
                     name="stock"
                     value=""
                     v-model="stockFilter"
                     @change="updateQuery"
-                    class="w-4 h-4"
+                    class="w-4 h-4 rounded-md appearance-none border-2 border-gray-400 cursor-pointer checked:bg-black checked:border-black transition-all"
+                    style="accent-color: black;"
                   />
                   <span class="text-xs lg:text-sm text-gray-700">Paling Sesuai</span>
                 </label>
                 <label class="flex items-center gap-3 cursor-pointer">
                   <input
-                    type="radio"
+                    type="checkbox"
                     name="stock"
                     value="instock"
                     v-model="stockFilter"
                     @change="updateQuery"
-                    class="w-4 h-4"
+                    class="w-4 h-4 rounded-md appearance-none border-2 border-gray-400 cursor-pointer checked:bg-black checked:border-black transition-all"
+                    style="accent-color: black;"
                   />
                   <span class="text-xs lg:text-sm text-gray-700">Ready Stock Saja</span>
                 </label>
@@ -249,6 +265,7 @@
       </div>
     </div>
   </section>
+  <Footer />
 </template>
 
 <script setup lang="ts">
@@ -256,6 +273,7 @@ import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '@/lib/api'
 import type { Product } from '@/modules/landing/types'
+import Footer from '@/modules/landing/components/shared/Footer.vue'
 
 // Extended Product interface to include search-specific fields
 interface SearchProduct extends Product {
@@ -269,11 +287,13 @@ const router = useRouter()
 // State
 const products = ref<SearchProduct[]>([])
 const searchQuery = ref('')
-const categoryFilter = ref('')
-const sortFilter = ref('')
-const stockFilter = ref('')
+const categoryFilter = ref<string[]>([])
+const sortFilter = ref<string[]>([])
+const stockFilter = ref<string[]>([])
 const artistFilter = ref('')
 const isLoading = ref(false)
+const previousCategoryFilter = ref<string[]>([])
+const animatingCheckboxes = ref<Set<string>>(new Set())
 
 // Navigate to product detail page
 const goToProductDetail = (productId: string | number) => {
@@ -318,9 +338,9 @@ onMounted(async () => {
   
   // Set filter values from route query
   searchQuery.value = (route.query.q as string) || ''
-  categoryFilter.value = (route.query.category as string) || ''
-  sortFilter.value = (route.query.sort as string) || ''
-  stockFilter.value = (route.query.stock as string) || ''
+  categoryFilter.value = route.query.category ? (Array.isArray(route.query.category) ? (route.query.category as string[]) : [(route.query.category as string)]) : []
+  sortFilter.value = route.query.sort ? (Array.isArray(route.query.sort) ? (route.query.sort as string[]) : [(route.query.sort as string)]) : []
+  stockFilter.value = route.query.stock ? (Array.isArray(route.query.stock) ? (route.query.stock as string[]) : [(route.query.stock as string)]) : []
   artistFilter.value = (route.query.artist as string) || ''
 
   console.log('[SearchView] Initial filters:', {
@@ -365,19 +385,50 @@ const fetchProducts = async () => {
 // Watch for route query changes
 watch(() => route.query, () => {
   searchQuery.value = (route.query.q as string) || ''
-  categoryFilter.value = (route.query.category as string) || ''
-  sortFilter.value = (route.query.sort as string) || ''
-  stockFilter.value = (route.query.stock as string) || ''
+  categoryFilter.value = route.query.category ? (Array.isArray(route.query.category) ? (route.query.category as string[]) : [(route.query.category as string)]) : []
+  sortFilter.value = route.query.sort ? (Array.isArray(route.query.sort) ? (route.query.sort as string[]) : [(route.query.sort as string)]) : []
+  stockFilter.value = route.query.stock ? (Array.isArray(route.query.stock) ? (route.query.stock as string[]) : [(route.query.stock as string)]) : []
   artistFilter.value = (route.query.artist as string) || ''
 })
 
 // Update query when filters change
 const updateQuery = () => {
-  const query: Record<string, string> = {}
+  // Handle "Semua Kategori" mutual exclusivity (two-way)
+  const hadEmpty = previousCategoryFilter.value.includes('')
+  const hasEmpty = categoryFilter.value.includes('')
+  
+  if (!hadEmpty && hasEmpty) {
+    // "Semua Kategori" was just selected
+    categoryFilter.value = ['']
+    // Trigger animation on "Semua Kategori" checkbox
+    animatingCheckboxes.value.add('semua')
+    setTimeout(() => animatingCheckboxes.value.delete('semua'), 400)
+  } else if (hadEmpty && hasEmpty && categoryFilter.value.length > 1) {
+    // Specific category was added (replacing "Semua Kategori")
+    categoryFilter.value = categoryFilter.value.filter(c => c !== '')
+    // Trigger animation on newly checked categories
+    categoryFilter.value.forEach(cat => {
+      animatingCheckboxes.value.add(cat)
+      setTimeout(() => animatingCheckboxes.value.delete(cat), 400)
+    })
+  }
+  
+  // Store current state for next call
+  previousCategoryFilter.value = [...categoryFilter.value]
+  
+  const query: Record<string, any> = {}
   if (searchQuery.value) query.q = searchQuery.value
-  if (categoryFilter.value) query.category = categoryFilter.value
-  if (sortFilter.value) query.sort = sortFilter.value
-  if (stockFilter.value) query.stock = stockFilter.value
+  if (categoryFilter.value.length > 0 && !categoryFilter.value.every(c => c === '')) {
+    query.category = categoryFilter.value.filter(c => c !== '')
+  } else if (categoryFilter.value.includes('')) {
+    query.category = []
+  }
+  if (sortFilter.value.length > 0 && sortFilter.value.some(s => s !== '')) {
+    query.sort = sortFilter.value.filter(s => s !== '')
+  }
+  if (stockFilter.value.length > 0 && stockFilter.value.some(s => s !== '')) {
+    query.stock = stockFilter.value.filter(s => s !== '')
+  }
   if (artistFilter.value) query.artist = artistFilter.value
 
   router.push({ name: 'search', query })
@@ -398,12 +449,13 @@ const filteredProducts = computed(() => {
   }
 
   // Filter by category
-  if (categoryFilter.value) {
+  if (categoryFilter.value.length > 0 && !categoryFilter.value.includes('')) {
     result = result.filter(p => 
-      p.category?.toLowerCase() === categoryFilter.value.toLowerCase()
+      categoryFilter.value.some(cat => p.category?.toLowerCase() === cat.toLowerCase())
     )
     console.log(`[SearchView] After category filter: ${result.length} products`)
   }
+  // if categoryFilter includes '', it means "Semua Kategori" - show all, no filter applied
 
   // Filter by artist
   if (artistFilter.value) {
@@ -413,19 +465,24 @@ const filteredProducts = computed(() => {
     console.log(`[SearchView] After artist filter: ${result.length} products`)
   }
 
-  // Filter by stock
-  if (stockFilter.value === 'instock') {
-    result = result.filter(p => p.stock > 0)
-    console.log(`[SearchView] After stock filter: ${result.length} products`)
+
+
+  // Apply sorting - use first selected sort option (ignore empty string)
+  if (sortFilter.value.length > 0) {
+    const sortBy = sortFilter.value.find(s => s !== '')  // Find first non-empty sort value
+    if (sortBy === 'price-low') {
+      result.sort((a, b) => a.price - b.price)
+    } else if (sortBy === 'price-high') {
+      result.sort((a, b) => b.price - a.price)
+    } else if (sortBy === 'newest') {
+      result.sort((a, b) => (b.id as number) - (a.id as number))
+    }
   }
 
-  // Apply sorting
-  if (sortFilter.value === 'price-low') {
-    result.sort((a, b) => a.price - b.price)
-  } else if (sortFilter.value === 'price-high') {
-    result.sort((a, b) => b.price - a.price)
-  } else if (sortFilter.value === 'newest') {
-    result.sort((a, b) => (b.id as number) - (a.id as number))
+  // Apply stock filter (ignore empty string)
+  if (stockFilter.value.length > 0 && stockFilter.value.includes('instock')) {
+    result = result.filter(p => p.stock > 0)
+    console.log(`[SearchView] After stock filter: ${result.length} products`)
   }
 
   console.log(`[SearchView] Final filtered products: ${result.length}`)
@@ -461,5 +518,40 @@ const headerSubtitle = computed(() => {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Bubble burst animation */
+@keyframes bubbleBurst {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Custom checkbox styling */
+input[type="checkbox"] {
+  cursor: pointer;
+  accent-color: black;
+}
+
+input[type="checkbox"].animate-burst {
+  animation: bubbleBurst 0.4s ease-out;
+}
+
+input[type="checkbox"]:checked {
+  background-color: black !important;
+  border-color: black !important;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="white" d="M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z"/></svg>') !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 85% 85% !important;
 }
 </style>

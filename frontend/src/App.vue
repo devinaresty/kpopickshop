@@ -114,24 +114,54 @@
 
           <div class="hidden sm:block w-px h-5 sm:h-5 md:h-6 bg-gray-300"></div>
 
-          <!-- Login Button -->
-          <button
-            @click="landingStore.openAuthModal('login')"
-            class="text-xs sm:text-sm md:text-sm font-medium text-gray-800 hover:text-white hover:bg-gray-900 hover:shadow-[0_0_20px_rgba(0,0,0,0.6)] transition-all duration-300 px-3 sm:px-3.5 md:px-4 py-1.5 sm:py-2 rounded-md whitespace-nowrap"
-          >
-            Login
-          </button>
+          <!-- Profile Button (When User Logged In) -->
+          <div v-if="isUserLoggedIn" class="relative">
+            <button
+              @click="isProfileMenuFocused = !isProfileMenuFocused"
+              class="text-xs sm:text-sm md:text-sm font-medium text-gray-800 hover:text-white hover:bg-gray-900 hover:shadow-[0_0_20px_rgba(0,0,0,0.6)] transition-all duration-300 px-3 sm:px-3.5 md:px-4 py-1.5 sm:py-2 rounded-md whitespace-nowrap flex items-center gap-2"
+            >
+              <svg class="w-4 h-4 sm:w-4 sm:h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
+              Profile
+            </button>
 
-          <!-- Divider -->
-          <div class="hidden sm:block w-px h-5 sm:h-5 md:h-6 bg-gray-300"></div>
+            <!-- Profile Dropdown -->
+            <div v-if="isProfileMenuFocused" class="absolute right-0 mt-1 backdrop-blur-sm bg-gray-300/40 border border-gray-300/50 rounded-lg shadow-lg z-50 min-w-40">
+              <div class="px-3 py-2 space-y-1">
+                <div class="text-xs font-semibold text-gray-700 px-2 py-1.5">
+                  {{ authStore.user?.email }}
+                </div>
+                <button
+                  @click="handleLogout"
+                  class="w-full text-left px-2 py-1.5 text-xs sm:text-sm text-gray-700 hover:bg-gray-100 rounded transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+          </div>
 
-          <!-- Register Button -->
-          <button
-            @click="landingStore.openAuthModal('register')"
-            class="text-xs sm:text-sm md:text-sm font-medium text-gray-800 hover:text-white hover:bg-gray-900 hover:shadow-[0_0_20px_rgba(0,0,0,0.6)] transition-all duration-300 px-3 sm:px-3.5 md:px-4 py-1.5 sm:py-2 rounded-md whitespace-nowrap"
-          >
-            Register
-          </button>
+          <!-- Login Button (When User NOT Logged In) -->
+          <template v-else>
+            <button
+              @click="landingStore.openAuthModal('login')"
+              class="text-xs sm:text-sm md:text-sm font-medium text-gray-800 hover:text-white hover:bg-gray-900 hover:shadow-[0_0_20px_rgba(0,0,0,0.6)] transition-all duration-300 px-3 sm:px-3.5 md:px-4 py-1.5 sm:py-2 rounded-md whitespace-nowrap"
+            >
+              Login
+            </button>
+
+            <!-- Divider -->
+            <div class="hidden sm:block w-px h-5 sm:h-5 md:h-6 bg-gray-300"></div>
+
+            <!-- Register Button -->
+            <button
+              @click="landingStore.openAuthModal('register')"
+              class="text-xs sm:text-sm md:text-sm font-medium text-gray-800 hover:text-white hover:bg-gray-900 hover:shadow-[0_0_20px_rgba(0,0,0,0.6)] transition-all duration-300 px-3 sm:px-3.5 md:px-4 py-1.5 sm:py-2 rounded-md whitespace-nowrap"
+            >
+              Register
+            </button>
+          </template>
         </div>
       </div>
     </nav>
@@ -162,7 +192,7 @@ import { useCartStore } from '@/stores/cart.store'
 import AuthModal from '@/modules/landing/components/modals/AuthModal.vue'
 import CartSidebar from '@/components/CartSidebar.vue'
 import { useRoute, useRouter } from 'vue-router'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { apiClient } from '@/lib/api'
 
 interface Product {
@@ -186,9 +216,14 @@ const searchHistory = ref<string[]>([])
 const isLoading = ref(false)
 const isCategoryFocused = ref(false)
 const categories = ref<any[]>([])
+const isProfileMenuFocused = ref(false)
 
 const isAdminRoute = computed(() => {
   return route.path.startsWith('/admin')
+})
+
+const isUserLoggedIn = computed(() => {
+  return authStore.token && authStore.user
 })
 
 // Load search history and categories on mount
@@ -215,6 +250,18 @@ onMounted(async () => {
     }
   }
 })
+
+// Manage body overflow when modal opens/closes
+watch(
+  () => landingStore.state.isAuthModalOpen,
+  (isOpen) => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'auto'
+    }
+  }
+)
 
 // Handle real-time search input
 const handleSearchInput = async () => {
@@ -310,6 +357,15 @@ const performSearch = () => {
   router.push({
     name: 'search',
     query: { q: searchInput.value }
+  })
+}
+
+// Handle logout
+const handleLogout = () => {
+  authStore.logout()
+  isProfileMenuFocused.value = false
+  router.push({
+    name: 'landing'
   })
 }
 </script>

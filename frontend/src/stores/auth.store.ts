@@ -36,11 +36,16 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = response.user
       localStorage.setItem('token', response.access_token)
       console.log('Token saved to localStorage:', response.access_token) // DEBUG
+      
+      // Clear any previous errors on success
+      error.value = null
+      
       return response
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Login failed'
+      const errorMessage = err instanceof Error ? err.message : 'Login failed'
+      error.value = errorMessage
       console.error('Login failed:', err) // DEBUG
-      throw err
+      throw new Error(errorMessage)
     } finally {
       isLoading.value = false
     }
@@ -51,14 +56,24 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null
     try {
       const response = await apiClient.register({ email, password, name })
+      
+      if (!response?.access_token) {
+        throw new Error('Token tidak diterima dari server')
+      }
+      
       token.value = response.access_token
       user.value = response.user
       localStorage.setItem('token', response.access_token)
+      
+      // Clear any previous errors on success
+      error.value = null
+      
       return response
     } catch (err) {
-      error.value = err instanceof Error ? err.message : 'Registration failed'
+      const errorMessage = err instanceof Error ? err.message : 'Registration failed'
+      error.value = errorMessage
       console.error('Registration failed:', err)
-      throw err
+      throw new Error(errorMessage)
     } finally {
       isLoading.value = false
     }

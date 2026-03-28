@@ -1,6 +1,6 @@
 <template>
   <section class="w-full bg-gray-100 py-0 sm:py-0 md:py-0 -mt-8 sm:-mt-12 md:-mt-16 lg:-mt-20">
-    <!-- Centered Frame Container -->
+  
     <div class="flex items-center justify-center px-2 sm:px-3 md:px-4 py-8 sm:py-12 md:py-16 lg:py-20">
       <div 
         class="relative w-full max-w-6xl h-72 sm:h-96 md:h-[420px] lg:h-[500px] overflow-hidden rounded-lg"
@@ -108,11 +108,11 @@ const handleBannerClick = () => {
 }
 
 const handleTouchStart = (e: TouchEvent) => {
-  touchStartX = e.touches[0].clientX
+  touchStartX = e.touches[0]?.clientX ?? 0
 }
 
 const handleTouchEnd = (e: TouchEvent) => {
-  const touchEndX = e.changedTouches[0].clientX
+  const touchEndX = e.changedTouches[0]?.clientX ?? 0
   const diff = touchStartX - touchEndX
 
   if (Math.abs(diff) > 50) {

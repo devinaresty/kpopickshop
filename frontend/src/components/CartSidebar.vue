@@ -1,13 +1,10 @@
 <template>
-  <!-- Backdrop -->
   <transition name="fade">
     <div v-if="isOpen" @click="closeCart" class="fixed inset-0 bg-black bg-opacity-50 z-30"></div>
   </transition>
 
-  <!-- Sidebar -->
   <transition name="slide-in-right">
     <div v-if="isOpen" class="fixed right-0 top-0 bottom-0 w-full sm:w-96 bg-white shadow-2xl z-40 flex flex-col">
-      <!-- Header -->
       <div class="p-4 sm:p-6 border-b border-gray-200 flex items-center justify-between">
         <h2 class="text-xl sm:text-2xl font-bold text-black">Shopping Cart</h2>
         <button
@@ -20,9 +17,7 @@
         </button>
       </div>
 
-      <!-- Cart Items -->
       <div class="flex-1 overflow-y-auto">
-        <!-- Empty State -->
         <div v-if="cartStore.isEmpty" class="flex flex-col items-center justify-center h-full p-6">
           <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -30,10 +25,8 @@
           <p class="text-gray-600 font-semibold">Your cart is empty</p>
         </div>
 
-        <!-- Items List -->
         <div v-else class="divide-y divide-gray-200">
           <div v-for="item in cartStore.cartItems" :key="item.id" class="p-4 hover:bg-gray-50 transition">
-            <!-- Checkbox & Product Image & Info -->
             <div class="flex gap-3 mb-3">
               <!-- Checkbox -->
               <div class="flex-shrink-0 flex items-center pt-1">
@@ -41,7 +34,8 @@
                   type="checkbox"
                   :checked="selectedItems.includes(Number(item.id))"
                   @change="toggleItemSelection(Number(item.id))"
-                  class="w-5 h-5 rounded cursor-pointer accent-black transition-all duration-200"
+                  class="w-5 h-5 rounded cursor-pointer appearance-none border-2 border-gray-400 checked:bg-black checked:border-black transition-all"
+                  style="accent-color: black;"
                 />
               </div>
               
@@ -196,24 +190,32 @@ const formatPrice = (price: number): string => {
   transform: translateX(100%);
 }
 
-/* Smooth checkbox animation */
-input[type="checkbox"] {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-input[type="checkbox"]:checked {
-  animation: checkboxPulse 0.4s ease-out;
-}
-
-@keyframes checkboxPulse {
+/* Bubble burst animation - consistent with SearchView */
+@keyframes bubbleBurst {
   0% {
-    transform: scale(0.95);
+    transform: scale(0.8);
+    opacity: 1;
   }
   50% {
-    transform: scale(1.05);
+    transform: scale(1.1);
+    opacity: 0.8;
   }
   100% {
     transform: scale(1);
+    opacity: 1;
   }
+}
+
+input[type="checkbox"] {
+  cursor: pointer;
+}
+
+input[type="checkbox"]:checked {
+  background-color: black !important;
+  border-color: black !important;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill="white" d="M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z"/></svg>') !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 75% 75% !important;
 }
 </style>

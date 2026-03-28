@@ -2,7 +2,7 @@
   <!-- Modal Backdrop -->
   <div
     v-if="landingStore.state.isAuthModalOpen"
-    class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-300"
+    class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-300 cursor-pointer"
     @click="landingStore.closeAuthModal()"
   />
 
@@ -113,8 +113,24 @@
 import { useLandingStore } from '../../stores/landing.store'
 import LoginForm from './LoginForm.vue'
 import SignUpForm from './SignUpForm.vue'
+import { onMounted, onBeforeUnmount } from 'vue'
 
 const landingStore = useLandingStore()
+
+// Handle Escape key to close modal
+const handleEscapeKey = (event: KeyboardEvent) => {
+  if (event.key === 'Escape' && landingStore.state.isAuthModalOpen) {
+    landingStore.closeAuthModal()
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('keydown', handleEscapeKey)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('keydown', handleEscapeKey)
+})
 </script>
 
 <style scoped>
