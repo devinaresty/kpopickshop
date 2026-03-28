@@ -1,7 +1,8 @@
 import { IsString, IsIn } from 'class-validator';
+import { OrderStatus } from '@prisma/client';
 
 export class UpdateOrderStatusDto {
   @IsString()
-  @IsIn(['WAITING_PAYMENT', 'PAID', 'PROCESSING', 'SHIPPED', 'COMPLETED', 'CANCELLED'])
-  status: string;
+  @IsIn(Object.values(OrderStatus))
+  status: OrderStatus;
 }

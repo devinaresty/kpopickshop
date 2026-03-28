@@ -98,20 +98,33 @@ model ProductImage {
 }
 
 model Order {
-  id              Int         @id @default(autoincrement())
-  userId          Int
-  user            User        @relation(fields: [userId], references: [id])
+  id                  Int         @id @default(autoincrement())
+  userId              Int
+  user                User        @relation(fields: [userId], references: [id])
   
-  totalPrice      Float
+  totalItemPrice      Float       @default(0)
+  shippingFee         Float       @default(0)
+  totalPrice          Float       @default(0)
+  grandTotal          Float       @default(0)
   
-  status          String      @default("WAITING_PAYMENT")
+  status              OrderStatus @default(WAITING_PAYMENT)
+  metadata            String?
   
-  metadata        String?
+  xenditInvoiceId     String?     @unique
+  paymentUrl          String?
+  
+  recipientName       String      @default("")
+  recipientPhone      String      @default("")
+  shippingAddress     String      @default("")
+  shippingDetail      String?
+  courierNote         String?
+  shippingLat         Float?
+  shippingLong        Float?
 
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
 
-  items           OrderItem[]
+  items               OrderItem[]
 }
 
 model OrderItem {
