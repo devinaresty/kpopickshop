@@ -2,19 +2,17 @@
   <footer class="bg-gray-200 text-gray-900 py-8 sm:py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
-        <!-- Logo & Description -->
         <div>
           <div class="flex items-center overflow-visible mb-3 sm:mb-4">
             <img src="/logo (3).png" alt="K Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
           </div>
           <p class="text-gray-600 text-xs sm:text-sm leading-relaxed">
-            Your ultimate K-pop destination for albums, merchandise, and exclusive collectibles.
+            {{ i18nStore.t('footer.description') }}
           </p>
         </div>
 
-        <!-- Shop Highlight -->
         <div>
-          <h4 class="font-semibold mb-3 sm:mb-4 text-sm sm:text-base text-gray-900">Shop Highlight</h4>
+          <h4 class="font-semibold mb-3 sm:mb-4 text-sm sm:text-base text-gray-900">{{ i18nStore.t('footer.shopHighlight') }}</h4>
           <ul class="space-y-1 sm:space-y-2 text-gray-600 text-xs sm:text-sm">
             <li v-for="category in shopCategories" :key="category">
               <button
@@ -27,68 +25,61 @@
           </ul>
         </div>
 
-        <!-- Support / About Us -->
         <div>
-          <h4 class="font-semibold mb-3 sm:mb-4 text-sm sm:text-base text-gray-900">About Us</h4>
+          <h4 class="font-semibold mb-3 sm:mb-4 text-sm sm:text-base text-gray-900">{{ i18nStore.t('footer.aboutUs') }}</h4>
           <ul class="space-y-1 sm:space-y-2 text-gray-600 text-xs sm:text-sm">
-            <li><span class="hover:text-gray-900 transition-colors">Tentang KPopick</span></li>
-            <li><span class="hover:text-gray-900 transition-colors">Kebijakan Privasi</span></li>
-            <li><span class="hover:text-gray-900 transition-colors">Syarat & Ketentuan</span></li>
-            <li><span class="hover:text-gray-900 transition-colors">Hubungi Kami</span></li>
+            <li><span class="hover:text-gray-900 transition-colors cursor-pointer">{{ i18nStore.t('footer.aboutUsLink') }}</span></li>
+            <li><span class="hover:text-gray-900 transition-colors cursor-pointer">{{ i18nStore.t('footer.privacy') }}</span></li>
+            <li><span class="hover:text-gray-900 transition-colors cursor-pointer">{{ i18nStore.t('footer.terms') }}</span></li>
+            <li><span class="hover:text-gray-900 transition-colors cursor-pointer">{{ i18nStore.t('footer.contact') }}</span></li>
           </ul>
         </div>
 
-        <!-- Payment Methods -->
         <div>
-          <h4 class="font-semibold mb-3 sm:mb-4 text-sm sm:text-base text-gray-900">Payment</h4>
+          <h4 class="font-semibold mb-3 sm:mb-4 text-sm sm:text-base text-gray-900">{{ i18nStore.t('footer.payment') }}</h4>
           <div class="space-y-2">
-            <!-- Bank Transfer -->
             <div class="flex items-center gap-2">
               <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 2L2 7v10c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 10h8v2h-8v-2z"/>
               </svg>
-              <span class="text-xs sm:text-sm text-gray-600">Bank Transfer</span>
+              <span class="text-xs sm:text-sm text-gray-600">{{ i18nStore.t('footer.bankTransfer') }}</span>
             </div>
             
-            <!-- Credit / Debit Card -->
             <div class="flex items-center gap-2">
               <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M20 8H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm0 12H4v-6h16v6zm0-8H4v-2h16v2z"/>
               </svg>
-              <span class="text-xs sm:text-sm text-gray-600">Credit / Debit Card</span>
+              <span class="text-xs sm:text-sm text-gray-600">{{ i18nStore.t('footer.creditCard') }}</span>
             </div>
             
-            <!-- E-Wallet -->
             <div class="flex items-center gap-2">
               <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M18 6h-2c0-2.76-2.24-5-5-5s-5 2.24-5 5H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-5-3c1.66 0 3 1.34 3 3h-6c0-1.66 1.34-3 3-3zm0 6c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5z"/>
               </svg>
-              <span class="text-xs sm:text-sm text-gray-600">E-Wallet</span>
+              <span class="text-xs sm:text-sm text-gray-600">{{ i18nStore.t('footer.eWallet') }}</span>
             </div>
             
-            <!-- QR Payments -->
             <div class="flex items-center gap-2">
               <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm12-1h2v2h-2v-2zm2 3h-2v2h2v-2zm-4 0h2v2h-2v-2zm2-4h-2v2h2v-2z"/>
               </svg>
-              <span class="text-xs sm:text-sm text-gray-600">QR Payments</span>
+              <span class="text-xs sm:text-sm text-gray-600">{{ i18nStore.t('footer.qrPayments') }}</span>
             </div>
             
-            <!-- Direct Debit -->
             <div class="flex items-center gap-2">
               <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M19 6h-2V4c0-.9-.9-1.72-1.97-1.72h-2.6c-2.05 0-3.71 1.66-3.71 3.72v2H5c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-4-2h2.6c.89 0 1.97.82 1.97 1.72v2h-4.6V4c0-.9 1.08-1.72 1.97-1.72zM7 8h10v2H7V8z"/>
               </svg>
-              <span class="text-xs sm:text-sm text-gray-600">Direct Debit</span>
+              <span class="text-xs sm:text-sm text-gray-600">{{ i18nStore.t('footer.directDebit') }}</span>
             </div>
           </div>
         </div>
 
-        <!-- Follow Us -->
         <div>
-          <h4 class="font-semibold mb-3 sm:mb-4 text-sm sm:text-base text-gray-900">Follow</h4>
-          <div class="flex gap-3 sm:gap-4">
-            <!-- Instagram -->
+          <div class="flex items-center justify-between mb-4">
+            <h4 class="font-semibold text-sm sm:text-base text-gray-900">{{ i18nStore.t('footer.follow') }}</h4>
+          </div>
+          <div class="flex gap-3 sm:gap-4 mb-8">
             <a
               href="https://www.instagram.com/kpopick_?igsh=MXFycmM0aDZtMzI2cw=="
               target="_blank"
@@ -101,7 +92,6 @@
               </svg>
             </a>
 
-            <!-- WhatsApp -->
             <a
               href="https://wa.me/message/PHCNPEWTVEVZD1"
               target="_blank"
@@ -114,12 +104,16 @@
               </svg>
             </a>
           </div>
+
+          <!-- Language Switcher with Gap -->
+          <div class="flex gap-4">
+            <LanguageSwitcher />
+          </div>
         </div>
       </div>
 
-      <!-- Copyright -->
       <div class="border-t border-gray-300 pt-6 sm:pt-8 text-center text-gray-600 text-xs sm:text-sm">
-        <p>&copy; 2024 KPopick. All rights reserved.</p>
+        <p>{{ i18nStore.t('footer.copyright') }}</p>
       </div>
     </div>
   </footer>
@@ -128,8 +122,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18nStore } from '@/stores/i18n.store'
+import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
 
 const router = useRouter()
+const i18nStore = useI18nStore()
 
 const shopCategories = ref([
   'Albums',

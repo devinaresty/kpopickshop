@@ -9,6 +9,7 @@ interface User {
   role: 'USER' | 'ADMIN'
   phone?: string
   address?: string
+  photoUrl?: string
   createdAt: string
   updatedAt: string
 }
@@ -26,7 +27,7 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null
     try {
       const response = await apiClient.login({ email, password })
-      console.log('Login response:', response) // DEBUG
+      console.log('Login response:', response) 
       
       if (!response?.access_token) {
         throw new Error('Token tidak diterima dari server')
@@ -35,16 +36,15 @@ export const useAuthStore = defineStore('auth', () => {
       token.value = response.access_token
       user.value = response.user
       localStorage.setItem('token', response.access_token)
-      console.log('Token saved to localStorage:', response.access_token) // DEBUG
+      console.log('Token saved to localStorage:', response.access_token) 
       
-      // Clear any previous errors on success
       error.value = null
       
       return response
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Login failed'
       error.value = errorMessage
-      console.error('Login failed:', err) // DEBUG
+      console.error('Login failed:', err) 
       throw new Error(errorMessage)
     } finally {
       isLoading.value = false
@@ -65,7 +65,6 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = response.user
       localStorage.setItem('token', response.access_token)
       
-      // Clear any previous errors on success
       error.value = null
       
       return response

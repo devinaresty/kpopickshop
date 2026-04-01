@@ -6,7 +6,7 @@
   <transition name="slide-in-right">
     <div v-if="isOpen" class="fixed right-0 top-0 bottom-0 w-full sm:w-96 bg-white shadow-2xl z-40 flex flex-col">
       <div class="p-4 sm:p-6 border-b border-gray-200 flex items-center justify-between">
-        <h2 class="text-xl sm:text-2xl font-bold text-black">Shopping Cart</h2>
+        <h2 class="text-xl sm:text-2xl font-bold text-black">{{ i18nStore.t('cart.title') }}</h2>
         <button
           @click="closeCart"
           class="p-2 hover:bg-gray-100 rounded-lg transition-colors"
@@ -22,13 +22,12 @@
           <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
           </svg>
-          <p class="text-gray-600 font-semibold">Your cart is empty</p>
+          <p class="text-gray-600 font-semibold">{{ i18nStore.t('cart.cartEmpty') }}</p>
         </div>
 
         <div v-else class="divide-y divide-gray-200">
           <div v-for="item in cartStore.cartItems" :key="item.id" class="p-4 hover:bg-gray-50 transition">
             <div class="flex gap-3 mb-3">
-              <!-- Checkbox -->
               <div class="flex-shrink-0 flex items-center pt-1">
                 <input
                   type="checkbox"
@@ -38,8 +37,7 @@
                   style="accent-color: black;"
                 />
               </div>
-              
-              <!-- Product Image -->
+
               <div class="w-20 h-20 bg-white border border-gray-200 rounded-lg flex-shrink-0 flex items-center justify-center overflow-hidden">
                 <img
                   v-if="item.imageUrl"
@@ -52,7 +50,6 @@
                 </svg>
               </div>
               
-              <!-- Product Info -->
               <div class="flex-1">
                 <h3 class="font-semibold text-sm text-gray-900 line-clamp-2">{{ item.name }}</h3>
                 <p class="text-xs text-gray-600 mt-1">{{ item.category }}</p>
@@ -60,7 +57,6 @@
               </div>
             </div>
 
-            <!-- Quantity Selector & Remove -->
             <div class="flex items-center justify-between">
               <div class="flex items-center border border-gray-300 rounded">
                 <button
@@ -81,46 +77,42 @@
                 @click="cartStore.removeFromCart(item.id)"
                 class="text-red-500 hover:text-red-700 text-sm font-semibold transition-colors"
               >
-                Remove
+                {{ i18nStore.t('cart.remove') }}
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Footer - Order Summary & Checkout -->
       <div v-if="!cartStore.isEmpty" class="p-4 sm:p-6 border-t border-gray-200 space-y-4">
-        <!-- Summary -->
         <div class="space-y-2 pb-4 border-b border-gray-200 text-sm">
           <div class="flex justify-between text-gray-600">
-            <span>Subtotal</span>
+            <span>{{ i18nStore.t('cart.subtotal') }}</span>
             <span>Rp {{ formatPrice(cartStore.totalPrice) }}</span>
           </div>
           <div class="flex justify-between text-gray-600">
-            <span>Items</span>
+            <span>{{ i18nStore.t('common.name') }}</span>
             <span>{{ cartStore.itemCount }}</span>
           </div>
         </div>
 
-        <!-- Total -->
         <div class="flex justify-between font-bold text-lg">
-          <span>Total</span>
+          <span>{{ i18nStore.t('cart.total') }}</span>
           <span>Rp {{ formatPrice(cartStore.totalPrice) }}</span>
         </div>
 
-        <!-- Buttons -->
         <div class="space-y-2">
           <button
             @click="goToCheckout"
             class="w-full py-3 px-4 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition-colors"
           >
-            Checkout
+            {{ i18nStore.t('cart.checkout') }}
           </button>
           <button
             @click="closeCart"
             class="w-full py-3 px-4 border border-gray-300 text-gray-900 font-semibold rounded-lg hover:bg-gray-50 transition-colors"
           >
-            Continue Shopping
+            {{ i18nStore.t('cart.continueShopping') }}
           </button>
         </div>
       </div>
@@ -131,10 +123,12 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cart.store'
+import { useI18nStore } from '@/stores/i18n.store'
 import { ref } from 'vue'
 
 const router = useRouter()
 const cartStore = useCartStore()
+const i18nStore = useI18nStore()
 const selectedItems = ref<number[]>([])
 
 const props = defineProps({
@@ -190,7 +184,6 @@ const formatPrice = (price: number): string => {
   transform: translateX(100%);
 }
 
-/* Bubble burst animation - consistent with SearchView */
 @keyframes bubbleBurst {
   0% {
     transform: scale(0.8);

@@ -56,13 +56,27 @@ const routes: RouteRecordRaw[] = [
     component: () => import('@/views/CheckoutView.vue'),
     meta: { requiresAuth: true },
   },
-  // Admin Login Route
+  {
+    path: '/profile',
+    name: 'profile',
+    component: () => import('@/views/ProfileView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/payment-success',
+    name: 'payment-success',
+    component: () => import('@/views/PaymentSuccessView.vue'),
+  },
+  {
+    path: '/payment-failed',
+    name: 'payment-failed',
+    component: () => import('@/views/PaymentFailedView.vue'),
+  },
   {
     path: '/admin/login',
     name: 'admin-login',
     component: () => import('@/views/admin/AdminLoginView.vue'),
   },
-  // Admin Routes
   {
     path: '/admin',
     component: () => import('@/layouts/AdminLayouts.vue'),
@@ -100,14 +114,7 @@ const router = createRouter({
   routes,
 })
 
-/**
- * Navigation Guard untuk mengecek autentikasi dan role
- * - Redirect ke /home jika sudah login dan akses landing
- * - Redirect ke / jika belum login dan akses route yang dilindungi
- * - Redirect ke /home jika user bukan admin dan coba akses admin routes
- * 
- * IMPORTANT: Gunakan replace: true untuk semua redirect agar tidak create new history entry
- */
+
 router.beforeEach((to, _from, next) => {
   const authStore = useAuthStore()
   const isAuthenticated = authStore.isAuthenticated
@@ -115,23 +122,20 @@ router.beforeEach((to, _from, next) => {
 
   console.log(`Route Guard: ${to.path} | Authenticated: ${isAuthenticated} | Role: ${userRole}`) // DEBUG
 
-  // Jika user sudah login dan coba akses landing page
   if (to.meta.requiresGuest && isAuthenticated) {
-    console.log('User sudah login, redirect ke /home') // DEBUG
+    console.log('User sudah login, redirect ke /home') 
     next({ name: 'home', replace: true })
     return
   }
 
-  // Jika user belum login dan coba akses route yang dilindungi
   if (to.meta.requiresAuth && !isAuthenticated) {
-    console.log('User belum login, redirect ke /') // DEBUG
+    console.log('User belum login, redirect ke /') 
     next({ name: 'landing', replace: true })
     return
   }
 
-  // Jika route memerlukan admin tapi user bukan admin atau belum login
   if (to.meta.requiresAdmin && (!isAuthenticated || userRole !== 'ADMIN')) {
-    console.log('User tidak memiliki akses admin, redirect ke /') // DEBUG
+    console.log('User tidak memiliki akses admin, redirect ke /') 
     next({ name: 'landing', replace: true })
     return
   }

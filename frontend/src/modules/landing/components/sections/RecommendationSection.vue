@@ -1,7 +1,6 @@
 <template>
   <section class="py-4 sm:py-6 lg:py-8 bg-gray-100">
     <div class="mx-auto px-3 sm:px-4 lg:px-6 max-w-7xl bg-white rounded-lg py-6 sm:py-8 lg:py-10">
-      <!-- Tabs -->
       <div class="flex gap-2 sm:gap-3 mb-4 sm:mb-6 border-b border-gray-200">
         <button
           v-for="tab in tabs"
@@ -18,7 +17,6 @@
         </button>
       </div>
 
-      <!-- Loading State -->
       <div v-if="isLoading" class="flex justify-center items-center py-12">
         <div class="text-center">
           <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
@@ -26,7 +24,6 @@
         </div>
       </div>
 
-      <!-- Error State -->
       <div v-else-if="error" class="flex justify-center items-center py-12">
         <div class="text-center">
           <p class="text-red-600 font-semibold mb-4">{{ error }}</p>
@@ -36,14 +33,12 @@
         </div>
       </div>
 
-      <!-- Empty State -->
       <div v-else-if="displayedProducts.length === 0" class="flex justify-center items-center py-12">
         <div class="text-center">
           <p class="text-gray-600 font-semibold">No products available</p>
         </div>
       </div>
 
-      <!-- Content Grid with Responsive Scaling + Login Overlay -->
       <div v-else class="relative overflow-hidden rounded-lg">
         <div class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-0.5 sm:gap-1 lg:gap-1.5">
           <div
@@ -53,23 +48,19 @@
             @click="goToProductDetail(product.id)"
             :style="{ animation: `fadeInUp 0.5s ease-out forwards`, animationDelay: `${index * 50}ms` }"
           >
-            <!-- Entire Card Container -->
             <div class="bg-white border border-gray-200 rounded overflow-hidden flex flex-col h-full">
-              <!-- Product Image Section - Fixed Aspect Ratio -->
               <div class="aspect-square bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-gray-400 relative flex-shrink-0 overflow-hidden">
-                <!-- Display product image if available -->
                 <img
                   v-if="product.imageUrl"
                   :src="product.imageUrl"
                   :alt="product.name"
                   class="w-full h-full object-cover"
                 />
-                <!-- Fallback icon if no image -->
+
                 <svg v-else class="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
 
-                <!-- Flash Sale Badge - Dynamic from product data -->
                 <div
                   v-if="product.isFlashSale"
                   class="absolute top-2 left-2 bg-red-500/40 backdrop-blur-sm text-red-700 px-1.5 py-0.5 rounded-full text-xs font-semibold flex items-center gap-0.5"
@@ -79,7 +70,6 @@
                 </div>
               </div>
 
-              <!-- Product Info Section - Flexible Growth -->
               <div class="px-2 py-2 sm:py-2.5 flex flex-col flex-grow gap-1">
                 <p class="text-xs text-gray-500 mb-0.5 leading-tight">{{ product.category }}</p>
                 <h3 class="font-semibold text-gray-900 text-xs line-clamp-2 mb-1 flex-grow leading-snug">
@@ -98,7 +88,6 @@
           </div>
         </div>
 
-        <!-- Login Overlay - Blur Background (Only for non-logged-in users) -->
         <div v-if="!isUserLoggedIn" class="absolute left-0 right-0 bottom-0 backdrop-blur-sm flex items-center justify-center pointer-events-auto"
              :style="{ 
                'top': overlayTop,
@@ -137,7 +126,6 @@ const isLoading = ref(true)
 const error = ref<string | null>(null)
 const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1024)
 
-// Navigate to product detail page
 const goToProductDetail = (productId: string | number) => {
   router.push({
     name: 'product-detail',
@@ -145,9 +133,7 @@ const goToProductDetail = (productId: string | number) => {
   })
 }
 
-// Map API response to Product type
 const mapProductFromAPI = (apiProduct: any): Product => {
-  // Use placeholder if no image URL
   const imageUrl = apiProduct.imageUrl || apiProduct.image || '/images/produk1.webp'
   
   return {
@@ -171,14 +157,11 @@ const reloadProducts = async () => {
     isLoading.value = true
     error.value = null
     
-    // Fetch ALL products untuk FOR YOU + extract promoted untuk FLASH SALE
     const allProductsResponse = await apiClient.getProducts(0, 50)
     const allProducts = allProductsResponse.data.map(mapProductFromAPI)
     
-    // FOR YOU: Semua produk (24 total)
     forYouProducts.value = allProducts
     
-    // FLASH SALE: Hanya produk yang promoted/flash sale
     flashSaleProducts.value = allProducts.filter(product => product.isFlashSale === true)
     
     console.log('RecommendationSection - For You:', forYouProducts.value.length, 'items')
@@ -196,31 +179,24 @@ const displayedProducts = computed(() => {
 })
 
 const isUserLoggedIn = computed(() => {
-  return authStore.token && authStore.user
+  return authStore.isAuthenticated
 })
 
-// Calculate overlay top position - start fading blur from row 3
-// Row 1-2: visible, Row 3: fading blur, Row 4+: full blur
 const overlayTop = computed(() => {
   const width = windowWidth.value
   let columns = 3
   
-  // Determine number of columns based on breakpoints
   if (width >= 1024) columns = 6
   else if (width >= 640) columns = 4
   else columns = 3
   
-  // Calculate total number of rows
   const totalRows = Math.ceil(displayedProducts.value.length / columns)
   
-  // Row 3 starts after 2 complete rows (we want blur to start here and fade)
-  // Position as percentage of total height
   const topPercentage = (2 / totalRows) * 100
   
   return `${topPercentage}%`
 })
 
-// Handle window resize to update overlay width reactively
 const handleResize = () => {
   windowWidth.value = window.innerWidth
 }

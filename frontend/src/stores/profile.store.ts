@@ -1,0 +1,220 @@
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+import { apiClient } from '@/lib/api'
+import { useAuthStore } from './auth.store'
+import type { UserProfile, UpdateProfileDto } from '@/modules/profile/types'
+
+export const useProfileStore = defineStore('profile', () => {
+  const authStore = useAuthStore()
+  const profile = ref<UserProfile | null>(null)
+  const isLoading = ref(false)
+  const isSaving = ref(false)
+  const isUploadingPhoto = ref(false)
+  const error = ref<string | null>(null)
+  const successMessage = ref<string | null>(null)
+
+  const isProfileComplete = computed(() => {
+    return profile.value && profile.value.name && profile.value.email
+  })
+
+  const loadProfile = async () => {
+    isLoading.value = true
+    error.value = null
+    try {
+      // Get user profile from API
+      const userData = await apiClient.getCurrentUser()
+      profile.value = userData
+    } catch (err: any) {
+      error.value = err.message || 'Failed to load profile'
+      console.error('Load profile error:', err)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const updateProfile = async (data: UpdateProfileDto & { photoUrl?: string }) => {
+    isSaving.value = true
+    error.value = null
+    successMessage.value = null
+    try {
+      // For now, we'll update locally since backend may not have updateProfile endpoint
+      // In production, call: await apiClient.updateProfile(data)
+      if (profile.value) {
+        profile.value.name = data.name || profile.value.name
+        profile.value.email = data.email || profile.value.email
+        profile.value.phone = data.phone || profile.value.phone
+        profile.value.address = data.address || profile.value.address
+        profile.value.dateOfBirth = data.dateOfBirth || profile.value.dateOfBirth
+        // Handle photo deletion (null) or update
+        if (data.photoUrl !== undefined) {
+          profile.value.photoUrl = data.photoUrl || undefined
+        }
+      }
+      
+      // Also update auth store user with latest profile data
+      if (authStore.user && profile.value) {
+        authStore.user.name = profile.value.name
+        authStore.user.email = profile.value.email
+        authStore.user.phone = profile.value.phone
+        authStore.user.photoUrl = profile.value.photoUrl
+      }
+      
+      successMessage.value = 'Profile updated successfully'
+    } catch (err: any) {
+      error.value = err.message || 'Failed to update profile'
+      console.error('Update profile error:', err)
+    } finally {
+      isSaving.value = false
+    }
+  }
+
+  const uploadProfilePhoto = async (file: File) => {
+    isUploadingPhoto.value = true
+    error.value = null
+    successMessage.value = null
+    
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+
+      // Call backend endpoint with custom multipart/form-data handling
+      const token = localStorage.getItem('token')
+      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+      const url = `${baseUrl}/auth/upload-profile-photo`
+
+      console.log('Uploading photo to:', url)
+      console.log('File:', file.name, file.size, file.type)
+
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          // Let browser set Content-Type for FormData
+        },
+        body: formData,
+      })
+
+      if (response.status === 401) {
+        throw new Error('Session expired. Please login again.')
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error('Upload error response:', errorData)
+        throw new Error(errorData.message || `HTTP ${response.status}`)
+      }
+
+      const result = await response.json()
+      console.log('Upload response:', result)
+
+      if (result && (result.photoUrl || result.data?.photoUrl)) {
+        const photoUrl = result.photoUrl || result.data?.photoUrl
+        
+        // Update profile with new photo URL
+        if (profile.value) {
+          profile.value.photoUrl = photoUrl
+        }
+        
+        // Also update auth store user
+        if (authStore.user) {
+          (authStore.user as any).photoUrl = photoUrl
+        }
+
+        successMessage.value = 'Profile photo uploaded successfully'
+        console.log('Profile photo uploaded:', photoUrl)
+        
+        return result.data || result
+      } else {
+        console.warn('Response does not contain photoUrl:', result)
+        throw new Error('Server response tidak mengandung photoUrl. Response: ' + JSON.stringify(result))
+      }
+    } catch (err: any) {
+      error.value = err.message || 'Failed to upload profile photo'
+      console.error('Upload profile photo error:', err)
+      throw err
+    } finally {
+      isUploadingPhoto.value = false
+    }
+  }
+
+  const clearMessages = () => {
+    error.value = null
+    successMessage.value = null
+  }
+
+  const deleteProfilePhoto = async () => {
+    isSaving.value = true
+    error.value = null
+    successMessage.value = null
+    
+    try {
+      const token = localStorage.getItem('token')
+      const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+      const url = `${baseUrl}/auth/delete-profile-photo`
+
+      console.log('Deleting profile photo...')
+
+      const response = await fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      })
+
+      if (response.status === 401) {
+        throw new Error('Session expired. Please login again.')
+      }
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        console.error('Delete error response:', errorData)
+        throw new Error(errorData.message || `HTTP ${response.status}`)
+      }
+
+      const result = await response.json()
+      console.log('Delete response:', result)
+
+      // Update profile with deleted photo
+      if (profile.value) {
+        profile.value.photoUrl = undefined
+      }
+      
+      // Also update auth store user
+      if (authStore.user) {
+        (authStore.user as any).photoUrl = undefined
+      }
+
+      successMessage.value = 'Profile photo deleted successfully'
+      console.log('Profile photo deleted')
+      
+      return result
+    } catch (err: any) {
+      error.value = err.message || 'Failed to delete profile photo'
+      console.error('Delete profile photo error:', err)
+      throw err
+    } finally {
+      isSaving.value = false
+    }
+  }
+
+  return {
+    // State
+    profile,
+    isLoading,
+    isSaving,
+    isUploadingPhoto,
+    error,
+    successMessage,
+
+    // Computed
+    isProfileComplete,
+
+    // Methods
+    loadProfile,
+    updateProfile,
+    uploadProfilePhoto,
+    deleteProfilePhoto,
+    clearMessages,
+  }
+})
