@@ -31,6 +31,18 @@ export class CreateOrderDto {
 
     @IsString()
     @IsOptional()
+    shippingCity?: string;
+
+    @IsString()
+    @IsOptional()
+    shippingProvince?: string;
+
+    @IsString()
+    @IsOptional()
+    shippingPostalCode?: string;
+
+    @IsString()
+    @IsOptional()
     shippingDetail?: string;
 
     @IsString()

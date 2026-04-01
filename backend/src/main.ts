@@ -30,9 +30,12 @@ async function bootstrap() {
   SwaggerModule.setup("api/docs", app, document);
 
   const port = process.env.PORT ?? 3000;
+  const minioUrl = process.env.MINIO_PUBLIC_URL || 'http://localhost:9000';
   const server = await app.listen(port);
-  console.log(`🚀 Server running at http://localhost:${port}`);
-  console.log(`📖 Swagger documentation at http://localhost:${port}/api/docs`);
+  
+  console.log(`\n✓ MinIO (Storage)        ${minioUrl}`);
+  console.log(`✓ Backend API            http://localhost:${port}`);
+  console.log(`✓ Swagger Documentation  http://localhost:${port}/api/docs\n`);
 
   const shutdown = async (signal: string) => {
     console.log(`\n${signal} received. Shutting down gracefully...`);

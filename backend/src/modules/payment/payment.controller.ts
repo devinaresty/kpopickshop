@@ -55,11 +55,18 @@ export class PaymentController {
       throw new BadRequestException(`Order #${orderId} is already ${order.status}, cannot create new payment`);
     }
 
+    // Determine frontend base URL (support both dev and production)
+    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const successUrl = `${frontendUrl}/payment-success?orderId=${orderId}`;
+    const failureUrl = `${frontendUrl}/payment-failed?orderId=${orderId}`;
+
     const invoice = await this.paymentService.createInvoice(
       orderId,
       order.totalPrice,
       user.email,
       `Payment for Order #${orderId}`,
+      successUrl,
+      failureUrl,
     );
 
     return {

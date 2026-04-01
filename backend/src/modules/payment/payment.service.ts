@@ -19,6 +19,8 @@ export class PaymentService {
     amount: number,
     email: string,
     description: string = `Order #${orderId}`,
+    callbackSuccessUrl?: string,
+    callbackFailureUrl?: string,
   ): Promise<{ id: string; invoice_url: string }> {
     if (!this.xenditSecretKey) {
       throw new InternalServerErrorException(
@@ -29,15 +31,25 @@ export class PaymentService {
     try {
       const auth = Buffer.from(`${this.xenditSecretKey}:`).toString('base64');
 
+      const invoicePayload: any = {
+        external_id: `order-${orderId}`,
+        amount: Math.round(amount),
+        payer_email: email,
+        description,
+        currency: 'IDR',
+      };
+
+      // Add callback URLs if provided
+      if (callbackSuccessUrl) {
+        invoicePayload.success_redirect_url = callbackSuccessUrl;
+      }
+      if (callbackFailureUrl) {
+        invoicePayload.failure_redirect_url = callbackFailureUrl;
+      }
+
       const response = await axios.default.post(
         this.xenditApiUrl,
-        {
-          external_id: `order-${orderId}`,
-          amount: Math.round(amount),
-          payer_email: email,
-          description,
-          currency: 'IDR',
-        },
+        invoicePayload,
         {
           headers: {
             Authorization: `Basic ${auth}`,

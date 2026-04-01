@@ -6,11 +6,13 @@ import { AuthController } from "./auth.controller";
 import { JwtStrategy } from "../../common/strategies/jwt.strategy";
 import { LocalStrategy } from "../../common/strategies/local.strategy";
 import { PrismaModule } from "../../prisma/prisma.module";
+import { StorageModule } from "../../common/services/storage.module";
 
 @Module({
   imports: [
     PassportModule,
     PrismaModule,
+    StorageModule,
     JwtModule.register({
       secret: process.env.JWT_SECRET || "your-secret-key",
       signOptions: { expiresIn: "24h" },

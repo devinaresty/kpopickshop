@@ -1,5 +1,6 @@
-import { Body, Controller, Get, HttpCode, Post, UseGuards, Request, BadRequestException, } from "@nestjs/common";
-import { ApiOperation, ApiTags, ApiResponse, ApiBearerAuth, ApiBody,} from "@nestjs/swagger";
+import { Body, Controller, Get, HttpCode, Post, Delete, UseGuards, Request, BadRequestException, UseInterceptors, UploadedFile } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { ApiOperation, ApiTags, ApiResponse, ApiBearerAuth, ApiBody, ApiConsumes} from "@nestjs/swagger";
 import { AuthService } from "./auth.service";
 import { RegisterDto } from "./dto/register.dto";
 import { LoginDto } from "./dto/login.dto";
@@ -70,5 +71,80 @@ export class AuthController {
       throw new BadRequestException("User not found in token");
     }
     return this.authService.getUserById(user.id);
+  }
+
+  @Post("upload-profile-photo")
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor("file"))
+  @ApiBearerAuth()
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ summary: "Upload user profile photo" })
+  @ApiBody({
+    schema: {
+      type: "object",
+      properties: {
+        file: {
+          type: "string",
+          format: "binary",
+          description: "Profile photo file (max 10MB, jpg/png/webp)",
+        },
+      },
+      required: ["file"],
+    },
+  })
+  @ApiResponse({
+    status: 200,
+    description: "Profile photo uploaded successfully",
+    type: UserResponseDto,
+  })
+  async uploadProfilePhoto(
+    @CurrentUser() user: any,
+    @UploadedFile() file: any,
+  ): Promise<UserResponseDto> {
+    if (!user) {
+      throw new BadRequestException("User not found in token");
+    }
+
+    if (!file) {
+      throw new BadRequestException("File is required");
+    }
+
+    // Validate file size (max 10MB)
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
+    if (file.size > MAX_FILE_SIZE) {
+      throw new BadRequestException("File size exceeds 10MB limit");
+    }
+
+    // Validate file type
+    const allowedMimes = ["image/jpeg", "image/png", "image/webp"];
+    if (!allowedMimes.includes(file.mimetype)) {
+      throw new BadRequestException("Only JPG, PNG, and WebP images are allowed");
+    }
+
+    return this.authService.uploadProfilePhoto(
+      user.id,
+      file.buffer,
+      file.mimetype,
+      file.originalname,
+    );
+  }
+
+  @Delete("delete-profile-photo")
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Delete user profile photo" })
+  @ApiResponse({
+    status: 200,
+    description: "Profile photo deleted successfully",
+    type: UserResponseDto,
+  })
+  async deleteProfilePhoto(
+    @CurrentUser() user: any,
+  ): Promise<UserResponseDto> {
+    if (!user) {
+      throw new BadRequestException("User not found in token");
+    }
+
+    return this.authService.deleteProfilePhoto(user.id);
   }
 }

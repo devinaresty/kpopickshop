@@ -92,6 +92,51 @@ export class StorageService {
     }
   }
 
+  async uploadFileWithFolder(
+    fileName: string,
+    fileBuffer: Buffer,
+    mimeType: string,
+    folderName: string = 'uploads',
+  ): Promise<{
+    fileUrl: string;
+    fileName: string;
+    size: number;
+  }> {
+    try {
+      if (!minioClient) {
+        throw new Error('Minio client not initialized');
+      }
+
+      const objectName = `${folderName}/${fileName}`;
+
+      await minioClient.putObject(
+        this.bucketName,
+        objectName,
+        fileBuffer,
+        fileBuffer.length,
+        {
+          'Content-Type': mimeType,
+        },
+      );
+
+      const baseUrl = `http://${process.env.MINIO_ENDPOINT || 'localhost:9000'}`;
+      const fileUrl = `${baseUrl}/${this.bucketName}/${objectName}`;
+
+      console.log(`✅ File uploaded to ${folderName}: ${fileUrl}`);
+
+      return {
+        fileUrl,
+        fileName,
+        size: fileBuffer.length,
+      };
+    } catch (error: any) {
+      console.error('Minio upload error:', error?.message || error);
+      throw new InternalServerErrorException(
+        `Failed to upload file: ${error?.message || 'Unknown error'}`,
+      );
+    }
+  }
+
   async deleteFile(fileName: string): Promise<void> {
     try {
       if (!minioClient) {

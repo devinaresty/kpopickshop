@@ -5,6 +5,7 @@ export class UserResponseDto {
   role: string;
   phone?: string;
   address?: string;
+  photoUrl?: string;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -2,6 +2,7 @@ import { Injectable, BadRequestException, UnauthorizedException,} from "@nestjs/
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcryptjs";
 import { PrismaService } from "../../prisma/prisma.service";
+import { StorageService } from "../../common/services/storage.service";
 import { RegisterDto } from "./dto/register.dto";
 import { LoginDto } from "./dto/login.dto";
 import { UserResponseDto } from "./dto/user.response.dto";
@@ -12,6 +13,7 @@ export class AuthService {
   constructor(
     private jwtService: JwtService,
     private prisma: PrismaService,
+    private storageService: StorageService,
   ) {}
 
   async register(registerDto: RegisterDto): Promise<AuthResponseDto> {
@@ -101,6 +103,49 @@ export class AuthService {
     return this.mapUserToResponse(user);
   }
 
+  async uploadProfilePhoto(userId: number, fileBuffer: Buffer, mimeType: string, fileName: string): Promise<UserResponseDto> {
+    try {
+      // Step 1: Upload file to MinIO via StorageService
+      const timestamp = Date.now();
+      const uniqueFileName = `${timestamp}-${fileName}`;
+      
+      const uploadResult = await this.storageService.uploadFileWithFolder(
+        uniqueFileName,
+        fileBuffer,
+        mimeType,
+        'profiles'
+      );
+      
+      // Step 2: Save photoUrl to database
+      const user = await this.prisma.user.update({
+        where: { id: userId },
+        data: { photoUrl: uploadResult.fileUrl }
+      });
+
+      console.log(`✅ Profile photo uploaded for user ${userId}: ${uploadResult.fileUrl}`);
+      return this.mapUserToResponse(user);
+    } catch (error: any) {
+      console.error('❌ Profile photo upload error:', error?.message || error);
+      throw new BadRequestException(`Failed to upload profile photo: ${error?.message || 'Unknown error'}`);
+    }
+  }
+
+  async deleteProfilePhoto(userId: number): Promise<UserResponseDto> {
+    try {
+      // Clear photoUrl from database
+      const user = await this.prisma.user.update({
+        where: { id: userId },
+        data: { photoUrl: null }
+      });
+
+      console.log(`✅ Profile photo deleted for user ${userId}`);
+      return this.mapUserToResponse(user);
+    } catch (error: any) {
+      console.error('❌ Profile photo delete error:', error?.message || error);
+      throw new BadRequestException(`Failed to delete profile photo: ${error?.message || 'Unknown error'}`);
+    }
+  }
+
   private generateAccessToken(user: any): string {
     const payload = { email: user.email, sub: user.id, role: user.role };
     return this.jwtService.sign(payload, {
@@ -117,6 +162,7 @@ export class AuthService {
       role: user.role,
       phone: user.phone,
       address: user.address,
+      photoUrl: user.photoUrl,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
     };
