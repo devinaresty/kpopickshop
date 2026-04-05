@@ -157,4 +157,24 @@ export class OrdersService {
       },
     });
   }
+
+  async findById(id: number, userId: number, userRole: string) {
+    const order = await this.prisma.order.findUnique({
+      where: { id },
+      include: {
+        items: { include: { product: true } },
+      },
+    });
+
+    if (!order) {
+      throw new NotFoundException(`Order #${id} not found`);
+    }
+
+    // Users can only view their own orders, admins can view any order
+    if (userRole !== 'ADMIN' && order.userId !== userId) {
+      throw new BadRequestException('You can only view your own orders');
+    }
+
+    return order;
+  }
 }

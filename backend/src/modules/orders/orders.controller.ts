@@ -62,6 +62,17 @@ export class OrdersController {
     return this.ordersService.findAll();
   }
 
+  @Get(':id')
+  @Roles('user', 'admin')
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get order details by ID (User can only view their own orders)' })
+  findById(
+    @CurrentUser() user: User,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.ordersService.findById(id, user.id, user.role);
+  }
+
   @Put(':id/status')
   @Roles('admin')
   @ApiBearerAuth()

@@ -34,6 +34,10 @@ export class PrismaService {
     return this.prisma.orderItem;
   }
 
+  get userAddress() {
+    return this.prisma.userAddress;
+  }
+
   $transaction(callback: (tx: PrismaClient) => Promise<any>) {
     return this.prisma.$transaction(callback);
   }

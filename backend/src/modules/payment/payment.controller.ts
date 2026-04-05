@@ -21,19 +21,24 @@ export class PaymentController {
   @ApiBody({
     schema: {
       example: {
-        orderId: 1
+        orderId: 1,
+        paymentMethod: {
+          method: 'QR_PAYMENT',
+          bankCode: null,
+          walletProvider: null
+        }
       }
     }
   })
   async createPayment(
     @CurrentUser() user: any,
-    @Body() body: { orderId: number },
+    @Body() body: { orderId: number; paymentMethod?: any },
   ) {
     if (!user || !user.id) {
       throw new BadRequestException('User not authenticated');
     }
 
-    const { orderId } = body;
+    const { orderId, paymentMethod } = body;
     if (!orderId) {
       throw new BadRequestException('orderId is required');
     }
@@ -60,6 +65,10 @@ export class PaymentController {
     const successUrl = `${frontendUrl}/payment-success?orderId=${orderId}`;
     const failureUrl = `${frontendUrl}/payment-failed?orderId=${orderId}`;
 
+    // Determine backend base URL for webhook callback
+    const backendUrl = process.env.BACKEND_URL || 'http://localhost:3000';
+    const webhookUrl = `${backendUrl}/api/payments/webhook/xendit`;
+
     const invoice = await this.paymentService.createInvoice(
       orderId,
       order.totalPrice,
@@ -67,6 +76,8 @@ export class PaymentController {
       `Payment for Order #${orderId}`,
       successUrl,
       failureUrl,
+      paymentMethod,
+      webhookUrl,
     );
 
     return {

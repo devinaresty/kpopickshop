@@ -9,6 +9,7 @@ import { CategoryModule } from "./modules/categories/category.module";
 import { PrismaModule } from "./prisma/prisma.module";
 import { PaymentModule } from "./modules/payment/payment.module";
 import { OrdersModule } from "./modules/orders/orders.module";
+import { AddressesModule } from "./modules/addresses/addresses.module";
 import { ImageUrlInterceptor } from "./interceptors/image-url.interceptor";
 
 @Module({
@@ -23,6 +24,7 @@ import { ImageUrlInterceptor } from "./interceptors/image-url.interceptor";
     CategoryModule,
     PaymentModule,
     OrdersModule,
+    AddressesModule,
   ],
   controllers: [AppController],
   providers: [

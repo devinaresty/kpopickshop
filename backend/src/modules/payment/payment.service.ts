@@ -10,7 +10,43 @@ export class PaymentService {
     this.xenditSecretKey = process.env.XENDIT_SECRET_KEY;
     
     if (!this.xenditSecretKey) {
-      console.warn('⚠️  XENDIT_SECRET_KEY not found in environment variables. Payment integration will fail until configured.');
+      console.warn('XENDIT_SECRET_KEY not found in environment variables. Payment integration will fail until configured.');
+    }
+  }
+
+  /**
+   * Maps payment method - ONLY return payment_methods for QRIS
+   * For other methods, return empty array to prevent Xendit validation errors
+   * Error: "The payment method choices did not match with the available one on this business"
+   * Solution: Only QRIS is confirmed working, let Xendit show default options for others
+   */
+  private mapPaymentMethod(paymentMethod: any): string[] {
+    if (!paymentMethod || !paymentMethod.method) {
+      return [];
+    }
+
+    const method = paymentMethod.method;
+
+    // ONLY QRIS uses payment_methods restriction (confirmed working)
+    // All other methods return empty so Xendit doesn't throw validation errors
+    switch (method) {
+      case 'BANK_TRANSFER':
+        console.log('Bank Transfer - using Xendit default options');
+        return [];
+      case 'CREDIT_CARD':
+        console.log('Credit/Debit Card - using Xendit default options');
+        return [];
+      case 'QR_PAYMENT':
+        console.log('QR Payment (QRIS) selected');
+        return ['QRIS'];
+      case 'DIRECT_DEBIT':
+        console.log('Direct Debit - using Xendit default options');
+        return [];
+      case 'E_WALLET':
+        console.log('E-Wallet - using Xendit default options');
+        return [];
+      default:
+        return [];
     }
   }
 
@@ -21,6 +57,8 @@ export class PaymentService {
     description: string = `Order #${orderId}`,
     callbackSuccessUrl?: string,
     callbackFailureUrl?: string,
+    paymentMethod?: any,
+    webhookUrl?: string,
   ): Promise<{ id: string; invoice_url: string }> {
     if (!this.xenditSecretKey) {
       throw new InternalServerErrorException(
@@ -39,6 +77,18 @@ export class PaymentService {
         currency: 'IDR',
       };
 
+      // Add payment methods pre-selection if provided
+      // NOTE: Only QRIS works reliably; other methods return empty to prevent errors
+      if (paymentMethod && paymentMethod.method) {
+        const mappedMethods = this.mapPaymentMethod(paymentMethod);
+        if (mappedMethods && mappedMethods.length > 0) {
+          invoicePayload.payment_methods = mappedMethods;
+          console.log(
+            `Payment methods set for Order #${orderId}: ${mappedMethods.join(', ')} (from: ${paymentMethod.method})`,
+          );
+        }
+      }
+
       // Add callback URLs if provided
       if (callbackSuccessUrl) {
         invoicePayload.success_redirect_url = callbackSuccessUrl;
@@ -47,25 +97,78 @@ export class PaymentService {
         invoicePayload.failure_redirect_url = callbackFailureUrl;
       }
 
-      const response = await axios.default.post(
-        this.xenditApiUrl,
-        invoicePayload,
-        {
-          headers: {
-            Authorization: `Basic ${auth}`,
-            'Content-Type': 'application/json',
-          },
-        },
-      );
-
-      if (!response.data || !response.data.id || !response.data.invoice_url) {
-        throw new InternalServerErrorException('Failed to create Xendit invoice - missing response data');
+      // Add webhook URL for server-to-server payment status callback
+      if (webhookUrl) {
+        invoicePayload.webhook_url = webhookUrl;
+        console.log(
+          `Webhook URL set for Order #${orderId}: ${webhookUrl}`,
+        );
       }
 
-      return {
-        id: response.data.id,
-        invoice_url: response.data.invoice_url,
-      };
+      console.log(`Sending to Xendit Invoice API:`, JSON.stringify(invoicePayload, null, 2));
+
+      try {
+        const response = await axios.default.post(
+          this.xenditApiUrl,
+          invoicePayload,
+          {
+            headers: {
+              Authorization: `Basic ${auth}`,
+              'Content-Type': 'application/json',
+            },
+          },
+        );
+
+        console.log(`Xendit Response:`, JSON.stringify(response.data, null, 2));
+        console.log(`Webhook URL stored in Xendit: ${response.data.webhook_url || 'NOT PRESENT IN RESPONSE'}`);
+
+        if (!response.data || !response.data.id || !response.data.invoice_url) {
+          throw new InternalServerErrorException('Failed to create Xendit invoice - missing response data');
+        }
+
+        return {
+          id: response.data.id,
+          invoice_url: response.data.invoice_url,
+        };
+      } catch (xenditError: any) {
+        // If first request fails, retry without payment_methods for safety
+        if (invoicePayload.payment_methods && xenditError.response?.status) {
+          console.warn(
+            `Retrying without payment_methods restriction due to Xendit error... [Order #${orderId}]`,
+          );
+          
+          delete invoicePayload.payment_methods;
+          
+          try {
+            const retryResponse = await axios.default.post(
+              this.xenditApiUrl,
+              invoicePayload,
+              {
+                headers: {
+                  Authorization: `Basic ${auth}`,
+                  'Content-Type': 'application/json',
+                },
+              },
+            );
+
+            console.log(`Retry Xendit Response:`, JSON.stringify(retryResponse.data, null, 2));
+
+            if (!retryResponse.data || !retryResponse.data.id || !retryResponse.data.invoice_url) {
+              throw new InternalServerErrorException('Failed to create Xendit invoice - missing response data');
+            }
+
+            return {
+              id: retryResponse.data.id,
+              invoice_url: retryResponse.data.invoice_url,
+            };
+          } catch (retryError: any) {
+            console.error('Xendit Retry Error:', retryError.response?.data || retryError.message);
+            throw retryError;
+          }
+        }
+
+        throw xenditError;
+      }
     } catch (error: any) {
       console.error('Xendit Invoice Creation Error:', error.response?.data || error.message);
       throw new InternalServerErrorException(
