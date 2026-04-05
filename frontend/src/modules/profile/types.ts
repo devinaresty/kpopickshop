@@ -29,12 +29,13 @@ export interface ProfileFormData {
 
 export interface UserAddress {
   id: number
-  userId: number
-  street: string
-  city: string
-  province: string
-  postalCode: string
+  userId?: number
+  fullName: string
+  address: string
   phone: string
+  detail?: string
+  latitude?: number
+  longitude?: number
   isDefault: boolean
   createdAt: string
   updatedAt: string

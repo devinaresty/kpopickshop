@@ -88,17 +88,17 @@
         <div class="space-y-2 pb-4 border-b border-gray-200 text-sm">
           <div class="flex justify-between text-gray-600">
             <span>{{ i18nStore.t('cart.subtotal') }}</span>
-            <span>Rp {{ formatPrice(cartStore.totalPrice) }}</span>
+            <span>Rp {{ formatPrice(selectedItemsTotal) }}</span>
           </div>
           <div class="flex justify-between text-gray-600">
             <span>{{ i18nStore.t('common.name') }}</span>
-            <span>{{ cartStore.itemCount }}</span>
+            <span>{{ selectedItemsCount }}</span>
           </div>
         </div>
 
         <div class="flex justify-between font-bold text-lg">
           <span>{{ i18nStore.t('cart.total') }}</span>
-          <span>Rp {{ formatPrice(cartStore.totalPrice) }}</span>
+          <span>Rp {{ formatPrice(selectedItemsTotal) }}</span>
         </div>
 
         <div class="space-y-2">
@@ -124,7 +124,7 @@
 import { useRouter } from 'vue-router'
 import { useCartStore } from '@/stores/cart.store'
 import { useI18nStore } from '@/stores/i18n.store'
-import { ref } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 const router = useRouter()
 const cartStore = useCartStore()
@@ -139,6 +139,35 @@ const props = defineProps({
 })
 
 const emit = defineEmits(['close'])
+
+// Auto-select first item when cart opens
+watch(
+  () => props.isOpen,
+  (newVal) => {
+    if (newVal && cartStore.cartItems && cartStore.cartItems.length > 0) {
+      // Set default selection to first item only
+      const firstItem = cartStore.cartItems[0]
+      if (firstItem) {
+        const firstItemId = Number(firstItem.id)
+        selectedItems.value = [firstItemId]
+      }
+    }
+  }
+)
+
+// Compute total from selected items only
+const selectedItemsTotal = computed(() => {
+  return cartStore.cartItems
+    .filter(item => selectedItems.value.includes(Number(item.id)))
+    .reduce((total, item) => total + (item.price * item.quantity), 0)
+})
+
+// Compute count of selected items
+const selectedItemsCount = computed(() => {
+  return cartStore.cartItems
+    .filter(item => selectedItems.value.includes(Number(item.id)))
+    .reduce((count, item) => count + item.quantity, 0)
+})
 
 const closeCart = () => {
   emit('close')
@@ -158,9 +187,22 @@ const toggleItemSelection = (itemId: number) => {
   }
 }
 
+// Clear checked items from cart (call this after successful checkout)
+const clearCheckedItems = () => {
+  selectedItems.value.forEach(itemId => {
+    cartStore.removeFromCart(itemId)
+  })
+  selectedItems.value = []
+}
+
 const formatPrice = (price: number): string => {
   return price.toLocaleString('id-ID')
 }
+
+// Expose clearCheckedItems function for external use (checkout success)
+defineExpose({
+  clearCheckedItems
+})
 </script>
 
 <style scoped>

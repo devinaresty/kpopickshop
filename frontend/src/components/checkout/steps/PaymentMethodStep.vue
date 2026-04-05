@@ -2,9 +2,8 @@
   <div class="space-y-4">
     <p class="text-gray-600 mb-6">Select your preferred payment method</p>
 
-    <!-- Payment Methods Options -->
     <div class="space-y-3">
-      <!-- Bank Transfer -->
+      <!-- BANK TRANSFER -->
       <button
         @click="selectPaymentMethod('BANK_TRANSFER')"
         :class="[
@@ -30,7 +29,7 @@
         </div>
       </button>
 
-      <!-- Credit Card -->
+      <!-- CREDIT CARD -->
       <button
         @click="selectPaymentMethod('CREDIT_CARD')"
         :class="[
@@ -56,7 +55,7 @@
         </div>
       </button>
 
-      <!-- E-Wallet -->
+      <!-- E-WALLET -->
       <button
         @click="selectPaymentMethod('E_WALLET')"
         :class="[
@@ -77,12 +76,12 @@
           </div>
           <div>
             <h3 class="font-semibold text-gray-900">E-Wallet</h3>
-            <p class="text-sm text-gray-500">GCash, OVO, Dana, LINKAJA, etc.</p>
+            <p class="text-sm text-gray-500">OVO, Dana, LINKAJA, ShopeePay, etc.</p>
           </div>
         </div>
       </button>
 
-      <!-- QR Payment -->
+      <!-- QR PAYMENT -->
       <button
         @click="selectPaymentMethod('QR_PAYMENT')"
         :class="[
@@ -102,13 +101,13 @@
             <span v-if="selectedMethod === 'QR_PAYMENT'" class="text-white text-xs">✓</span>
           </div>
           <div>
-            <h3 class="font-semibold text-gray-900">QR Payment</h3>
-            <p class="text-sm text-gray-500">QRIS, GCash QR, etc.</p>
+            <h3 class="font-semibold text-gray-900">QR Payment (QRIS)</h3>
+            <p class="text-sm text-gray-500">Quick Response Code Indonesia Standard</p>
           </div>
         </div>
       </button>
 
-      <!-- Direct Debit -->
+      <!-- DIRECT DEBIT -->
       <button
         @click="selectPaymentMethod('DIRECT_DEBIT')"
         :class="[
@@ -135,10 +134,25 @@
       </button>
     </div>
 
-    <!-- Error message -->
     <span v-if="checkoutStore.errors['method']" class="text-sm text-red-500 block mt-4">
       {{ checkoutStore.errors['method'] }}
     </span>
+
+    <div class="flex items-start gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200 mt-6">
+      <input
+        type="checkbox"
+        id="terms"
+        v-model="agreeTerms"
+        class="mt-1"
+      />
+      <label for="terms" class="text-sm text-gray-700">
+        I agree to the terms and conditions and privacy policy
+      </label>
+    </div>
+
+    <div v-if="!agreeTerms" class="p-4 bg-yellow-50 rounded-lg border border-yellow-200 mt-4">
+      <p class="text-sm text-yellow-800">Please agree to terms and conditions to proceed</p>
+    </div>
   </div>
 </template>
 
@@ -150,13 +164,12 @@ import type { PaymentMethod } from '@/modules/checkout/types'
 const checkoutStore = useCheckoutStore()
 
 const selectedMethod = ref(checkoutStore.payment.method)
+const agreeTerms = ref(false)
 
 const selectPaymentMethod = (method: PaymentMethod['method']) => {
   selectedMethod.value = method
   checkoutStore.setPaymentMethod({
     method,
-    bankCode: method === 'BANK_TRANSFER' ? 'BCA' : undefined,
-    walletProvider: method === 'E_WALLET' ? 'GCASH' : undefined,
   })
 }
 
@@ -166,4 +179,8 @@ watch(
     selectedMethod.value = newMethod
   }
 )
+
+defineExpose({
+  agreeTerms,
+})
 </script>

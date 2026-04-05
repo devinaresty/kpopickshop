@@ -90,14 +90,15 @@ export const useOrderStore = defineStore('order', () => {
     }
   }
 
-  const createPayment = async (orderId: number) => {
+  const createPayment = async (orderId: number, paymentMethod?: any) => {
     isLoading.value = true
     error.value = null
     try {
-      const data = await apiClient.createPayment(orderId)
+      const data = await apiClient.createPayment(orderId, paymentMethod)
       return data
     } catch (err: any) {
-      error.value = err.message || 'Failed to create payment'
+      // Handle both API errors and generic errors
+      error.value = err.response?.data?.message || err.message || 'Failed to create payment'
       throw err
     } finally {
       isLoading.value = false
@@ -113,16 +114,13 @@ export const useOrderStore = defineStore('order', () => {
   }
 
   return {
-    // State
     currentOrder,
     orders,
     isLoading,
     error,
 
-    // Computed
     hasActiveOrder,
 
-    // Methods
     createOrder,
     getOrderById,
     getUserOrders,

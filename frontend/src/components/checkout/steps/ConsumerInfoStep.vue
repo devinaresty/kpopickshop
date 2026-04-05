@@ -1,7 +1,6 @@
 <template>
   <div class="space-y-6">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <!-- First Name -->
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-2">
           First Name <span class="text-red-500">*</span>
@@ -18,10 +17,9 @@
         </span>
       </div>
 
-      <!-- Last Name -->
       <div>
         <label class="block text-sm font-semibold text-gray-700 mb-2">
-          Last Name <span class="text-red-500">*</span>
+          Last Name
         </label>
         <input
           v-model="form.lastName"
@@ -36,7 +34,6 @@
       </div>
     </div>
 
-    <!-- Email -->
     <div>
       <label class="block text-sm font-semibold text-gray-700 mb-2">
         Email <span class="text-red-500">*</span>
@@ -53,7 +50,6 @@
       </span>
     </div>
 
-    <!-- Phone -->
     <div>
       <label class="block text-sm font-semibold text-gray-700 mb-2">
         Phone Number <span class="text-red-500">*</span>
@@ -85,7 +81,6 @@ const form = ref({
   phone: checkoutStore.consumer.phone,
 })
 
-// Watch for changes and update store
 watch(
   form,
   (newForm) => {
@@ -95,7 +90,5 @@ watch(
 )
 
 const validateField = () => {
-  // Individual field validation if needed
-  // This is triggered on blur for real-time feedback
 }
 </script>

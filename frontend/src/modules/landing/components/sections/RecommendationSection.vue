@@ -158,10 +158,15 @@ const reloadProducts = async () => {
     error.value = null
     
     const allProductsResponse = await apiClient.getProducts(0, 50)
+    
+    // Validate response data
+    if (!allProductsResponse || !Array.isArray(allProductsResponse.data)) {
+      throw new Error('Invalid products response format')
+    }
+    
     const allProducts = allProductsResponse.data.map(mapProductFromAPI)
     
     forYouProducts.value = allProducts
-    
     flashSaleProducts.value = allProducts.filter(product => product.isFlashSale === true)
     
     console.log('RecommendationSection - For You:', forYouProducts.value.length, 'items')
@@ -169,6 +174,9 @@ const reloadProducts = async () => {
   } catch (err) {
     console.error('Failed to fetch recommendation products:', err)
     error.value = err instanceof Error ? err.message : 'Failed to load products'
+    // Fallback to empty arrays on error
+    forYouProducts.value = []
+    flashSaleProducts.value = []
   } finally {
     isLoading.value = false
   }
@@ -191,6 +199,11 @@ const overlayTop = computed(() => {
   else columns = 3
   
   const totalRows = Math.ceil(displayedProducts.value.length / columns)
+  
+  // Avoid division by zero
+  if (totalRows === 0) {
+    return '0%'
+  }
   
   const topPercentage = (2 / totalRows) * 100
   

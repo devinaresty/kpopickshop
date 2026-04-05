@@ -7,6 +7,7 @@ declare module 'vue-router' {
     requiresGuest?: boolean
     requiresAuth?: boolean
     requiresAdmin?: boolean
+    hideNavbar?: boolean
   }
 }
 
@@ -45,12 +46,6 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
   },
   {
-    path: '/cart',
-    name: 'cart',
-    component: () => import('@/views/CartView.vue'),
-    meta: { requiresAuth: true },
-  },
-  {
     path: '/checkout',
     name: 'checkout',
     component: () => import('@/views/CheckoutView.vue'),
@@ -60,6 +55,12 @@ const routes: RouteRecordRaw[] = [
     path: '/profile',
     name: 'profile',
     component: () => import('@/views/ProfileView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/orders/:id',
+    name: 'order-detail',
+    component: () => import('@/views/OrderDetailView.vue'),
     meta: { requiresAuth: true },
   },
   {
@@ -106,6 +107,7 @@ const routes: RouteRecordRaw[] = [
     path: '/:pathMatch(.*)*',
     name: 'notfound',
     component: () => import('@/views/NotFoundView.vue'),
+    meta: { hideNavbar: true }
   }
 ]
 

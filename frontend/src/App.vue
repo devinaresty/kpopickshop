@@ -195,7 +195,7 @@ import { useUIStore } from '@/stores/ui.store'
 import { useCartStore } from '@/stores/cart.store'
 import { useI18nStore } from '@/stores/i18n.store'
 import AuthModal from '@/modules/landing/components/modals/AuthModal.vue'
-import CartSidebar from '@/components/CartSidebar.vue'
+import CartSidebar from '@/modules/landing/components/shared/CartSidebar.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { computed, onMounted, ref, watch } from 'vue'
 import { apiClient } from '@/lib/api'
@@ -225,7 +225,7 @@ const categories = ref<any[]>([])
 const isProfileMenuFocused = ref(false)
 
 const isAdminRoute = computed(() => {
-  return route.path.startsWith('/admin')
+  return route.path.startsWith('/admin') || route.meta.hideNavbar
 })
 
 const isUserLoggedIn = computed(() => {

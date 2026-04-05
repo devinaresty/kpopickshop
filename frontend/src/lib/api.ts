@@ -1,4 +1,3 @@
-// API Configuration
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
@@ -27,7 +26,6 @@ interface ApiErrorResponse {
   error: string;
 }
 
-// Product API response types
 interface Category {
   id: number;
   name: string;
@@ -94,15 +92,14 @@ class ApiClient {
     const url = `${this.baseUrl}${endpoint}`;
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
+      "ngrok-skip-browser-warning": "69420",
     };
 
-    // Add token jika ada
     const token = localStorage.getItem("token");
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
 
-    // Merge dengan options headers
     if (options?.headers && typeof options.headers === "object") {
       Object.assign(headers, options.headers);
     }
@@ -110,13 +107,13 @@ class ApiClient {
     const response = await fetch(url, {
       ...options,
       headers,
+      credentials: 'include',
+      mode: 'cors',
     });
 
-    // Handle session timeout (401 Unauthorized)
     if (response.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      // Redirect to login if in browser
       if (typeof window !== "undefined") {
         window.location.href = "/login";
       }
@@ -125,12 +122,19 @@ class ApiClient {
 
     if (!response.ok) {
       const error = (await response.json()) as ApiErrorResponse;
-      console.error("API Error:", { status: response.status, error }); // DEBUG
-      throw new Error(error.message || `HTTP ${response.status}`);
+      console.error("API Error:", { status: response.status, error }); 
+      
+      // Create error object with response property for consistent error handling
+      const errorObj = new Error(error.message || `HTTP ${response.status}`) as any;
+      errorObj.response = {
+        status: response.status,
+        data: error
+      };
+      throw errorObj;
     }
 
     const data = (await response.json()) as T;
-    console.log("API Response:", { endpoint, data }); // DEBUG
+    console.log("API Response:", { endpoint, data }); 
     return data;
   }
 
@@ -172,7 +176,6 @@ class ApiClient {
     });
   }
 
-  // Product Methods
   async getProducts(
     skip: number = 0,
     take: number = 10,
@@ -222,7 +225,6 @@ class ApiClient {
     );
   }
 
-  // Order Methods
   async getAllOrders(): Promise<any[]> {
     return this.request<any[]>("/orders", {
       method: "GET",
@@ -255,11 +257,13 @@ class ApiClient {
     });
   }
 
-  // Payment Methods
-  async createPayment(orderId: number): Promise<any> {
+  async createPayment(orderId: number, paymentMethod?: any): Promise<any> {
     return this.request("/payments/create", {
       method: "POST",
-      body: JSON.stringify({ orderId }),
+      body: JSON.stringify({ 
+        orderId,
+        paymentMethod: paymentMethod || {}
+      }),
     });
   }
 
@@ -268,26 +272,61 @@ class ApiClient {
       method: "GET",
     });
   }
+
+  async getAddresses(): Promise<any[]> {
+    return this.request<any[]>("/addresses", {
+      method: "GET",
+    });
+  }
+
+  async getDefaultAddress(): Promise<any> {
+    return this.request("/addresses/default", {
+      method: "GET",
+    });
+  }
+
+  async getAddressById(id: string | number): Promise<any> {
+    return this.request(`/addresses/${id}`, {
+      method: "GET",
+    });
+  }
+
+  async createAddress(data: any): Promise<any> {
+    return this.request("/addresses", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateAddress(id: string | number, data: any): Promise<any> {
+    return this.request(`/addresses/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteAddress(id: string | number): Promise<any> {
+    return this.request(`/addresses/${id}`, {
+      method: "DELETE",
+    });
+  }
 }
 
 export const apiClient = new ApiClient(API_BASE_URL);
 
-// Composable hook for using API in components
 export function useApi() {
   return {
     get: async (endpoint: string) => {
       try {
-        // Handle different endpoints generically
         if (endpoint === '/products') {
           const response = await apiClient.getProducts(0, 100);
-          // ProductListResponse has { data: ProductFromAPI[] }
+
           return { data: response.data };
         } else if (endpoint === '/categories') {
           const response = await apiClient.getCategories();
-          // getCategories returns Category[] directly
+
           return { data: response };
         } else {
-          // Fallback for other endpoints
           throw new Error(`Unsupported endpoint: ${endpoint}`);
         }
       } catch (error) {
@@ -300,7 +339,7 @@ export function useApi() {
         if (endpoint === '/orders') {
           data = await apiClient.createOrder(payload);
         } else if (endpoint === '/payments/create') {
-          data = await apiClient.createPayment(payload.orderId);
+          data = await apiClient.createPayment(payload.orderId, payload.paymentMethod);
         } else {
           throw new Error(`Unsupported endpoint: ${endpoint}`);
         }

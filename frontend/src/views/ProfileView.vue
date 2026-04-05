@@ -1,17 +1,13 @@
 <template>
   <div class="pt-2 pb-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-6xl mx-auto">
-      <!-- Loading State -->
       <div v-if="isLoading" class="flex items-center justify-center py-12">
         <div class="w-8 h-8 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
       </div>
 
-      <!-- Profile Content -->
       <template v-else-if="profile">
-        <!-- Profile Header Bar -->
         <ProfileHeaderBar :profile="profile" />
 
-        <!-- Tab Navigation -->
         <div class="mb-6 bg-white border border-gray-200 rounded-t-lg">
           <div class="flex border-b border-gray-200">
             <button
@@ -50,9 +46,7 @@
           </div>
         </div>
 
-        <!-- Tab Contents -->
         <div class="bg-white border border-t-0 border-gray-200 rounded-b-lg">
-          <!-- Personal Profile Tab -->
           <div v-if="activeTab === 'personal'">
             <PersonalProfileTab
               :profile="profile"
@@ -63,24 +57,23 @@
             />
           </div>
 
-          <!-- List Address Tab -->
           <div v-if="activeTab === 'address'">
-            <ListAddressTab :addresses="userAddresses" />
+            <ListAddressTab :addresses="userAddresses" @address-added="loadAddresses" />
           </div>
 
-          <!-- Transaction List Tab -->
           <div v-if="activeTab === 'transaction'">
             <TransactionListTab :transactions="userTransactions" />
           </div>
         </div>
       </template>
 
-      <!-- Empty State -->
       <div v-else class="text-center py-12">
         <p class="text-gray-600">Unable to load profile</p>
       </div>
     </div>
   </div>
+
+  <Footer />
 </template>
 
 <script setup lang="ts">
@@ -88,17 +81,18 @@ import { onMounted, ref, computed } from 'vue'
 import { useAuthStore } from '@/stores/auth.store'
 import { useProfileStore } from '@/stores/profile.store'
 import { useI18nStore } from '@/stores/i18n.store'
+import { apiClient } from '@/lib/api'
 import type { ProfileFormData, UserAddress, Transaction } from '@/modules/profile/types'
 import ProfileHeaderBar from '@/components/profile/ProfileHeaderBar.vue'
 import PersonalProfileTab from '@/components/profile/PersonalProfileTab.vue'
 import ListAddressTab from '@/components/profile/ListAddressTab.vue'
 import TransactionListTab from '@/components/profile/TransactionListTab.vue'
+import Footer from '@/modules/landing/components/shared/Footer.vue'
 
 const authStore = useAuthStore()
 const profileStore = useProfileStore()
 const i18nStore = useI18nStore()
 
-// Use computed to maintain reactivity with store
 const profile = computed(() => profileStore.profile)
 const isLoading = computed(() => profileStore.isLoading)
 const isSaving = computed(() => profileStore.isSaving)
@@ -109,17 +103,22 @@ const activeTab = ref<'personal' | 'address' | 'transaction'>('personal')
 const userAddresses = ref<UserAddress[]>([])
 const userTransactions = ref<Transaction[]>([])
 
+const loadAddresses = async () => {
+  try {
+    const addresses = await apiClient.getAddresses()
+    userAddresses.value = addresses
+  } catch (err) {
+    console.error('Failed to load addresses:', err)
+  }
+}
+
 onMounted(async () => {
-  // Load profile from current authenticated user
   if (authStore.user) {
-    // Set profile from auth store (since it already loaded on login)
     profileStore.profile = authStore.user as any
   } else {
-    // If no user in auth store, try to load from API
     await profileStore.loadProfile()
   }
-  
-  // TODO: Fetch user addresses and transactions from API
+  await loadAddresses()
 })
 
 const handleSaveProfile = (data: ProfileFormData & { photoUrl?: string }) => {

@@ -7,7 +7,6 @@ export const useCheckoutStore = defineStore('checkout', () => {
   const isLoading = ref(false)
   const errors = ref<Record<string, string>>({})
 
-  // Form data
   const consumer = ref<ConsumerInfo>({
     firstName: '',
     lastName: '',
@@ -28,41 +27,32 @@ export const useCheckoutStore = defineStore('checkout', () => {
     bankCode: 'BCA',
   })
 
-  // Computed - steps completed
   const isConsumerComplete = computed(() => {
     return (
       consumer.value.firstName.trim() !== '' &&
-      consumer.value.lastName.trim() !== '' &&
       consumer.value.email.trim() !== '' &&
       consumer.value.phone.trim() !== ''
     )
   })
 
   const isShippingComplete = computed(() => {
-    return (
-      shipping.value.address.trim() !== '' &&
-      shipping.value.city.trim() !== '' &&
-      shipping.value.province.trim() !== '' &&
-      shipping.value.postalCode.trim() !== ''
-    )
+    return shipping.value.address.trim() !== ''
   })
 
   const isPaymentComplete = computed(() => {
     return payment.value.method !== null && payment.value.method !== undefined
   })
 
-  // Methods
   const goToStep = (step: CheckoutStep) => {
     currentStep.value = step
-    errors.value = {} // Clear errors ketika pindah step
+    errors.value = {} 
   }
 
   const goToNextStep = () => {
-    const steps: CheckoutStep[] = ['consumer', 'shipping', 'payment', 'review']
+    const steps: CheckoutStep[] = ['consumer', 'shipping', 'payment']
     const currentIndex = steps.indexOf(currentStep.value)
     
     if (currentIndex < steps.length - 1) {
-      // Validate current step sebelum lanjut
       if (validateCurrentStep()) {
         currentStep.value = steps[currentIndex + 1]!
         errors.value = {}
@@ -71,7 +61,7 @@ export const useCheckoutStore = defineStore('checkout', () => {
   }
 
   const goToPreviousStep = () => {
-    const steps: CheckoutStep[] = ['consumer', 'shipping', 'payment', 'review']
+    const steps: CheckoutStep[] = ['consumer', 'shipping', 'payment']
     const currentIndex = steps.indexOf(currentStep.value)
     
     if (currentIndex > 0) {
@@ -87,9 +77,6 @@ export const useCheckoutStore = defineStore('checkout', () => {
       if (!consumer.value.firstName.trim()) {
         errors.value['firstName'] = 'First name is required'
       }
-      if (!consumer.value.lastName.trim()) {
-        errors.value['lastName'] = 'Last name is required'
-      }
       if (!consumer.value.email.trim()) {
         errors.value['email'] = 'Email is required'
       } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(consumer.value.email)) {
@@ -104,15 +91,6 @@ export const useCheckoutStore = defineStore('checkout', () => {
     if (currentStep.value === 'shipping') {
       if (!shipping.value.address.trim()) {
         errors.value['address'] = 'Address is required'
-      }
-      if (!shipping.value.city.trim()) {
-        errors.value['city'] = 'City is required'
-      }
-      if (!shipping.value.province.trim()) {
-        errors.value['province'] = 'Province is required'
-      }
-      if (!shipping.value.postalCode.trim()) {
-        errors.value['postalCode'] = 'Postal code is required'
       }
       return Object.keys(errors.value).length === 0
     }
@@ -171,7 +149,6 @@ export const useCheckoutStore = defineStore('checkout', () => {
   }
 
   return {
-    // State
     currentStep,
     isLoading,
     errors,
@@ -179,12 +156,10 @@ export const useCheckoutStore = defineStore('checkout', () => {
     shipping,
     payment,
 
-    // Computed
     isConsumerComplete,
     isShippingComplete,
     isPaymentComplete,
 
-    // Methods
     goToStep,
     goToNextStep,
     goToPreviousStep,

@@ -1,14 +1,19 @@
 <template>
   <div class="bg-white rounded-lg border border-gray-200">
-    <!-- Header -->
     <div class="p-6 border-b border-gray-200">
       <h3 class="text-xl font-bold text-black">{{ i18nStore.t('transaction.title') }}</h3>
     </div>
 
-    <!-- Content -->
     <div class="p-6">
-      <!-- Empty State -->
-      <div v-if="transactions.length === 0" class="text-center py-12">
+      <div v-if="isLoading" class="flex items-center justify-center py-12">
+        <div class="w-8 h-8 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+      </div>
+
+      <div v-else-if="errorMessage" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+        {{ errorMessage }}
+      </div>
+
+      <div v-else-if="transactions.length === 0" class="text-center py-12">
         <div class="mb-4">
           <svg class="w-16 h-16 mx-auto text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -18,9 +23,7 @@
         <p class="text-sm text-gray-500 mt-1">{{ i18nStore.t('transaction.emptySubtitle') }}</p>
       </div>
 
-      <!-- Transaction List -->
       <div v-else class="space-y-4">
-        <!-- Filter/Sort Options -->
         <div class="mb-6 flex gap-3">
           <select
             v-model="filterStatus"
@@ -33,7 +36,6 @@
           </select>
         </div>
 
-        <!-- Transactions Table -->
         <div class="overflow-x-auto">
           <table class="w-full">
             <thead>
@@ -83,12 +85,36 @@
           </table>
         </div>
 
-        <!-- Pagination (if needed) -->
         <div v-if="filteredTransactions.length > 0" class="mt-6 flex justify-center gap-2">
-          <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition disabled:opacity-50" disabled>← {{ i18nStore.t('common.previous') }}</button>
-          <button class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition">1</button>
-          <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">2</button>
-          <button class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition">{{ i18nStore.t('common.next') }} →</button>
+          <button 
+            @click="goToPrevious"
+            :disabled="currentPage === 1"
+            class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            ← {{ i18nStore.t('common.previous') }}
+          </button>
+          
+          <button 
+            v-for="page in visiblePages"
+            :key="page"
+            @click="typeof page === 'number' && goToPage(page)"
+            :disabled="page === '...'"
+            :class="{
+              'px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition': currentPage === page,
+              'px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition': currentPage !== page && page !== '...',
+              'px-4 py-2 text-gray-400 cursor-default': page === '...',
+            }"
+          >
+            {{ page }}
+          </button>
+          
+          <button 
+            @click="goToNext"
+            :disabled="currentPage === totalPages"
+            class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {{ i18nStore.t('common.next') }} →
+          </button>
         </div>
       </div>
     </div>
@@ -96,10 +122,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import { useI18nStore } from '@/stores/i18n.store'
+import { apiClient } from '@/lib/api'
 import type { Transaction } from '@/modules/profile/types'
 
+const router = useRouter()
 const i18nStore = useI18nStore()
 
 defineProps<{
@@ -107,55 +136,137 @@ defineProps<{
 }>()
 
 const filterStatus = ref('')
+const isLoading = ref(false)
+const errorMessage = ref<string | null>(null)
+const currentPage = ref(1)
+const itemsPerPage = 10
 
-const transactions = ref<Transaction[]>([
-  // Mock data - will be replaced with actual data
-  {
-    id: 1,
-    orderId: 12345,
-    userId: 1,
-    amount: 250000,
-    status: 'SUCCESS',
-    paymentMethod: 'Credit Card',
-    createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 2,
-    orderId: 12346,
-    userId: 1,
-    amount: 150000,
-    status: 'SUCCESS',
-    paymentMethod: 'Bank Transfer',
-    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 3,
-    orderId: 12347,
-    userId: 1,
-    amount: 75000,
-    status: 'PENDING',
-    paymentMethod: 'E-Wallet',
-    createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: 4,
-    orderId: 12348,
-    userId: 1,
-    amount: 200000,
-    status: 'FAILED',
-    paymentMethod: 'Credit Card',
-    createdAt: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-])
+const transactions = ref<Transaction[]>([])
+
+// Reset ke halaman 1 saat filter berubah
+watch(filterStatus, () => {
+  currentPage.value = 1
+})
+
+onMounted(async () => {
+  await loadTransactions()
+})
+
+const loadTransactions = async () => {
+  isLoading.value = true
+  errorMessage.value = null
+
+  try {
+    const orders = await apiClient.getAllOrders()
+    
+    // Map orders to transactions
+    transactions.value = orders.map((order: any) => ({
+      id: order.id,
+      orderId: order.id,
+      userId: order.userId,
+      amount: order.totalPrice,
+      status: mapOrderStatusToPaymentStatus(order.status),
+      paymentMethod: order.paymentMethod || '-',
+      createdAt: order.createdAt,
+      updatedAt: order.updatedAt,
+    })).sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()) // Oldest first
+    
+    currentPage.value = 1
+  } catch (err: any) {
+    console.error('Failed to load transactions:', err)
+    errorMessage.value = 'Failed to load payment history'
+    transactions.value = []
+  } finally {
+    isLoading.value = false
+  }
+}
+
+const mapOrderStatusToPaymentStatus = (orderStatus: string): 'PENDING' | 'SUCCESS' | 'FAILED' => {
+  // Map order status to payment status for display
+  const statusMap: { [key: string]: 'PENDING' | 'SUCCESS' | 'FAILED' } = {
+    'WAITING_PAYMENT': 'PENDING',
+    'PAID': 'SUCCESS',
+    'PROCESSING': 'SUCCESS',
+    'SHIPPED': 'SUCCESS',
+    'COMPLETED': 'SUCCESS',
+    'CANCELLED': 'FAILED',
+  }
+  return statusMap[orderStatus] || 'PENDING'
+}
 
 const filteredTransactions = computed(() => {
-  if (!filterStatus.value) return transactions.value
-  return transactions.value.filter(t => t.status === filterStatus.value)
+  let filtered = transactions.value
+  
+  if (filterStatus.value) {
+    filtered = filtered.filter(t => t.status === filterStatus.value)
+  }
+  
+  const startIndex = (currentPage.value - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  
+  return filtered.slice(startIndex, endIndex)
 })
+
+const totalPages = computed(() => {
+  const filtered = filterStatus.value 
+    ? transactions.value.filter(t => t.status === filterStatus.value)
+    : transactions.value
+  
+  return Math.ceil(filtered.length / itemsPerPage)
+})
+
+const visiblePages = computed(() => {
+  const pages: (number | string)[] = []
+  const maxVisiblePages = 5
+  
+  if (totalPages.value <= maxVisiblePages) {
+    for (let i = 1; i <= totalPages.value; i++) {
+      pages.push(i)
+    }
+  } else {
+    if (currentPage.value <= 3) {
+      for (let i = 1; i <= maxVisiblePages; i++) {
+        pages.push(i)
+      }
+      pages.push('...')
+      pages.push(totalPages.value)
+    } else if (currentPage.value >= totalPages.value - 2) {
+      pages.push(1)
+      pages.push('...')
+      for (let i = totalPages.value - maxVisiblePages + 1; i <= totalPages.value; i++) {
+        pages.push(i)
+      }
+    } else {
+      pages.push(1)
+      pages.push('...')
+      for (let i = currentPage.value - 1; i <= currentPage.value + 1; i++) {
+        pages.push(i)
+      }
+      pages.push('...')
+      pages.push(totalPages.value)
+    }
+  }
+  
+  return pages
+})
+
+const goToPage = (page: number) => {
+  if (page >= 1 && page <= totalPages.value) {
+    currentPage.value = page
+  }
+}
+
+const goToPrevious = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--
+  }
+}
+
+const goToNext = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++
+  }
+}
 
 const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat('id-ID', {
@@ -183,7 +294,9 @@ const getStatusLabel = (status: string) => {
 }
 
 const viewDetails = (transaction: Transaction) => {
-  // TODO: Navigate to transaction details or show modal
-  alert(`Order #${transaction.orderId} ${i18nStore.t('common.details')}`)
+  router.push({
+    name: 'order-detail',
+    params: { id: transaction.orderId }
+  })
 }
 </script>

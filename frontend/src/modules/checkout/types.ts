@@ -1,8 +1,4 @@
-/**
- * Checkout Types & Interfaces
- */
-
-export type CheckoutStep = 'consumer' | 'shipping' | 'payment' | 'review'
+export type CheckoutStep = 'consumer' | 'shipping' | 'payment'
 
 export interface ConsumerInfo {
   firstName: string

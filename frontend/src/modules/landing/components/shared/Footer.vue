@@ -123,7 +123,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18nStore } from '@/stores/i18n.store'
-import LanguageSwitcher from '@/components/LanguageSwitcher.vue'
+import LanguageSwitcher from './LanguageSwitcher.vue'
 
 const router = useRouter()
 const i18nStore = useI18nStore()
