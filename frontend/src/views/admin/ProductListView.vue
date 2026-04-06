@@ -7,7 +7,6 @@
       </button>
     </div>
 
-    <!-- Loading State -->
     <div v-if="isLoading" class="flex items-center justify-center py-16">
       <div class="text-center">
         <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-black"></div>
@@ -15,7 +14,6 @@
       </div>
     </div>
 
-    <!-- Error State -->
     <div v-else-if="error" class="p-4 bg-red-50 border border-red-200 rounded-lg mb-6">
       <p class="text-red-700 font-medium">{{ error }}</p>
       <button @click="loadProducts" class="mt-3 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors">
@@ -23,7 +21,6 @@
       </button>
     </div>
 
-    <!-- Products Table -->
     <div v-else class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
       <table class="w-full text-left border-collapse">
         <thead class="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider">
@@ -64,7 +61,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { apiClient } from '@/lib/api'
+import { apiClient } from '@/core/api'
 
 const products = ref<any[]>([])
 const isLoading = ref(true)

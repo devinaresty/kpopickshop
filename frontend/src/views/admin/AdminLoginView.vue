@@ -2,12 +2,9 @@
   <div class="min-h-screen bg-white flex items-center justify-center px-4 sm:px-4 lg:px-6">
     <div class="w-full max-w-4xl">
       <div class="grid grid-cols-1 lg:grid-cols-5 gap-12 lg:gap-16 items-center">
-        
-        <!-- Left Side - Login Form (40% width) -->
         <div class="lg:col-span-2 flex flex-col justify-center lg:pr-8">
           <div class="w-full">
             
-            <!-- Header -->
             <div class="mb-6">
               <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-2">
                 Welcome back
@@ -17,10 +14,8 @@
               </p>
             </div>
 
-            <!-- Form -->
             <Form :validation-schema="loginValidationSchema" @submit="onSubmit" class="space-y-4">
               
-              <!-- Email Field -->
               <div>
                 <label class="block text-xs font-medium text-gray-900 mb-1.5">
                   Email
@@ -37,7 +32,6 @@
                 </Field>
               </div>
 
-              <!-- Password Field -->
               <div>
                 <label class="block text-xs font-medium text-gray-900 mb-1.5">
                   Password
@@ -96,19 +90,16 @@
                 </Field>
               </div>
 
-              <!-- Error Message -->
               <div v-if="authStore.error" class="p-3 bg-red-50 border border-red-200 rounded-lg text-xs text-red-700">
                 {{ authStore.error }}
               </div>
 
-              <!-- Forgot Password Link -->
               <div class="flex justify-end">
                 <a href="#" class="text-xs font-medium text-gray-900 hover:text-gray-700 transition-colors">
                   Forgot Password?
                 </a>
               </div>
 
-              <!-- Sign In Button -->
               <button
                 type="submit"
                 :disabled="authStore.isLoading"
@@ -117,7 +108,6 @@
                 {{ authStore.isLoading ? 'Logging in...' : 'Login' }}
               </button>
 
-              <!-- Continue with Google Button -->
               <button
                 type="button"
                 disabled
@@ -145,7 +135,6 @@
                 <span class="text-gray-400 text-xs">Continue with Google</span>
               </button>
 
-              <!-- Already Have Account Link -->
               <div class="text-center text-xs">
                 <span class="text-gray-500">Don't have an account?</span>
                 <a href="#" class="font-semibold text-gray-900 hover:text-gray-700 transition-colors">Sign Up</a>
@@ -156,7 +145,6 @@
           </div>
         </div>
 
-        <!-- Right Side - Image Placeholder (65% width) -->
         <div class="lg:col-span-3 flex items-center justify-center lg:pl-8 py-8 lg:py-0">
           <div class="w-full h-96 lg:h-screen lg:max-h-[550px] bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl flex items-center justify-center shadow-2xl border border-gray-300/50 overflow-hidden hover:shadow-3xl transition-shadow duration-300">
             <div class="text-center px-6">
@@ -181,13 +169,12 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { Form, Field, ErrorMessage } from 'vee-validate'
 import { loginValidationSchema } from '@/modules/landing/utils/validationSchemas'
-import { useAuthStore } from '@/stores/auth.store'
+import { useAuthStore } from '@/shared/stores'
 
 const router = useRouter()
 const authStore = useAuthStore()
 const showPassword = ref(false)
 
-// Check if user is already admin - redirect to dashboard
 onMounted(() => {
   if (authStore.isAuthenticated && authStore.user?.role === 'ADMIN') {
     router.push({ name: 'admin-dashboard' })
@@ -202,29 +189,23 @@ const onSubmit = async (values: Record<string, any>) => {
   try {
     const { email, password } = values as { email: string; password: string }
     
-    // Call login from auth store
     await authStore.login(email, password)
     
-    // Check if user has admin role
     if (authStore.user?.role === 'ADMIN') {
       console.log('Admin login successful!')
-      // Redirect to admin dashboard
       await router.push({ name: 'admin-dashboard' })
     } else {
-      // User logged in but not admin
       authStore.error = 'You do not have admin access. Please contact the administrator.'
       authStore.logout()
       console.warn('User is not an admin')
     }
   } catch (error) {
     console.error('Login error:', error)
-    // Error is already handled by authStore
   }
 }
 </script>
 
 <style scoped>
-/* Smooth transitions for form elements */
 input {
   transition: all 0.2s ease;
 }

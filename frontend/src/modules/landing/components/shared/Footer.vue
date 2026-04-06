@@ -105,7 +105,6 @@
             </a>
           </div>
 
-          <!-- Language Switcher with Gap -->
           <div class="flex gap-4">
             <LanguageSwitcher />
           </div>
@@ -122,7 +121,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useI18nStore } from '@/stores/i18n.store'
+import { useI18nStore } from '@/shared/stores'
 import LanguageSwitcher from './LanguageSwitcher.vue'
 
 const router = useRouter()

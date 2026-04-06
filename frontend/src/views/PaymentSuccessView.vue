@@ -53,7 +53,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useCartStore } from '@/stores/cart.store'
+import { useCartStore } from '@/shared/stores'
 
 const router = useRouter()
 const route = useRoute()
@@ -63,8 +63,6 @@ const orderId = ref<string | null>(null)
 onMounted(() => {
   orderId.value = route.query.orderId as string || null
   
-  // Clear all cart items after successful checkout
-  // Remove all items that were purchased
   cartStore.items.forEach(item => {
     cartStore.removeFromCart(item.id)
   })

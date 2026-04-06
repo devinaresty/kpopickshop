@@ -6,7 +6,6 @@
         <p class="text-gray-600">{{ i18nStore.t('cart.subtitle') }}</p>
       </div>
 
-      <!-- Empty State -->
       <div v-if="cartStore.isEmpty" class="text-center py-16 bg-white border-2 border-dashed border-gray-300 rounded-lg">
         <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
@@ -17,13 +16,11 @@
         </RouterLink>
       </div>
 
-      <!-- Cart Items -->
       <div v-else class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div class="lg:col-span-2">
           <div class="bg-white border border-gray-200 rounded-lg overflow-hidden">
             <div class="divide-y divide-gray-200">
               <div v-for="item in cartStore.cartItems" :key="item.id" class="flex gap-4 p-4 hover:bg-gray-50 transition">
-                <!-- Product Image -->
                 <div class="w-24 h-32 bg-gray-200 rounded flex-shrink-0 overflow-hidden">
                   <img 
                     v-if="item.imageUrl" 
@@ -38,14 +35,12 @@
                   </div>
                 </div>
 
-                <!-- Product Info -->
                 <div class="flex-1">
                   <h3 class="font-semibold text-gray-900">{{ item.name }}</h3>
                   <p class="text-sm text-gray-600">{{ item.category }}</p>
                   <p class="font-bold text-black mt-2">Rp {{ item.price.toLocaleString('id-ID') }}</p>
                 </div>
 
-                <!-- Quantity Controls -->
                 <div class="flex items-center gap-2">
                   <button 
                     @click="cartStore.updateQuantity(item.id, item.quantity - 1)"
@@ -62,7 +57,6 @@
                   </button>
                 </div>
 
-                <!-- Remove Button -->
                 <button 
                   @click="cartStore.removeFromCart(item.id)"
                   class="text-red-500 hover:text-red-700 font-semibold transition"
@@ -74,7 +68,6 @@
           </div>
         </div>
 
-        <!-- Order Summary -->
         <div class="lg:col-span-1">
           <div class="bg-white border border-gray-200 rounded-lg p-6 sticky top-6">
             <h3 class="font-bold text-lg text-black mb-4">{{ i18nStore.t('cart.cartSummary') }}</h3>
@@ -111,8 +104,7 @@
 
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
-import { useCartStore } from '@/stores/cart.store'
-import { useI18nStore } from '@/stores/i18n.store'
+import { useCartStore, useI18nStore } from '@/shared/stores'
 
 const cartStore = useCartStore()
 const i18nStore = useI18nStore()

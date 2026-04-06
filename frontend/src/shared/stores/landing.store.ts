@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import type { LandingState } from '../domain/landing.types'
+import type { LandingState } from '@/modules/landing/domain/landing.types'
 
 export const useLandingStore = defineStore('landing', () => {
   const state = ref<LandingState>({

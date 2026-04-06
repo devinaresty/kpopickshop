@@ -1,12 +1,9 @@
 <template>
   <section class="py-4 sm:py-6 lg:py-8 bg-gray-100">
     <div class="mx-auto px-3 sm:px-4 lg:px-6 max-w-7xl mb-16 sm:mb-20 lg:mb-24">
-      <!-- Filters & Products Layout -->
       <div class="flex gap-3 sm:gap-4 lg:gap-6">
-        <!-- Sidebar Filters Container - Separate white container -->
         <aside class="hidden md:block w-40 lg:w-48 flex-shrink-0">
           <div class="sticky top-20 bg-white rounded-lg py-6 sm:py-8 lg:py-10 px-3 sm:px-4 lg:px-6 space-y-6 lg:space-y-8">
-            <!-- Kategori Filter -->
             <div>
               <h3 class="text-sm font-semibold text-gray-900 mb-3">Kategori</h3>
               <div class="space-y-2">
@@ -78,7 +75,6 @@
               </div>
             </div>
 
-            <!-- Urutkan Filter -->
             <div>
               <h3 class="text-sm font-semibold text-gray-900 mb-3">Urutkan</h3>
               <div class="space-y-2">
@@ -133,7 +129,6 @@
               </div>
             </div>
 
-            <!-- Ketersediaan Filter -->
             <div>
               <h3 class="text-sm font-semibold text-gray-900 mb-3">Ketersediaan</h3>
               <div class="space-y-2">
@@ -166,9 +161,7 @@
           </div>
         </aside>
 
-        <!-- Products Container - Separate white container -->
         <main class="flex-1 min-w-0">
-          <!-- Header - Aligned with products, outside the white container -->
           <div class="mb-2 sm:mb-3 lg:mb-4">
             <h1 class="text-xs sm:text-sm lg:text-base font-bold text-black mb-0.5">
               {{ headerTitle }}
@@ -176,9 +169,7 @@
             <p class="text-[10px] sm:text-xs text-gray-600">{{ headerSubtitle }}</p>
           </div>
 
-          <!-- Products Container - White background -->
           <div class="bg-white rounded-lg py-6 sm:py-8 lg:py-10 px-3 sm:px-4 lg:px-6">
-          <!-- Loading State -->
           <div v-if="isLoading" class="flex justify-center items-center py-12">
             <div class="text-center">
               <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
@@ -186,7 +177,6 @@
             </div>
           </div>
 
-          <!-- Results Grid - Matching Landing Page Design -->
           <div v-if="filteredProducts.length > 0" class="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-0.5 sm:gap-1 lg:gap-1.5">
             <div
               v-for="(product, index) in filteredProducts"
@@ -195,23 +185,18 @@
               @click="goToProductDetail(product.id)"
               :style="{ animation: `fadeInUp 0.5s ease-out forwards`, animationDelay: `${index * 50}ms` }"
             >
-              <!-- Entire Card Container -->
               <div class="bg-white border border-gray-200 rounded overflow-hidden flex flex-col h-full relative">
-                <!-- Product Image Section - Fixed Aspect Ratio Square -->
                 <div class="aspect-square bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-gray-400 relative flex-shrink-0 overflow-hidden">
-                  <!-- Display product image if available -->
                   <img
                     v-if="product.imageUrl"
                     :src="product.imageUrl"
                     :alt="product.name"
                     class="w-full h-full object-cover"
                   />
-                  <!-- Fallback icon if no image -->
                   <svg v-else class="w-5 h-5 sm:w-6 sm:h-6 lg:w-7 lg:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
 
-                  <!-- Flash Sale Badge - Dynamic from product data -->
                   <div
                     v-if="product.discountPercentage && product.discountPercentage > 0"
                     class="absolute top-0.5 left-0.5 bg-red-500 text-white px-1 py-0.5 rounded-full text-xs font-bold"
@@ -220,7 +205,6 @@
                   </div>
                 </div>
 
-                <!-- Product Info Section - Flexible Growth -->
                 <div class="px-2 py-2 sm:py-2.5 flex flex-col flex-grow gap-1">
                   <p class="text-xs text-gray-500 mb-0.5 leading-tight">{{ product.category || 'Uncategorized' }}</p>
                   <h3 class="font-semibold text-gray-900 text-xs line-clamp-2 mb-1 flex-grow leading-snug">
@@ -239,7 +223,6 @@
             </div>
           </div>
 
-          <!-- Debug Info -->
           <div v-else-if="!isLoading && products.length === 0" class="flex justify-center items-center py-12">
             <div class="text-center">
               <p class="text-gray-600 text-lg font-semibold mb-4">❌ No products loaded from server</p>
@@ -250,7 +233,6 @@
             </div>
           </div>
 
-          <!-- No Results after filtering -->
           <div v-else-if="!isLoading && products.length > 0 && filteredProducts.length === 0" class="flex justify-center items-center py-12">
             <div class="text-center">
               <svg class="w-16 h-16 mx-auto text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -271,11 +253,10 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { apiClient } from '@/lib/api'
+import { apiClient } from '@/core/api'
 import type { Product } from '@/modules/landing/types'
 import Footer from '@/modules/landing/components/shared/Footer.vue'
 
-// Extended Product interface to include search-specific fields
 interface SearchProduct extends Product {
   imageUrl: string
   discountPercentage?: number
@@ -284,7 +265,6 @@ interface SearchProduct extends Product {
 const route = useRoute()
 const router = useRouter()
 
-// State
 const products = ref<SearchProduct[]>([])
 const searchQuery = ref('')
 const categoryFilter = ref<string[]>([])
@@ -295,7 +275,6 @@ const isLoading = ref(false)
 const previousCategoryFilter = ref<string[]>([])
 const animatingCheckboxes = ref<Set<string>>(new Set())
 
-// Navigate to product detail page
 const goToProductDetail = (productId: string | number) => {
   console.log('[SearchView] Navigating to product:', productId)
   router.push({
@@ -304,7 +283,6 @@ const goToProductDetail = (productId: string | number) => {
   })
 }
 
-// Map API response to Product type with complete fields
 const mapProductFromAPI = (apiProduct: any): SearchProduct => {
   console.log('[SearchView] Mapping product:', {
     id: apiProduct.id,
@@ -332,11 +310,9 @@ const mapProductFromAPI = (apiProduct: any): SearchProduct => {
   }
 }
 
-// Load filters from route query and fetch products
 onMounted(async () => {
   console.log('[SearchView] Mounted, route:', route)
   
-  // Set filter values from route query
   searchQuery.value = (route.query.q as string) || ''
   categoryFilter.value = route.query.category ? (Array.isArray(route.query.category) ? (route.query.category as string[]) : [(route.query.category as string)]) : []
   sortFilter.value = route.query.sort ? (Array.isArray(route.query.sort) ? (route.query.sort as string[]) : [(route.query.sort as string)]) : []
@@ -351,11 +327,9 @@ onMounted(async () => {
     artistFilter: artistFilter.value
   })
 
-  // Fetch products
   await fetchProducts()
 })
 
-// Fetch products from API
 const fetchProducts = async () => {
   try {
     isLoading.value = true
@@ -382,7 +356,6 @@ const fetchProducts = async () => {
   }
 }
 
-// Watch for route query changes
 watch(() => route.query, () => {
   searchQuery.value = (route.query.q as string) || ''
   categoryFilter.value = route.query.category ? (Array.isArray(route.query.category) ? (route.query.category as string[]) : [(route.query.category as string)]) : []
@@ -391,29 +364,22 @@ watch(() => route.query, () => {
   artistFilter.value = (route.query.artist as string) || ''
 })
 
-// Update query when filters change
 const updateQuery = () => {
-  // Handle "Semua Kategori" mutual exclusivity (two-way)
   const hadEmpty = previousCategoryFilter.value.includes('')
   const hasEmpty = categoryFilter.value.includes('')
   
   if (!hadEmpty && hasEmpty) {
-    // "Semua Kategori" was just selected
     categoryFilter.value = ['']
-    // Trigger animation on "Semua Kategori" checkbox
     animatingCheckboxes.value.add('semua')
     setTimeout(() => animatingCheckboxes.value.delete('semua'), 400)
   } else if (hadEmpty && hasEmpty && categoryFilter.value.length > 1) {
-    // Specific category was added (replacing "Semua Kategori")
     categoryFilter.value = categoryFilter.value.filter(c => c !== '')
-    // Trigger animation on newly checked categories
     categoryFilter.value.forEach(cat => {
       animatingCheckboxes.value.add(cat)
       setTimeout(() => animatingCheckboxes.value.delete(cat), 400)
     })
   }
   
-  // Store current state for next call
   previousCategoryFilter.value = [...categoryFilter.value]
   
   const query: Record<string, any> = {}
@@ -434,11 +400,9 @@ const updateQuery = () => {
   router.push({ name: 'search', query })
 }
 
-// Computed filtered products
 const filteredProducts = computed(() => {
   let result = [...products.value]
 
-  // Filter by search query
   if (searchQuery.value) {
     const query = searchQuery.value.toLowerCase()
     result = result.filter(p =>
@@ -448,16 +412,13 @@ const filteredProducts = computed(() => {
     console.log(`[SearchView] After search filter: ${result.length} products`)
   }
 
-  // Filter by category
   if (categoryFilter.value.length > 0 && !categoryFilter.value.includes('')) {
     result = result.filter(p => 
       categoryFilter.value.some(cat => p.category?.toLowerCase() === cat.toLowerCase())
     )
     console.log(`[SearchView] After category filter: ${result.length} products`)
   }
-  // if categoryFilter includes '', it means "Semua Kategori" - show all, no filter applied
 
-  // Filter by artist
   if (artistFilter.value) {
     result = result.filter(p => 
       p.name.toLowerCase().includes(artistFilter.value.toLowerCase())
@@ -466,10 +427,8 @@ const filteredProducts = computed(() => {
   }
 
 
-
-  // Apply sorting - use first selected sort option (ignore empty string)
   if (sortFilter.value.length > 0) {
-    const sortBy = sortFilter.value.find(s => s !== '')  // Find first non-empty sort value
+    const sortBy = sortFilter.value.find(s => s !== '')  
     if (sortBy === 'price-low') {
       result.sort((a, b) => a.price - b.price)
     } else if (sortBy === 'price-high') {
@@ -479,7 +438,6 @@ const filteredProducts = computed(() => {
     }
   }
 
-  // Apply stock filter (ignore empty string)
   if (stockFilter.value.length > 0 && stockFilter.value.includes('instock')) {
     result = result.filter(p => p.stock > 0)
     console.log(`[SearchView] After stock filter: ${result.length} products`)
@@ -489,7 +447,6 @@ const filteredProducts = computed(() => {
   return result
 })
 
-// Header text
 const headerTitle = computed(() => {
   if (artistFilter.value) {
     return `Results for: ${artistFilter.value}`
@@ -520,7 +477,6 @@ const headerSubtitle = computed(() => {
   }
 }
 
-/* Bubble burst animation */
 @keyframes bubbleBurst {
   0% {
     transform: scale(0.8);
@@ -536,7 +492,6 @@ const headerSubtitle = computed(() => {
   }
 }
 
-/* Custom checkbox styling */
 input[type="checkbox"] {
   cursor: pointer;
   accent-color: black;

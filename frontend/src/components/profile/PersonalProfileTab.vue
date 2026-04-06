@@ -1,6 +1,5 @@
 <template>
   <div class="bg-white rounded-lg border border-gray-200">
-    <!-- Header with Edit Button -->
     <div class="flex justify-between items-center p-6 border-b border-gray-200">
       <h3 class="text-xl font-bold text-black">{{ i18nStore.t('personalProfile.title') }}</h3>
       <button
@@ -11,12 +10,9 @@
       </button>
     </div>
 
-    <!-- Content -->
     <div class="p-6">
-      <!-- Display Mode -->
       <template v-if="!isEditing">
         <div class="grid grid-cols-2 gap-8">
-          <!-- Left: Avatar and File Upload -->
           <div class="flex flex-col items-center">
             <div class="w-40 h-40 rounded-full bg-gradient-to-br from-gray-300 to-gray-500 flex items-center justify-center overflow-hidden mb-6 shadow-md border-4 border-gray-100">
               <img v-if="profile?.photoUrl" :src="profile.photoUrl" :alt="profile.name" class="w-full h-full object-cover">
@@ -25,7 +21,6 @@
               </svg>
             </div>
 
-            <!-- Photo Upload -->
             <div class="w-full">
               <label class="block w-full">
                 <input
@@ -42,15 +37,12 @@
               </label>
             </div>
 
-            <!-- File Size Info -->
             <p class="text-xs text-gray-600 mt-4 text-center">
               {{ i18nStore.t('personalProfile.fileSizeInfo') }}
             </p>
           </div>
 
-          <!-- Right: Form Fields -->
           <div class="space-y-4">
-            <!-- Full Name -->
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('personalProfile.fullName') }}</label>
               <div class="px-4 py-3 bg-gray-100 text-gray-900 rounded-lg font-medium">
@@ -58,7 +50,6 @@
               </div>
             </div>
 
-            <!-- Date of Birthday -->
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('personalProfile.dateOfBirth') }}</label>
               <div class="px-4 py-3 bg-gray-100 text-gray-900 rounded-lg font-medium">
@@ -66,7 +57,6 @@
               </div>
             </div>
 
-            <!-- Email -->
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('common.email') }}</label>
               <div class="px-4 py-3 bg-gray-100 text-gray-900 rounded-lg font-medium">
@@ -74,7 +64,6 @@
               </div>
             </div>
 
-            <!-- Phone Number -->
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('personalProfile.phoneNumber') }}</label>
               <div class="px-4 py-3 bg-gray-100 text-gray-900 rounded-lg font-medium">
@@ -85,19 +74,15 @@
         </div>
       </template>
 
-      <!-- Edit Mode -->
       <template v-else>
         <div class="grid grid-cols-2 gap-8">
-          <!-- Left: Avatar and File Upload -->
           <div class="flex flex-col items-center">
-            <!-- Photo with Delete Hover -->
             <div class="relative w-40 h-40 rounded-full bg-gradient-to-br from-gray-300 to-gray-500 flex items-center justify-center overflow-hidden mb-6 shadow-md border-4 border-gray-100 group cursor-pointer">
               <img v-if="formData.photoPreview || profile?.photoUrl" :src="formData.photoPreview || profile?.photoUrl" :alt="profile?.name" class="w-full h-full object-cover">
               <svg v-else class="w-20 h-20 text-white" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
               </svg>
               
-              <!-- Delete Overlay Hover -->
               <button
                 v-if="formData.photoPreview"
                 @click.stop="deletePhoto"
@@ -109,7 +94,6 @@
               </button>
             </div>
 
-            <!-- Photo Upload -->
             <div class="w-full">
               <label class="block w-full">
                 <input
@@ -126,15 +110,12 @@
               </label>
             </div>
 
-            <!-- File Size Info -->
             <p class="text-xs text-gray-600 mt-4 text-center">
               Besar file: maksimum 10.000.000 bytes (10 Megabytes). Ekstensi file yang diperbolehkan: JPG, JPEG, PNG
             </p>
           </div>
-
-          <!-- Right: Form Fields -->
+>
           <div class="space-y-4">
-            <!-- Full Name -->
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('personalProfile.fullName') }} <span class="text-red-500">*</span></label>
               <input
@@ -145,7 +126,6 @@
               />
             </div>
 
-            <!-- Date of Birthday -->
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('personalProfile.dateOfBirth') }}</label>
               <input
@@ -155,7 +135,6 @@
               />
             </div>
 
-            <!-- Email (Editable) -->
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('common.email') }}</label>
               <input
@@ -166,7 +145,6 @@
               />
             </div>
 
-            <!-- Phone Number -->
             <div>
               <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('personalProfile.phoneNumber') }}</label>
               <input
@@ -179,7 +157,6 @@
           </div>
         </div>
 
-        <!-- Messages -->
         <div class="mt-6 space-y-3">
           <div v-if="error" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
             {{ error }}
@@ -189,7 +166,6 @@
           </div>
         </div>
 
-        <!-- Action Buttons -->
         <div class="mt-6 flex gap-3">
           <button
             @click="saveProfile"
@@ -209,7 +185,6 @@
     </div>
   </div>
 
-  <!-- Delete Confirmation Modal -->
   <div v-if="showDeleteConfirm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 rounded-lg">
     <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm mx-4">
       <h3 class="text-lg font-bold text-gray-900 mb-2">{{ i18nStore.t('personalProfile.deletePhotoConfirmTitle') }}</h3>
@@ -234,8 +209,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
-import { useProfileStore } from '@/stores/profile.store'
-import { useI18nStore } from '@/stores/i18n.store'
+import { useProfileStore, useI18nStore } from '@/shared/stores'
 import type { UserProfile, ProfileFormData } from '@/modules/profile/types'
 
 const profileStore = useProfileStore()
@@ -264,7 +238,6 @@ const formData = reactive({
   photoPreview: props.profile?.photoUrl || '',
 })
 
-// Watch for success message and close edit mode
 watch(() => props.successMessage, (newVal) => {
   if (newVal) {
     isEditing.value = false
@@ -275,13 +248,11 @@ const handlePhotoUpload = async (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (!file) return
 
-  // Check file size (10MB max)
   if (file.size > 10 * 1024 * 1024) {
     alert(i18nStore.t('personalProfile.fileTooLarge'))
     return
   }
 
-  // Check file type
   const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
   if (!allowedTypes.includes(file.type)) {
     alert(i18nStore.t('personalProfile.invalidFileFormat'))
@@ -291,7 +262,6 @@ const handlePhotoUpload = async (event: Event) => {
   isUploadingPhoto.value = true
 
   try {
-    // Create preview URL first (synchronous)
     await new Promise<void>((resolve) => {
       const reader = new FileReader()
       reader.onload = (e) => {
@@ -303,7 +273,6 @@ const handlePhotoUpload = async (event: Event) => {
 
     console.log('Photo preview created, uploading to server...')
 
-    // Upload to backend via profile store
     const response = await profileStore.uploadProfilePhoto(file)
     
     if (response && response.photoUrl) {
@@ -348,19 +317,17 @@ const saveProfile = () => {
     return
   }
 
-  // Use undefined for empty/null values instead of null
   const photoUrl = formData.photoPreview ? formData.photoPreview : undefined
 
   emit('save', {
     name: formData.name,
     email: formData.email,
     phone: formData.phone,
-    address: '', // Not used in this tab
+    address: '', 
     dateOfBirth: formData.dateOfBirth,
     photoUrl: photoUrl,
   })
   
-  // Close edit mode immediately after save
   isEditing.value = false
 }
 </script>

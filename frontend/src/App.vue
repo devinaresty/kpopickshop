@@ -189,16 +189,16 @@
 </template>
 
 <script setup lang="ts">
-import { useLandingStore } from '@/modules/landing/stores/landing.store'
-import { useAuthStore } from '@/stores/auth.store'
-import { useUIStore } from '@/stores/ui.store'
-import { useCartStore } from '@/stores/cart.store'
-import { useI18nStore } from '@/stores/i18n.store'
+import { useLandingStore } from '@/shared/stores/landing.store'
+import { useAuthStore } from '@/shared/stores'
+import { useUIStore } from '@/shared/stores'
+import { useCartStore } from '@/shared/stores'
+import { useI18nStore } from '@/shared/stores'
 import AuthModal from '@/modules/landing/components/modals/AuthModal.vue'
 import CartSidebar from '@/modules/landing/components/shared/CartSidebar.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { computed, onMounted, ref, watch } from 'vue'
-import { apiClient } from '@/lib/api'
+import { apiClient } from '@/core/api'
 
 interface Product {
   id: number

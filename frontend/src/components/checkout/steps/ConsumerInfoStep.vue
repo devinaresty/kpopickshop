@@ -70,7 +70,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useCheckoutStore } from '@/stores/checkout.store'
+import { useCheckoutStore } from '@/shared/stores'
 
 const checkoutStore = useCheckoutStore()
 

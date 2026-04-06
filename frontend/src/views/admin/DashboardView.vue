@@ -2,7 +2,6 @@
   <div>
     <h1 class="text-3xl font-bold text-gray-800 mb-8">Dashboard Overview</h1>
     
-    <!-- Loading State -->
     <div v-if="isLoading" class="flex items-center justify-center py-20">
       <div class="text-center">
         <div class="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600"></div>
@@ -10,7 +9,6 @@
       </div>
     </div>
 
-    <!-- Error State -->
     <div v-else-if="error" class="mb-8 p-4 bg-red-50 border border-red-200 rounded-lg">
       <p class="text-red-700 font-medium">Failed to load dashboard data</p>
       <p class="text-red-600 text-sm mt-1">{{ error }}</p>
@@ -19,7 +17,6 @@
       </button>
     </div>
 
-    <!-- Dashboard Content -->
     <div v-else>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4">
@@ -56,7 +53,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { apiClient } from '@/lib/api'
+import { apiClient } from '@/core/api'
 
 const productsCount = ref(0)
 const ordersCount = ref(0)
@@ -69,15 +66,12 @@ const loadDashboardData = async () => {
   error.value = null
   
   try {
-    // Fetch products count
     const prods = await apiClient.getProducts(0, 1)
     productsCount.value = prods.total || 0
 
-    // Fetch all orders (admin endpoint)
     const orders = await apiClient.getAllOrdersAdmin()
     ordersCount.value = orders.length
     
-    // Calculate total revenue from paid/completed orders
     revenue.value = orders
       .filter((o: any) => o.grandTotal && ['PAID', 'COMPLETED', 'SHIPPED'].includes(o.status))
       .reduce((sum: number, o: any) => sum + (o.grandTotal || 0), 0)

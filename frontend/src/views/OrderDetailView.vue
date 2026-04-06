@@ -11,7 +11,6 @@
       </div>
 
       <div v-else-if="order" class="space-y-6">
-        <!-- Header -->
         <div class="bg-white border border-gray-200 rounded-lg p-6 sm:p-8">
           <div class="flex justify-between items-start mb-4">
             <div>
@@ -53,7 +52,6 @@
           </div>
         </div>
 
-        <!-- Order Items -->
         <div class="bg-white border border-gray-200 rounded-lg p-6 sm:p-8">
           <h2 class="text-xl font-bold text-black mb-4">Order Items</h2>
           <div class="space-y-4">
@@ -85,7 +83,6 @@
           </div>
         </div>
 
-        <!-- Shipping Address -->
         <div class="bg-white border border-gray-200 rounded-lg p-6 sm:p-8">
           <h2 class="text-xl font-bold text-black mb-4">Shipping Address</h2>
           <div class="space-y-3">
@@ -113,7 +110,6 @@
           </div>
         </div>
 
-        <!-- Order Summary -->
         <div class="bg-white border border-gray-200 rounded-lg p-6 sm:p-8">
           <h2 class="text-xl font-bold text-black mb-4">Order Summary</h2>
           <div class="space-y-3 text-sm">
@@ -136,7 +132,6 @@
           </div>
         </div>
 
-        <!-- Actions -->
         <div class="flex gap-4">
           <router-link
             to="/profile"
@@ -161,7 +156,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { apiClient } from '@/lib/api'
+import { apiClient } from '@/core/api'
 import Footer from '@/modules/landing/components/shared/Footer.vue'
 
 interface OrderItem {
@@ -226,12 +221,10 @@ const loadOrder = async () => {
   try {
     const data = await apiClient.getOrderById(orderId)
     
-    // Initialize default values
     data.recipientName = data.recipientName || '-'
     data.recipientPhone = data.recipientPhone || '-'
     data.shippingAddress = data.shippingAddress || '-'
     
-    // Parse metadata if it exists
     if (data.metadata && typeof data.metadata === 'string') {
       try {
         const metadata = JSON.parse(data.metadata)

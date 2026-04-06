@@ -1,6 +1,5 @@
 <template>
   <div class="space-y-6">
-    <!-- Consumer Information Summary -->
     <div class="bg-gray-50 rounded-lg p-6">
       <h3 class="font-semibold text-gray-900 mb-4">Consumer Information</h3>
       <div class="grid grid-cols-2 gap-4">
@@ -21,7 +20,6 @@
       </div>
     </div>
 
-    <!-- Shipping Information Summary -->
     <div class="bg-gray-50 rounded-lg p-6">
       <h3 class="font-semibold text-gray-900 mb-4">Shipping Address</h3>
       <div class="space-y-2">
@@ -34,7 +32,6 @@
       </div>
     </div>
 
-    <!-- Payment Method Summary -->
     <div class="bg-gray-50 rounded-lg p-6">
       <h3 class="font-semibold text-gray-900 mb-4">Payment Method</h3>
       <div class="flex items-center gap-3">
@@ -50,7 +47,6 @@
       </div>
     </div>
 
-    <!-- Terms & Conditions -->
     <div class="flex items-start gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200">
       <input
         type="checkbox"
@@ -63,7 +59,6 @@
       </label>
     </div>
 
-    <!-- Warning if terms not agreed -->
     <div v-if="!agreeTerms" class="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
       <p class="text-sm text-yellow-800">Please agree to terms and conditions to proceed</p>
     </div>
@@ -72,7 +67,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useCheckoutStore } from '@/stores/checkout.store'
+import { useCheckoutStore } from '@/shared/stores'
 import type { PaymentMethod } from '@/modules/checkout/types'
 
 const checkoutStore = useCheckoutStore()

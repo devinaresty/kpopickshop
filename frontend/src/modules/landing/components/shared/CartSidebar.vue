@@ -122,8 +122,7 @@
 
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
-import { useCartStore } from '@/stores/cart.store'
-import { useI18nStore } from '@/stores/i18n.store'
+import { useCartStore, useI18nStore } from '@/shared/stores'
 import { ref, computed, watch } from 'vue'
 
 const router = useRouter()
@@ -140,12 +139,10 @@ const props = defineProps({
 
 const emit = defineEmits(['close'])
 
-// Auto-select first item when cart opens
 watch(
   () => props.isOpen,
   (newVal) => {
     if (newVal && cartStore.cartItems && cartStore.cartItems.length > 0) {
-      // Set default selection to first item only
       const firstItem = cartStore.cartItems[0]
       if (firstItem) {
         const firstItemId = Number(firstItem.id)
@@ -155,14 +152,12 @@ watch(
   }
 )
 
-// Compute total from selected items only
 const selectedItemsTotal = computed(() => {
   return cartStore.cartItems
     .filter(item => selectedItems.value.includes(Number(item.id)))
     .reduce((total, item) => total + (item.price * item.quantity), 0)
 })
 
-// Compute count of selected items
 const selectedItemsCount = computed(() => {
   return cartStore.cartItems
     .filter(item => selectedItems.value.includes(Number(item.id)))
@@ -187,7 +182,6 @@ const toggleItemSelection = (itemId: number) => {
   }
 }
 
-// Clear checked items from cart (call this after successful checkout)
 const clearCheckedItems = () => {
   selectedItems.value.forEach(itemId => {
     cartStore.removeFromCart(itemId)
@@ -199,7 +193,6 @@ const formatPrice = (price: number): string => {
   return price.toLocaleString('id-ID')
 }
 
-// Expose clearCheckedItems function for external use (checkout success)
 defineExpose({
   clearCheckedItems
 })

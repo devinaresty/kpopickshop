@@ -1,6 +1,5 @@
 <template>
   <div class="space-y-6">
-    <!-- Address Selection -->
     <div v-if="savedAddresses.length > 0" class="space-y-4">
       <h3 class="text-lg font-bold text-gray-900">Select Shipping Address</h3>
       
@@ -19,7 +18,6 @@
         </button>
       </div>
 
-      <!-- Selected Address Display -->
       <div v-if="selectedAddress" class="bg-white border border-gray-200 rounded-lg p-6">
         <div class="flex justify-between items-start">
           <div class="flex-1">
@@ -44,7 +42,6 @@
       </div>
     </div>
 
-    <!-- Empty State -->
     <div v-else class="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
       <p class="text-gray-900 font-semibold mb-2">No Addresses Found</p>
       <p class="text-gray-600 mb-4">Please add an address in your profile first</p>
@@ -60,8 +57,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useCheckoutStore } from '@/stores/checkout.store'
-import { apiClient } from '@/lib/api'
+import { useCheckoutStore } from '@/shared/stores'
+import { apiClient } from '@/core/api'
 
 interface Address {
   id: number
@@ -86,7 +83,6 @@ const loadAddresses = async () => {
     const addresses = await apiClient.getAddresses()
     savedAddresses.value = addresses
     
-    // Auto-select default address
     const defaultAddr = addresses.find(a => a.isDefault)
     if (defaultAddr) {
       selectAddress(defaultAddr)
@@ -99,7 +95,6 @@ const loadAddresses = async () => {
 const selectAddress = (addr: Address) => {
   selectedAddress.value = addr
   
-  // Update checkout store with address info
   checkoutStore.setShippingInfo({
     address: `${addr.fullName}, ${addr.address}`,
     city: '',

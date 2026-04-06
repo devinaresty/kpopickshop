@@ -12,7 +12,6 @@
     </div>
 
     <div class="p-6">
-      <!-- Add New Address Form -->
       <div v-if="showAddForm" class="mb-6 p-6 bg-gray-50 border border-gray-200 rounded-lg">
         <h4 class="text-lg font-bold text-black mb-4">{{ i18nStore.t('address.formTitle') }}</h4>
         <form @submit.prevent="addNewAddress" class="space-y-4">
@@ -89,12 +88,10 @@
         </form>
       </div>
 
-      <!-- Empty State -->
       <div v-if="addressList.length === 0 && !showAddForm" class="text-center py-8">
         <p class="text-gray-600">{{ i18nStore.t('common.empty') }}</p>
       </div>
 
-      <!-- Address List -->
       <div v-else class="space-y-4">
         <div 
           v-for="address in addressList" 
@@ -102,7 +99,6 @@
           class="border border-gray-200 rounded-lg p-6 transition"
           :class="editingAddressId === address.id ? 'bg-gray-50 border-gray-300' : 'bg-white hover:bg-gray-50'"
         >
-          <!-- View Mode -->
           <div v-if="editingAddressId !== address.id">
             <div class="flex justify-between items-start mb-4">
               <div class="flex gap-2 items-center">
@@ -146,7 +142,6 @@
             </div>
           </div>
 
-          <!-- Edit Mode -->
           <div v-else class="space-y-4">
             <h4 class="text-lg font-bold text-black mb-4">{{ i18nStore.t('common.edit') }} {{ i18nStore.t('address.title') }}</h4>
             <div>
@@ -225,8 +220,8 @@
 
 <script setup lang="ts">
 import { ref, reactive, watch } from 'vue'
-import { useI18nStore } from '@/stores/i18n.store'
-import { apiClient } from '@/lib/api'
+import { useI18nStore } from '@/shared/stores'
+import { apiClient } from '@/core/api'
 import type { UserAddress } from '@/modules/profile/types'
 
 const i18nStore = useI18nStore()

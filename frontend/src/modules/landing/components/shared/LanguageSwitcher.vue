@@ -27,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { useI18nStore } from '@/stores/i18n.store'
+import { useI18nStore } from '@/shared/stores'
 
 const i18nStore = useI18nStore()
 </script>

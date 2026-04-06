@@ -3,7 +3,6 @@
     <p class="text-gray-600 mb-6">Select your preferred payment method</p>
 
     <div class="space-y-3">
-      <!-- BANK TRANSFER -->
       <button
         @click="selectPaymentMethod('BANK_TRANSFER')"
         :class="[
@@ -29,7 +28,6 @@
         </div>
       </button>
 
-      <!-- CREDIT CARD -->
       <button
         @click="selectPaymentMethod('CREDIT_CARD')"
         :class="[
@@ -55,7 +53,6 @@
         </div>
       </button>
 
-      <!-- E-WALLET -->
       <button
         @click="selectPaymentMethod('E_WALLET')"
         :class="[
@@ -81,7 +78,6 @@
         </div>
       </button>
 
-      <!-- QR PAYMENT -->
       <button
         @click="selectPaymentMethod('QR_PAYMENT')"
         :class="[
@@ -107,7 +103,6 @@
         </div>
       </button>
 
-      <!-- DIRECT DEBIT -->
       <button
         @click="selectPaymentMethod('DIRECT_DEBIT')"
         :class="[
@@ -158,7 +153,7 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useCheckoutStore } from '@/stores/checkout.store'
+import { useCheckoutStore } from '@/shared/stores'
 import type { PaymentMethod } from '@/modules/checkout/types'
 
 const checkoutStore = useCheckoutStore()

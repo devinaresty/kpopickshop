@@ -1,12 +1,10 @@
 <template>
-  <!-- Modal Backdrop -->
   <div
     v-if="landingStore.state.isAuthModalOpen"
     class="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 transition-opacity duration-300 cursor-pointer"
     @click="landingStore.closeAuthModal()"
   />
 
-  <!-- Modal -->
   <div
     v-if="landingStore.state.isAuthModalOpen"
     class="fixed inset-0 z-50 flex items-center justify-center p-4"
@@ -15,23 +13,16 @@
       class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full grid grid-cols-1 sm:grid-cols-2 animate-in fade-in zoom-in duration-300 overflow-hidden"
       @click.stop
     >
-      <!-- Left Side - Branding (Hidden on Mobile) -->
       <div class="hidden sm:flex flex-col items-center justify-center p-8 lg:p-10 bg-gradient-to-br from-gray-50 to-gray-100">
-        <!-- Logo -->
         <img src="/logo (3).png" alt="K Logo" class="w-20 h-20 lg:w-24 lg:h-24 object-contain mb-4" />
-        
-        <!-- Branding Text -->
         <h2 class="text-xl lg:text-2xl font-black text-black text-center mb-2">KPopick</h2>
         <p class="text-xs lg:text-sm text-gray-600 text-center leading-relaxed">
           Your ultimate K-pop destination for albums, merchandise, and exclusive collectibles.
         </p>
       </div>
 
-      <!-- Right Side - Forms -->
       <div class="flex flex-col">
-        <!-- Close Button -->
         <div class="flex justify-between items-center p-4 sm:p-5 lg:p-6 border-b border-gray-100 sm:border-b-0">
-          <!-- Logo for Mobile -->
           <img src="/logo (3).png" alt="K Logo" class="sm:hidden w-10 h-10 object-contain" />
           <h2 class="sm:hidden text-sm font-bold text-black">KPopick</h2>
           
@@ -45,15 +36,11 @@
           </button>
         </div>
 
-        <!-- Modal Content -->
         <div class="p-5 sm:p-6 lg:p-7 flex-grow flex flex-col">
-          <!-- Login Form -->
           <LoginForm v-if="landingStore.state.authModalMode === 'login'" />
 
-          <!-- Sign Up Form -->
           <SignUpForm v-else />
 
-          <!-- Toggle Button -->
           <div class="mt-4 sm:mt-5 text-center border-t border-gray-100 pt-4">
             <p class="text-xs sm:text-sm text-gray-600 mb-2">
               {{ landingStore.state.authModalMode === 'login' ? "Don't have an account?" : 'Already have an account?' }}
@@ -66,7 +53,6 @@
             </button>
           </div>
 
-          <!-- See Other Options -->
           <div class="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-100">
             <button
               v-if="!landingStore.state.isOtherOptionsModalOpen"
@@ -76,7 +62,6 @@
               See Other Login Options
             </button>
 
-            <!-- Social Options -->
             <div
               v-else
               class="flex gap-2 animate-in fade-in duration-200"
@@ -110,14 +95,13 @@
 </template>
 
 <script setup lang="ts">
-import { useLandingStore } from '../../stores/landing.store'
+import { useLandingStore } from '@/shared/stores/landing.store'
 import LoginForm from './LoginForm.vue'
 import SignUpForm from './SignUpForm.vue'
 import { onMounted, onBeforeUnmount } from 'vue'
 
 const landingStore = useLandingStore()
 
-// Handle Escape key to close modal
 const handleEscapeKey = (event: KeyboardEvent) => {
   if (event.key === 'Escape' && landingStore.state.isAuthModalOpen) {
     landingStore.closeAuthModal()

@@ -78,10 +78,8 @@
 
 <script setup lang="ts">
 import { onMounted, ref, computed } from 'vue'
-import { useAuthStore } from '@/stores/auth.store'
-import { useProfileStore } from '@/stores/profile.store'
-import { useI18nStore } from '@/stores/i18n.store'
-import { apiClient } from '@/lib/api'
+import { useAuthStore, useProfileStore, useI18nStore } from '@/shared/stores'
+import { apiClient } from '@/core/api'
 import type { ProfileFormData, UserAddress, Transaction } from '@/modules/profile/types'
 import ProfileHeaderBar from '@/components/profile/ProfileHeaderBar.vue'
 import PersonalProfileTab from '@/components/profile/PersonalProfileTab.vue'

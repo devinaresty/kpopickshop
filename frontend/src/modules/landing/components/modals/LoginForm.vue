@@ -1,6 +1,5 @@
 <template>
   <Form :validation-schema="loginValidationSchema" @submit="onSubmit" :initial-values="initialValues" class="space-y-2.5 sm:space-y-3">
-    <!-- Email Field -->
     <div>
       <Field name="email" v-slot="{ field }" class="space-y-1">
         <label class="block text-xs sm:text-sm font-medium text-gray-900">Email Address</label>
@@ -15,7 +14,6 @@
       </Field>
     </div>
 
-    <!-- Password Field -->
     <div>
       <Field name="password" v-slot="{ field }" class="space-y-1">
         <label class="block text-xs sm:text-sm font-medium text-gray-900">Password</label>
@@ -32,12 +30,12 @@
             @click="showPassword = !showPassword"
             class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none transition-colors"
           >
-            <!-- Eye Icon (Open) -->
+
             <svg v-if="showPassword" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
             </svg>
-            <!-- Eye Icon (Closed) -->
+
             <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-2.391m5.005-2.905A9.005 9.005 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.006 10.006 0 01-9.542 7" />
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -49,12 +47,12 @@
       </Field>
     </div>
 
-    <!-- Error Message -->
+    
     <div v-if="authStore.error" class="p-3 bg-red-50 border border-red-200 rounded-lg text-xs sm:text-sm text-red-700">
       {{ authStore.error }}
     </div>
 
-    <!-- Remember Me & Forgot Password -->
+    
     <div class="flex items-center justify-between text-xs sm:text-sm gap-2">
       <label class="flex items-center gap-2 cursor-pointer">
         <input 
@@ -68,7 +66,7 @@
       <a href="#" class="text-black hover:text-gray-700 font-medium">Forgot password?</a>
     </div>
 
-    <!-- Submit Button -->
+    
     <button
       type="submit"
       :disabled="authStore.isLoading"
@@ -83,8 +81,8 @@
 import { useRouter } from 'vue-router'
 import { Form, Field, ErrorMessage } from 'vee-validate'
 import { loginValidationSchema } from '../../utils/validationSchemas'
-import { useAuthStore } from '../../../../stores/auth.store'
-import { useLandingStore } from '../../stores/landing.store'
+import { useAuthStore } from '@/shared/stores/auth.store'
+import { useLandingStore } from '@/shared/stores/landing.store'
 import { ref, reactive, onMounted } from 'vue'
 
 const router = useRouter()
@@ -99,7 +97,6 @@ const initialValues = reactive({
   password: ''
 })
 
-// Load saved credentials on mount
 onMounted(() => {
   const stored = localStorage.getItem('kpopick_login_credentials')
   if (stored) {
@@ -115,7 +112,7 @@ onMounted(() => {
 })
 
 const onSubmit = async (values: Record<string, any>) => {
-  // Prevent multiple submissions
+  
   if (isSubmitting.value || authStore.isLoading) {
     console.warn('Submission already in progress')
     return
@@ -125,29 +122,24 @@ const onSubmit = async (values: Record<string, any>) => {
   try {
     const { email, password } = values as { email: string; password: string }
     
-    // Perform login
+    
     await authStore.login(email, password)
     
-    // Save credentials if Remember Me is checked
     if (rememberMe.value) {
       localStorage.setItem(
         'kpopick_login_credentials',
         JSON.stringify({ email, password })
       )
     } else {
-      // Clear saved credentials if Remember Me is unchecked
       localStorage.removeItem('kpopick_login_credentials')
     }
     
     console.log('Login berhasil!')
     
-    // Close modal setelah login berhasil
     landingStore.closeAuthModal()
     
-    // Add delay to ensure state update before redirect
     await new Promise(resolve => setTimeout(resolve, 150))
     
-    // Redirect ke home page setelah login
     try {
       await router.push({ name: 'home' })
     } catch (routeError) {
@@ -156,8 +148,6 @@ const onSubmit = async (values: Record<string, any>) => {
     }
   } catch (error) {
     console.error('Login error:', error)
-    // Store error is already set in auth.store, modal stays open for retry
-    // Error message will be displayed in the form
   } finally {
     isSubmitting.value = false
   }

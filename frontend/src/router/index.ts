@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
-import { useAuthStore } from '@/stores/auth.store'
+import { useAuthStore } from '@/shared/stores'
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -16,13 +16,13 @@ const routes: RouteRecordRaw[] = [
     path: '/',
     name: 'landing',
     component: () => import('@/views/LandingPageView.vue'),
-    meta: { requiresGuest: true }, // Hanya untuk user yang belum login
+    meta: { requiresGuest: true }, 
   },
   {
     path: '/home',
     name: 'home',
     component: () => import('@/views/HomeView.vue'),
-    meta: { requiresAuth: true }, // Hanya untuk user yang sudah login
+    meta: { requiresAuth: true }, 
   },
   {
     path: '/search',

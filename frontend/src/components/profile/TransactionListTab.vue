@@ -124,8 +124,8 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter } from 'vue-router'
-import { useI18nStore } from '@/stores/i18n.store'
-import { apiClient } from '@/lib/api'
+import { useI18nStore } from '@/shared/stores'
+import { apiClient } from '@/core/api'
 import type { Transaction } from '@/modules/profile/types'
 
 const router = useRouter()
@@ -143,7 +143,6 @@ const itemsPerPage = 10
 
 const transactions = ref<Transaction[]>([])
 
-// Reset ke halaman 1 saat filter berubah
 watch(filterStatus, () => {
   currentPage.value = 1
 })
@@ -159,7 +158,6 @@ const loadTransactions = async () => {
   try {
     const orders = await apiClient.getAllOrders()
     
-    // Map orders to transactions
     transactions.value = orders.map((order: any) => ({
       id: order.id,
       orderId: order.id,
@@ -182,7 +180,6 @@ const loadTransactions = async () => {
 }
 
 const mapOrderStatusToPaymentStatus = (orderStatus: string): 'PENDING' | 'SUCCESS' | 'FAILED' => {
-  // Map order status to payment status for display
   const statusMap: { [key: string]: 'PENDING' | 'SUCCESS' | 'FAILED' } = {
     'WAITING_PAYMENT': 'PENDING',
     'PAID': 'SUCCESS',

@@ -109,9 +109,9 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import type { Product } from '@/modules/landing/types'
-import { apiClient } from '@/lib/api'
-import { useAuthStore } from '@/stores/auth.store'
-import { useLandingStore } from '@/modules/landing/stores/landing.store'
+import { apiClient } from '@/core/api'
+import { useAuthStore } from '@/shared/stores'
+import { useLandingStore } from '@/shared/stores/landing.store'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -159,7 +159,6 @@ const reloadProducts = async () => {
     
     const allProductsResponse = await apiClient.getProducts(0, 50)
     
-    // Validate response data
     if (!allProductsResponse || !Array.isArray(allProductsResponse.data)) {
       throw new Error('Invalid products response format')
     }
@@ -174,7 +173,6 @@ const reloadProducts = async () => {
   } catch (err) {
     console.error('Failed to fetch recommendation products:', err)
     error.value = err instanceof Error ? err.message : 'Failed to load products'
-    // Fallback to empty arrays on error
     forYouProducts.value = []
     flashSaleProducts.value = []
   } finally {
@@ -200,7 +198,6 @@ const overlayTop = computed(() => {
   
   const totalRows = Math.ceil(displayedProducts.value.length / columns)
   
-  // Avoid division by zero
   if (totalRows === 0) {
     return '0%'
   }

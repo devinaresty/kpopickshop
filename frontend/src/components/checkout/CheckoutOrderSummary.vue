@@ -55,7 +55,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import type { CartItem } from '@/modules/landing/types'
-import { useCartStore } from '@/stores/cart.store'
+import { useCartStore } from '@/shared/stores'
 
 const cartStore = useCartStore()
 

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { apiClient } from '@/lib/api'
+import { apiClient } from '@/core/api'
 import { useAuthStore } from './auth.store'
 import type { UserProfile, UpdateProfileDto } from '@/modules/profile/types'
 

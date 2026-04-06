@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import { apiClient } from '../lib/api'
+import { apiClient } from '@/core/api'
 
 interface User {
   id: number

@@ -95,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { useCheckoutStore } from '@/stores/checkout.store'
+import { useCheckoutStore } from '@/shared/stores'
 import type { CheckoutStep } from '@/modules/checkout/types'
 
 const checkoutStore = useCheckoutStore()

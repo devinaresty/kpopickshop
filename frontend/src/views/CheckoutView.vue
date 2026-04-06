@@ -70,10 +70,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useCheckoutStore } from '@/stores/checkout.store'
-import { useCartStore } from '@/stores/cart.store'
-import { useOrderStore } from '@/stores/order.store'
-import { useAuthStore } from '@/stores/auth.store'
+import { useCheckoutStore, useCartStore, useOrderStore, useAuthStore } from '@/shared/stores'
 import CheckoutStepIndicator from '@/components/checkout/CheckoutStepIndicator.vue'
 import ConsumerInfoStep from '@/components/checkout/steps/ConsumerInfoStep.vue'
 import ShippingStep from '@/components/checkout/steps/ShippingStep.vue'
@@ -181,10 +178,8 @@ const handlePayment = async () => {
       errorMessage = error.message
     }
     
-    // Show alert with proper error message
     alert(errorMessage)
     
-    // Also log for debugging
     console.error('Payment error details:', {
       message: errorMessage,
       fullError: error,
