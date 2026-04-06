@@ -38,5 +38,5 @@ Platform e-commerce untuk penjualan produk K-Pop dengan sistem pembayaran terint
 
 ### 1. Clone Repository
 ```bash
-git clone <repository-url>
+git clone <https://github.com/devinaresty/kpopickshop.git>
 cd "c:\project ujikom (kpopick)"
