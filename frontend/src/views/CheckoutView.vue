@@ -10,22 +10,37 @@
             </div>
 
             <div class="mb-6 pb-6 border-b border-gray-200">
-              <CheckoutStepIndicator />
+              <CheckoutStepIndicator 
+                :active-step="checkoutStore.currentStep"
+                :completed-steps="completedSteps"
+                :steps="checkoutSteps"
+                @step-change="handleStepChange"
+              />
             </div>
 
             <div v-if="checkoutStore.currentStep === 'consumer'">
               <h2 class="text-xl sm:text-2xl font-bold text-black mb-6">Consumer Information</h2>
-              <ConsumerInfoStep />
+              <ConsumerInfoStep 
+                :is-submitting="isProcessing"
+                @continue="handleConsumerContinue()"
+              />
             </div>
 
             <div v-else-if="checkoutStore.currentStep === 'shipping'">
               <h2 class="text-xl sm:text-2xl font-bold text-black mb-6">Shipping Address</h2>
-              <ShippingStep />
+              <ShippingStep 
+                :is-submitting="isProcessing"
+                @continue="handleShippingContinue()"
+              />
             </div>
 
             <div v-else-if="checkoutStore.currentStep === 'payment'">
               <h2 class="text-xl sm:text-2xl font-bold text-black mb-6">Payment Method</h2>
-              <PaymentMethodStep ref="paymentStepRef" />
+              <PaymentMethodStep 
+                ref="paymentStepRef"
+                :is-submitting="isProcessing"
+                @continue="handlePaymentContinue()"
+              />
             </div>
 
             <div class="flex gap-4 mt-8 pt-8 border-t border-gray-200">
@@ -60,7 +75,13 @@
         </div>
 
         <div>
-          <CheckoutOrderSummary />
+          <CheckoutOrderSummary 
+            :summary-data="orderSummary"
+            :item-count="cartStore.items.length"
+            :is-complete="isCheckoutComplete"
+            :is-processing="isProcessing"
+            @proceed="handleOrderSummaryProceed"
+          />
         </div>
       </div>
     </div>
@@ -71,21 +92,69 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCheckoutStore, useCartStore, useOrderStore, useAuthStore } from '@/shared/stores'
-import CheckoutStepIndicator from '@/components/checkout/CheckoutStepIndicator.vue'
-import ConsumerInfoStep from '@/components/checkout/steps/ConsumerInfoStep.vue'
-import ShippingStep from '@/components/checkout/steps/ShippingStep.vue'
-import PaymentMethodStep from '@/components/checkout/steps/PaymentMethodStep.vue'
-import CheckoutOrderSummary from '@/components/checkout/CheckoutOrderSummary.vue'
+import CheckoutStepIndicator from '@/modules/checkout/components/CheckoutStepIndicator.vue'
+import ConsumerInfoStep from '@/modules/checkout/components/steps/ConsumerInfoStep.vue'
+import ShippingStep from '@/modules/checkout/components/steps/ShippingStep.vue'
+import PaymentMethodStep from '@/modules/checkout/components/steps/PaymentMethodStep.vue'
+import CheckoutOrderSummary from '@/modules/checkout/components/CheckoutOrderSummary.vue'
 
 const router = useRouter()
 const checkoutStore = useCheckoutStore()
 const cartStore = useCartStore()
 const orderStore = useOrderStore()
 const authStore = useAuthStore()
-const paymentStepRef = ref<InstanceType<typeof PaymentMethodStep> | null>(null)
 const isProcessing = ref(false)
+const paymentStepRef = ref<any>(null)
 
-onMounted(() => {
+// Checkout steps definition
+const checkoutSteps = [
+  { id: 'consumer', label: 'Consumer Info' },
+  { id: 'shipping', label: 'Shipping' },
+  { id: 'payment', label: 'Payment' },
+]
+
+const completedSteps = computed(() => {
+  const completed: string[] = []
+  
+  // Cek dari store apakah data sudah diisi
+  if (checkoutStore.consumer.firstName && checkoutStore.consumer.email) {
+    completed.push('consumer')
+  }
+  if (checkoutStore.shipping.address) {
+    completed.push('shipping')
+  }
+  if (checkoutStore.payment.method) {
+    completed.push('payment')
+  }
+  
+  return completed
+})
+
+const orderSummary = computed(() => {
+  const subtotal = cartStore.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const shippingCost = 10000
+  const tax = Math.round(subtotal * 0.1)
+  const discount = 0
+  
+  return {
+    subtotal,
+    shippingCost,
+    discount,
+    tax,
+    total: subtotal + shippingCost + tax - discount,
+  }
+})
+
+const isCheckoutComplete = computed(() => {
+  return (
+    checkoutStore.consumer.firstName &&
+    checkoutStore.consumer.email &&
+    checkoutStore.shipping.address &&
+    checkoutStore.payment.method
+  )
+})
+
+onMounted(async () => {
   if (!authStore.isAuthenticated) {
     router.push('/login')
     return
@@ -93,16 +162,20 @@ onMounted(() => {
 
   if (cartStore.items.length === 0) {
     router.push('/home')
+    return
   }
+
+  // userAddresses akan di-fetch oleh ShippingStep component jika diperlukan
+  // Atau dapat di-load dari API di sini nanti
 })
 
 const canProceed = computed(() => {
   if (checkoutStore.currentStep === 'consumer') {
-    return checkoutStore.isConsumerComplete
+    return checkoutStore.consumer.firstName && checkoutStore.consumer.email && checkoutStore.consumer.phone
   } else if (checkoutStore.currentStep === 'shipping') {
-    return checkoutStore.isShippingComplete
+    return checkoutStore.shipping.address && checkoutStore.shipping.address.length > 0
   } else if (checkoutStore.currentStep === 'payment') {
-    return checkoutStore.isPaymentComplete
+    return checkoutStore.payment.method && checkoutStore.payment.method.length > 0
   }
   return true
 })
@@ -121,56 +194,99 @@ const formatPrice = (price: number): string => {
   }).format(price)
 }
 
-const handleNext = () => {
-  if (canProceed.value) {
-    checkoutStore.goToNextStep()
+const handleStepChange = (stepId: string) => {
+  // Hanya bisa navigate ke step sebelumnya
+  const currentIndex = checkoutSteps.findIndex(s => s.id === checkoutStore.currentStep)
+  const targetIndex = checkoutSteps.findIndex(s => s.id === stepId)
+  
+  // Berapa banyak step yang perlu di-back?
+  const stepsToGoBack = currentIndex - targetIndex
+  
+  if (stepsToGoBack > 0) {
+    for (let i = 0; i < stepsToGoBack; i++) {
+      checkoutStore.goToPreviousStep()
+    }
   }
+}
+
+const handleNext = () => {
+  checkoutStore.goToNextStep()
 }
 
 const handlePrevious = () => {
   checkoutStore.goToPreviousStep()
 }
 
+const handleConsumerContinue = () => {
+  checkoutStore.goToNextStep()
+}
+
+const handleShippingContinue = () => {
+  checkoutStore.goToNextStep()
+}
+
+const handlePaymentContinue = () => {
+  checkoutStore.goToNextStep()
+}
+
+const handleOrderSummaryProceed = () => {
+  if (isCheckoutComplete.value) {
+    checkoutStore.goToNextStep()
+  }
+}
+
 const handlePayment = async () => {
   if (!paymentStepRef.value?.agreeTerms) {
-    alert('Please agree to terms and conditions')
+    alert('Silakan setujui syarat dan ketentuan')
+    return
+  }
+
+  if (!isCheckoutComplete.value) {
+    alert('Silakan lengkapi semua langkah checkout')
     return
   }
 
   isProcessing.value = true
 
   try {
-    const checkoutData = checkoutStore.getFormData()
-    const cartItems = cartStore.items
-
+    // Step 1: Create order dengan field names yang benar
     const orderPayload = {
-      items: cartItems.map(item => ({
+      items: cartStore.items.map(item => ({
         productId: item.id,
         quantity: item.quantity,
       })),
-      shippingAddress: checkoutData.shipping.address,
-      shippingCity: checkoutData.shipping.city,
-      shippingProvince: checkoutData.shipping.province,
-      shippingPostalCode: checkoutData.shipping.postalCode,
-      recipientName: `${checkoutData.consumer.firstName} ${checkoutData.consumer.lastName}`,
-      recipientPhone: checkoutData.consumer.phone,
+      recipientName: `${checkoutStore.consumer.firstName} ${checkoutStore.consumer.lastName}`,
+      recipientPhone: checkoutStore.consumer.phone,
+      shippingAddress: checkoutStore.shipping.address,
+      shippingCity: '',
+      shippingProvince: '',
+      shippingPostalCode: '',
     }
 
     const createdOrder = await orderStore.createOrder(orderPayload)
 
-    // Include payment method in payment request
-    const paymentResponse = await orderStore.createPayment(createdOrder.id, checkoutData.payment)
+    // Step 2: Create payment untuk generate Xendit invoice
+    const paymentResult = await orderStore.createPayment(createdOrder.id, {
+      method: checkoutStore.payment.method,
+    })
 
-    if (paymentResponse.invoiceUrl) {
-      window.location.href = paymentResponse.invoiceUrl
+    // Note: Backend sudah mengatur success_redirect_url ke /payment-success?orderId=...
+    // Jadi user akan di-redirect oleh Xendit setelah pembayaran
+    // Untuk sekarang, redirect ke invoice URL atau payment success page
+    if (paymentResult?.invoiceUrl) {
+      // Jika ada invoice URL, redirect ke Xendit
+      window.location.href = paymentResult.invoiceUrl
     } else {
-      throw new Error('No payment URL received')
+      // Fallback: redirect ke order detail
+      await router.push({
+        name: 'order-detail',
+        params: { id: createdOrder.id }
+      })
     }
   } catch (error: any) {
     console.error('Payment error:', error)
     
-    // Extract error message from various error sources
-    let errorMessage = 'Failed to process payment. Please try again.'
+    let errorMessage = 'Gagal memproses pembayaran. Silakan coba lagi.'
     
     if (error.response?.data?.message) {
       errorMessage = error.response.data.message
@@ -179,12 +295,6 @@ const handlePayment = async () => {
     }
     
     alert(errorMessage)
-    
-    console.error('Payment error details:', {
-      message: errorMessage,
-      fullError: error,
-      response: error.response
-    })
   } finally {
     isProcessing.value = false
   }
