@@ -20,7 +20,7 @@
       <div v-if="isLoading" class="flex justify-center items-center py-12">
         <div class="text-center">
           <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-black mx-auto mb-4"></div>
-          <p class="text-gray-600">Loading products...</p>
+          <p class="text-gray-600">{{ i18nStore.t('products.loadingProducts') }}</p>
         </div>
       </div>
 
@@ -28,14 +28,14 @@
         <div class="text-center">
           <p class="text-red-600 font-semibold mb-4">{{ error }}</p>
           <button @click="reloadProducts()" class="px-4 py-2 bg-black text-white rounded hover:bg-gray-800">
-            Retry
+            {{ i18nStore.t('products.retry') }}
           </button>
         </div>
       </div>
 
       <div v-else-if="displayedProducts.length === 0" class="flex justify-center items-center py-12">
         <div class="text-center">
-          <p class="text-gray-600 font-semibold">No products available</p>
+          <p class="text-gray-600 font-semibold">{{ i18nStore.t('products.noProductsAvailable') }}</p>
         </div>
       </div>
 
@@ -80,7 +80,7 @@
                     Rp {{ product.price.toLocaleString('id-ID') }}
                   </p>
                   <span class="text-xs text-gray-500">
-                    {{ product.stock }} in stock
+                    {{ product.stock > 0 ? `${product.stock} ${i18nStore.t('products.inStock')}` : i18nStore.t('products.outOfStock') }}
                   </span>
                 </div>
               </div>
@@ -97,7 +97,7 @@
             @click="landingStore.openAuthModal('login')"
             class="px-6 sm:px-8 py-3 sm:py-4 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition-all duration-300 text-xs sm:text-sm whitespace-nowrap"
           >
-            Login to See More
+           {{ i18nStore.t('common.loadMore') }}
           </button>
         </div>
       </div>
@@ -110,11 +110,12 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import type { Product } from '@/modules/landing/types'
 import { apiClient } from '@/core/api'
-import { useAuthStore } from '@/shared/stores'
+import { useAuthStore, useI18nStore } from '@/shared/stores'
 import { useLandingStore } from '@/shared/stores/landing.store'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const i18nStore = useI18nStore()
 const landingStore = useLandingStore()
 
 const activeTab = ref('For You')

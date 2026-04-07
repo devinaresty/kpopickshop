@@ -25,7 +25,8 @@
     "close": "Tutup",
     "view": "Lihat",
     "details": "Detail",
-    "required": "Diperlukan"
+    "required": "Diperlukan",
+    "loadMore": "Muat lebih banyak"
   },
   "navbar": {
     "category": "Kategori",
@@ -130,5 +131,86 @@
     "qrPayments": "Pembayaran QR",
     "directDebit": "Debet Langsung",
     "copyright": "© 2026 KPopick. Semua hak dilindungi."
+  },
+  "products": {
+    "inStock": "Stock",
+    "outOfStock": "Habis Terjual",
+    "loadingProducts": "Memuat produk...",
+    "noProductsAvailable": "Tidak ada produk tersedia",
+    "loadMore": "Muat lebih banyak",
+    "retry": "Coba Lagi",
+    "loadingError": "Gagal memuat produk",
+    "forYou": "Untuk Anda",
+    "flashSale": "Flash Sale"
+  },
+  "pages": {
+    "checkout": "Checkout",
+    "checkoutSubtitle": "Selesaikan pembelian Anda dengan aman",
+    "products": "Produk",
+    "productsSubtitle": "Jelajahi semua produk K-pop kami",
+    "categories": "Kategori",
+    "categoriesSubtitle": "Jelajahi produk K-pop berdasarkan kategori",
+    "cart": "Keranjang",
+    "profile": "Profil"
+  },
+  "checkout": {
+    "consumerInfo": "Informasi Konsumen",
+    "shippingAddress": "Alamat Pengiriman",
+    "paymentMethod": "Metode Pembayaran",
+    "orderSummary": "Ringkasan Pesanan",
+    "firstName": "Nama Depan",
+    "lastName": "Nama Belakang",
+    "email": "Email",
+    "phone": "Nomor Telepon",
+    "selectShippingAddress": "Pilih Alamat Pengiriman",
+    "selectPaymentMethod": "Pilih metode pembayaran Anda",
+    "agreeTerms": "Saya setuju dengan syarat dan ketentuan",
+    "back": "Kembali",
+    "continue": "Lanjutkan",
+    "payNow": "Bayar Sekarang Rp ",
+    "processing": "Memproses...",
+    "noPaymentMethodSelected": "Silakan pilih metode pembayaran",
+    "incompleteCheckout": "Silakan lengkapi semua langkah checkout"
+  },
+  "forms": {
+    "firstNamePlaceholder": "John",
+    "lastNamePlaceholder": "Doe",
+    "emailPlaceholder": "john@example.com",
+    "phoneNumberPlaceholder": "+62812345678",
+    "searchPlaceholder": "Cari produk..."
+  },
+  "buttons": {
+    "back": "← Kembali",
+    "next": "Berikutnya →",
+    "continue": "Lanjutkan",
+    "submit": "Kirim",
+    "cancel": "Batal",
+    "save": "Simpan",
+    "delete": "Hapus",
+    "edit": "Edit",
+    "add": "Tambah",
+    "addToCart": "Tambah ke Keranjang",
+    "viewDetails": "Lihat Detail",
+    "logout": "Keluar",
+    "checkout": "Checkout",
+    "retry": "Coba Lagi"
+  },
+  "messages": {
+    "loadingError": "Terjadi kesalahan saat memuat data",
+    "noProductsLoaded": "❌ Tidak ada produk yang dimuat dari server",
+    "noProductsMatchFilter": "Tidak ada produk yang cocok dengan filter Anda",
+    "confirmLogout": "Apakah Anda yakin ingin keluar?",
+    "successMessage": "Berhasil",
+    "errorMessage": "Terjadi kesalahan",
+    "confirmDelete": "Apakah Anda yakin ingin menghapus?"
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "orders": "Pesanan",
+    "products": "Produk",
+    "categories": "Kategori",
+    "users": "Pengguna",
+    "settings": "Pengaturan",
+    "confirmLogout": "Apakah Anda yakin ingin keluar?"
   }
 }

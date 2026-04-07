@@ -5,8 +5,8 @@
         <div class="lg:col-span-2">
           <div class="bg-white border border-gray-200 rounded-lg p-6 sm:p-8">
             <div class="mb-6">
-              <h1 class="text-lg sm:text-2xl font-bold text-black mb-1">Checkout</h1>
-              <p class="text-gray-600 text-xs sm:text-sm">Complete your purchase securely</p>
+              <h1 class="text-lg sm:text-2xl font-bold text-black mb-1">{{ i18nStore.t('pages.checkout') }}</h1>
+              <p class="text-gray-600 text-xs sm:text-sm">{{ i18nStore.t('pages.checkoutSubtitle') }}</p>
             </div>
 
             <div class="mb-6 pb-6 border-b border-gray-200">
@@ -19,7 +19,7 @@
             </div>
 
             <div v-if="checkoutStore.currentStep === 'consumer'">
-              <h2 class="text-xl sm:text-2xl font-bold text-black mb-6">Consumer Information</h2>
+              <h2 class="text-xl sm:text-2xl font-bold text-black mb-6">{{ i18nStore.t('checkout.consumerInfo') }}</h2>
               <ConsumerInfoStep 
                 :is-submitting="isProcessing"
                 @continue="handleConsumerContinue()"
@@ -27,7 +27,7 @@
             </div>
 
             <div v-else-if="checkoutStore.currentStep === 'shipping'">
-              <h2 class="text-xl sm:text-2xl font-bold text-black mb-6">Shipping Address</h2>
+              <h2 class="text-xl sm:text-2xl font-bold text-black mb-6">{{ i18nStore.t('checkout.shippingAddress') }}</h2>
               <ShippingStep 
                 :is-submitting="isProcessing"
                 @continue="handleShippingContinue()"
@@ -35,7 +35,7 @@
             </div>
 
             <div v-else-if="checkoutStore.currentStep === 'payment'">
-              <h2 class="text-xl sm:text-2xl font-bold text-black mb-6">Payment Method</h2>
+              <h2 class="text-xl sm:text-2xl font-bold text-black mb-6">{{ i18nStore.t('checkout.paymentMethod') }}</h2>
               <PaymentMethodStep 
                 ref="paymentStepRef"
                 :is-submitting="isProcessing"
@@ -49,7 +49,7 @@
                 @click="handlePrevious"
                 class="px-6 py-3 border border-gray-300 text-gray-900 font-semibold rounded-lg hover:bg-gray-50 transition"
               >
-                ← Back
+                {{ i18nStore.t('buttons.back') }}
               </button>
 
               <button
@@ -58,7 +58,7 @@
                 :disabled="!canProceed"
                 class="ml-auto px-6 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-900 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Next →
+                {{ i18nStore.t('buttons.next') }}
               </button>
 
               <button
@@ -68,7 +68,7 @@
                 class="ml-auto px-8 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-900 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 <span v-if="isProcessing" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
-                <span>{{ isProcessing ? 'Processing...' : 'Pay Now Rp ' + formatPrice(orderTotal) }}</span>
+                <span>{{ isProcessing ? i18nStore.t('checkout.processing') : i18nStore.t('checkout.payNow') + formatPrice(orderTotal) }}</span>
               </button>
             </div>
           </div>
@@ -91,7 +91,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useCheckoutStore, useCartStore, useOrderStore, useAuthStore } from '@/shared/stores'
+import { useCheckoutStore, useCartStore, useOrderStore, useAuthStore, useI18nStore } from '@/shared/stores'
 import CheckoutStepIndicator from '@/modules/checkout/components/CheckoutStepIndicator.vue'
 import ConsumerInfoStep from '@/modules/checkout/components/steps/ConsumerInfoStep.vue'
 import ShippingStep from '@/modules/checkout/components/steps/ShippingStep.vue'
@@ -103,6 +103,7 @@ const checkoutStore = useCheckoutStore()
 const cartStore = useCartStore()
 const orderStore = useOrderStore()
 const authStore = useAuthStore()
+const i18nStore = useI18nStore()
 const isProcessing = ref(false)
 const paymentStepRef = ref<any>(null)
 
@@ -116,7 +117,6 @@ const checkoutSteps = [
 const completedSteps = computed(() => {
   const completed: string[] = []
   
-  // Cek dari store apakah data sudah diisi
   if (checkoutStore.consumer.firstName && checkoutStore.consumer.email) {
     completed.push('consumer')
   }
@@ -165,8 +165,6 @@ onMounted(async () => {
     return
   }
 
-  // userAddresses akan di-fetch oleh ShippingStep component jika diperlukan
-  // Atau dapat di-load dari API di sini nanti
 })
 
 const canProceed = computed(() => {
@@ -195,11 +193,9 @@ const formatPrice = (price: number): string => {
 }
 
 const handleStepChange = (stepId: string) => {
-  // Hanya bisa navigate ke step sebelumnya
   const currentIndex = checkoutSteps.findIndex(s => s.id === checkoutStore.currentStep)
   const targetIndex = checkoutSteps.findIndex(s => s.id === stepId)
   
-  // Berapa banyak step yang perlu di-back?
   const stepsToGoBack = currentIndex - targetIndex
   
   if (stepsToGoBack > 0) {
@@ -270,14 +266,9 @@ const handlePayment = async () => {
       method: checkoutStore.payment.method,
     })
 
-    // Note: Backend sudah mengatur success_redirect_url ke /payment-success?orderId=...
-    // Jadi user akan di-redirect oleh Xendit setelah pembayaran
-    // Untuk sekarang, redirect ke invoice URL atau payment success page
     if (paymentResult?.invoiceUrl) {
-      // Jika ada invoice URL, redirect ke Xendit
       window.location.href = paymentResult.invoiceUrl
     } else {
-      // Fallback: redirect ke order detail
       await router.push({
         name: 'order-detail',
         params: { id: createdOrder.id }

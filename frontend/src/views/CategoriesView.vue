@@ -1,15 +1,12 @@
 <template>
   <div class="py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-7xl mx-auto">
-      <!-- Header -->
       <div class="mb-8">
-        <h1 class="text-4xl font-black text-black mb-2">Categories</h1>
-        <p class="text-gray-600">Browse K-pop products by category</p>
+        <h1 class="text-4xl font-black text-black mb-2">{{ i18nStore.t('pages.categories') }}</h1>
+        <p class="text-gray-600">{{ i18nStore.t('pages.categoriesSubtitle') }}</p>
       </div>
 
-      <!-- Categories Grid -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- Category Card 1 -->
         <div class="group cursor-pointer">
           <div class="bg-gradient-to-br from-pink-300 to-pink-500 h-48 rounded-lg flex items-center justify-center text-white font-bold text-2xl mb-4 group-hover:shadow-lg transition-shadow">
             Albums
@@ -19,7 +16,6 @@
           <a href="#" class="text-black font-semibold mt-4 inline-block hover:underline">Browse Albums →</a>
         </div>
 
-        <!-- Category Card 2 -->
         <div class="group cursor-pointer">
           <div class="bg-gradient-to-br from-purple-300 to-purple-500 h-48 rounded-lg flex items-center justify-center text-white font-bold text-2xl mb-4 group-hover:shadow-lg transition-shadow">
             Merchandise
@@ -29,7 +25,6 @@
           <a href="#" class="text-black font-semibold mt-4 inline-block hover:underline">Browse Merchandise →</a>
         </div>
 
-        <!-- Category Card 3 -->
         <div class="group cursor-pointer">
           <div class="bg-gradient-to-br from-blue-300 to-blue-500 h-48 rounded-lg flex items-center justify-center text-white font-bold text-2xl mb-4 group-hover:shadow-lg transition-shadow">
             Posters
@@ -39,7 +34,6 @@
           <a href="#" class="text-black font-semibold mt-4 inline-block hover:underline">Browse Posters →</a>
         </div>
 
-        <!-- Category Card 4 -->
         <div class="group cursor-pointer">
           <div class="bg-gradient-to-br from-yellow-300 to-yellow-500 h-48 rounded-lg flex items-center justify-center text-white font-bold text-2xl mb-4 group-hover:shadow-lg transition-shadow">
             Collectibles
@@ -49,7 +43,6 @@
           <a href="#" class="text-black font-semibold mt-4 inline-block hover:underline">Browse Collectibles →</a>
         </div>
 
-        <!-- Category Card 5 -->
         <div class="group cursor-pointer">
           <div class="bg-gradient-to-br from-green-300 to-green-500 h-48 rounded-lg flex items-center justify-center text-white font-bold text-2xl mb-4 group-hover:shadow-lg transition-shadow">
             Accessories
@@ -59,7 +52,6 @@
           <a href="#" class="text-black font-semibold mt-4 inline-block hover:underline">Browse Accessories →</a>
         </div>
 
-        <!-- Category Card 6 -->
         <div class="group cursor-pointer">
           <div class="bg-gradient-to-br from-red-300 to-red-500 h-48 rounded-lg flex items-center justify-center text-white font-bold text-2xl mb-4 group-hover:shadow-lg transition-shadow">
             Media
@@ -74,5 +66,7 @@
 </template>
 
 <script setup lang="ts">
-// Categories View
+import { useI18nStore } from '@/shared/stores'
+
+const i18nStore = useI18nStore()
 </script>

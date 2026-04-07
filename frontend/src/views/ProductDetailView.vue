@@ -93,7 +93,7 @@
                 :class="product.stock > 0 ? 'bg-green-600' : 'bg-gray-400'"
               ></div>
               <p class="text-xs sm:text-sm font-semibold" :class="product.stock > 0 ? 'text-green-600' : 'text-gray-600'">
-                {{ product.stock > 0 ? `${product.stock} in stock` : 'Out of stock' }}
+                {{ product.stock > 0 ? `${product.stock} ${i18nStore.t('products.inStock')}` : i18nStore.t('products.outOfStock') }}
               </p>
             </div>
 
@@ -160,7 +160,7 @@
             @click="loadProduct"
             class="px-4 py-2 bg-black text-white rounded hover:bg-gray-800"
           >
-            Retry
+            {{ i18nStore.t('products.retry') }}
           </button>
         </div>
       </div>
@@ -175,13 +175,14 @@ import { ref, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import type { Product } from '@/modules/landing/types'
 import { apiClient } from '@/core/api'
-import { useCartStore, useUIStore } from '@/shared/stores'
+import { useCartStore, useUIStore, useI18nStore } from '@/shared/stores'
 import Footer from '@/modules/landing/components/shared/Footer.vue'
 
 const router = useRouter()
 const route = useRoute()
 const cartStore = useCartStore()
 const uiStore = useUIStore()
+const i18nStore = useI18nStore()
 
 const product = ref<Product | null>(null)
 const selectedImage = ref<string>('')

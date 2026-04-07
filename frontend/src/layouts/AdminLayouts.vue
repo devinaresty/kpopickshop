@@ -40,14 +40,15 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from '@/shared/stores'
+import { useAuthStore, useI18nStore } from '@/shared/stores'
 import { useRouter } from 'vue-router'
 
 const authStore = useAuthStore()
 const router = useRouter()
+const i18nStore = useI18nStore()
 
 const handleLogout = () => {
-  if(confirm('Are you sure you want to logout?')) {
+  if(confirm(i18nStore.t('admin.confirmLogout'))) {
     authStore.logout()
     router.push('/')
   }

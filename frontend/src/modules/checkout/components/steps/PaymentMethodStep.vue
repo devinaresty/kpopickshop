@@ -1,6 +1,6 @@
 <template>
   <div class="space-y-4">
-    <p class="text-gray-600 mb-6">Select your preferred payment method</p>
+    <p class="text-gray-600 mb-6">{{ i18nStore.t('checkout.selectPaymentMethod') }}</p>
 
     <div class="space-y-3">
       <button
@@ -153,10 +153,11 @@
 
 <script setup lang="ts">
 import { ref, watch } from 'vue'
-import { useCheckoutStore } from '@/shared/stores'
+import { useCheckoutStore, useI18nStore } from '@/shared/stores'
 import type { PaymentMethod } from '@/modules/checkout/types'
 
 const checkoutStore = useCheckoutStore()
+const i18nStore = useI18nStore()
 
 const selectedMethod = ref(checkoutStore.payment.method)
 const agreeTerms = ref(false)

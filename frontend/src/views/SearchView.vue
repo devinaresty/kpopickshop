@@ -215,7 +215,7 @@
                       Rp {{ product.price.toLocaleString('id-ID') }}
                     </p>
                     <span class="text-xs text-gray-500">
-                      {{ product.stock }} in stock
+                      {{ product.stock > 0 ? `${product.stock} ${i18nStore.t('products.inStock')}` : i18nStore.t('products.outOfStock') }}
                     </span>
                   </div>
                 </div>
@@ -228,7 +228,7 @@
               <p class="text-gray-600 text-lg font-semibold mb-4">❌ No products loaded from server</p>
               <p class="text-gray-500 text-sm mb-4">Total products: {{ products.length }}</p>
               <button @click="fetchProducts()" class="px-4 py-2 bg-black text-white rounded hover:bg-gray-800">
-                Retry Load
+                {{ i18nStore.t('products.retry') }}
               </button>
             </div>
           </div>
@@ -254,6 +254,7 @@
 import { ref, computed, watch, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '@/core/api'
+import { useI18nStore } from '@/shared/stores'
 import type { Product } from '@/modules/landing/types'
 import Footer from '@/modules/landing/components/shared/Footer.vue'
 
@@ -264,6 +265,7 @@ interface SearchProduct extends Product {
 
 const route = useRoute()
 const router = useRouter()
+const i18nStore = useI18nStore()
 
 const products = ref<SearchProduct[]>([])
 const searchQuery = ref('')

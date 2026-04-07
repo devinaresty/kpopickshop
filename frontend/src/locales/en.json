@@ -25,7 +25,8 @@
     "close": "Close",
     "view": "View",
     "details": "Details",
-    "required": "Required"
+    "required": "Required",
+    "loadMore": "Load More"
   },
   "navbar": {
     "category": "Category",
@@ -130,5 +131,86 @@
     "qrPayments": "QR Payments",
     "directDebit": "Direct Debit",
     "copyright": "© 2026 KPopick. All rights reserved."
+  },
+  "products": {
+    "inStock": "In Stock",
+    "outOfStock": "Out of Stock",
+    "loadingProducts": "Loading products...",
+    "noProductsAvailable": "No products available",
+    "loadMore": "Load More",
+    "retry": "Retry",
+    "loadingError": "Failed to load products",
+    "forYou": "For You",
+    "flashSale": "Flash Sale"
+  },
+  "pages": {
+    "checkout": "Checkout",
+    "checkoutSubtitle": "Complete your purchase securely",
+    "products": "Products",
+    "productsSubtitle": "Browse all our K-pop products",
+    "categories": "Categories",
+    "categoriesSubtitle": "Browse K-pop products by category",
+    "cart": "Cart",
+    "profile": "Profile"
+  },
+  "checkout": {
+    "consumerInfo": "Consumer Information",
+    "shippingAddress": "Shipping Address",
+    "paymentMethod": "Payment Method",
+    "orderSummary": "Order Summary",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email",
+    "phone": "Phone Number",
+    "selectShippingAddress": "Select Shipping Address",
+    "selectPaymentMethod": "Select your preferred payment method",
+    "agreeTerms": "I agree to the terms and conditions",
+    "back": "Back",
+    "continue": "Continue",
+    "payNow": "Pay Now Rp ",
+    "processing": "Processing...",
+    "noPaymentMethodSelected": "Please select a payment method",
+    "incompleteCheckout": "Please complete all checkout steps"
+  },
+  "forms": {
+    "firstNamePlaceholder": "John",
+    "lastNamePlaceholder": "Doe",
+    "emailPlaceholder": "john@example.com",
+    "phoneNumberPlaceholder": "+62812345678",
+    "searchPlaceholder": "Search products..."
+  },
+  "buttons": {
+    "back": "← Back",
+    "next": "Next →",
+    "continue": "Continue",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "addToCart": "Add to Cart",
+    "viewDetails": "View Details",
+    "logout": "Logout",
+    "checkout": "Checkout",
+    "retry": "Retry"
+  },
+  "messages": {
+    "loadingError": "An error occurred while loading data",
+    "noProductsLoaded": "❌ No products loaded from server",
+    "noProductsMatchFilter": "No products match your filters",
+    "confirmLogout": "Are you sure you want to logout?",
+    "successMessage": "Success",
+    "errorMessage": "An error occurred",
+    "confirmDelete": "Are you sure you want to delete?"
+  },
+  "admin": {
+    "dashboard": "Dashboard",
+    "orders": "Orders",
+    "products": "Products",
+    "categories": "Categories",
+    "users": "Users",
+    "settings": "Settings",
+    "confirmLogout": "Are you sure you want to logout?"
   }
 }

@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-6">
     <div v-if="savedAddresses.length > 0" class="space-y-4">
-      <h3 class="text-lg font-bold text-gray-900">Select Shipping Address</h3>
+      <h3 class="text-lg font-bold text-gray-900">{{ i18nStore.t('checkout.selectShippingAddress') }}</h3>
       
       <div v-if="!selectedAddress" class="space-y-3 bg-gray-50 border border-gray-200 rounded-lg p-6">
         <button
@@ -57,7 +57,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useCheckoutStore } from '@/shared/stores'
+import { useCheckoutStore, useI18nStore } from '@/shared/stores'
 import { apiClient } from '@/core/api'
 
 interface Address {
@@ -75,6 +75,7 @@ interface Address {
 }
 
 const checkoutStore = useCheckoutStore()
+const i18nStore = useI18nStore()
 const savedAddresses = ref<Address[]>([])
 const selectedAddress = ref<Address | null>(null)
 
