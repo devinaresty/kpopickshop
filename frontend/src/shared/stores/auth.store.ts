@@ -27,7 +27,6 @@ export const useAuthStore = defineStore('auth', () => {
     error.value = null
     try {
       const response = await apiClient.login({ email, password })
-      console.log('Login response:', response) 
       
       if (!response?.access_token) {
         throw new Error('Token tidak diterima dari server')
@@ -36,7 +35,6 @@ export const useAuthStore = defineStore('auth', () => {
       token.value = response.access_token
       user.value = response.user
       localStorage.setItem('token', response.access_token)
-      console.log('Token saved to localStorage:', response.access_token) 
       
       error.value = null
       
@@ -44,7 +42,6 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Login failed'
       error.value = errorMessage
-      console.error('Login failed:', err) 
       throw new Error(errorMessage)
     } finally {
       isLoading.value = false
@@ -71,7 +68,32 @@ export const useAuthStore = defineStore('auth', () => {
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Registration failed'
       error.value = errorMessage
-      console.error('Registration failed:', err)
+      throw new Error(errorMessage)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const adminRegister = async (email: string, password: string, name: string) => {
+    isLoading.value = true
+    error.value = null
+    try {
+      const response = await apiClient.adminRegister({ email, password, name })
+      
+      if (!response?.access_token) {
+        throw new Error('Token tidak diterima dari server')
+      }
+      
+      token.value = response.access_token
+      user.value = response.user
+      localStorage.setItem('token', response.access_token)
+      
+      error.value = null
+      
+      return response
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Admin registration failed'
+      error.value = errorMessage
       throw new Error(errorMessage)
     } finally {
       isLoading.value = false
@@ -89,7 +111,6 @@ export const useAuthStore = defineStore('auth', () => {
       user.value = userData
       return userData
     } catch (err) {
-      console.error('Failed to get current user:', err)
       logout()
       return null
     }
@@ -110,6 +131,7 @@ export const useAuthStore = defineStore('auth', () => {
     isAuthenticated,
     login,
     register,
+    adminRegister,
     getCurrentUser,
     logout,
   }

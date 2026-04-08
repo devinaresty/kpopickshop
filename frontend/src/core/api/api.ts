@@ -115,16 +115,13 @@ class ApiClient {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       if (typeof window !== "undefined") {
-        window.location.href = "/login";
+        window.location.href = "/";
       }
       throw new Error("Session expired. Please login again.");
     }
 
     if (!response.ok) {
       const error = (await response.json()) as ApiErrorResponse;
-      console.error("API Error:", { status: response.status, error }); 
-      
-      // Create error object with response property for consistent error handling
       const errorObj = new Error(error.message || `HTTP ${response.status}`) as any;
       errorObj.response = {
         status: response.status,
@@ -134,7 +131,6 @@ class ApiClient {
     }
 
     const data = (await response.json()) as T;
-    console.log("API Response:", { endpoint, data }); 
     return data;
   }
 
@@ -147,6 +143,13 @@ class ApiClient {
 
   async register(data: any): Promise<LoginResponse> {
     return this.request<LoginResponse>("/auth/register", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async adminRegister(data: any): Promise<LoginResponse> {
+    return this.request<LoginResponse>("/auth/admin/register", {
       method: "POST",
       body: JSON.stringify(data),
     });
@@ -308,6 +311,52 @@ class ApiClient {
   async deleteAddress(id: string | number): Promise<any> {
     return this.request(`/addresses/${id}`, {
       method: "DELETE",
+    });
+  }
+
+  async createProduct(data: any): Promise<any> {
+    return this.request("/products", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateProduct(id: string | number, data: any): Promise<any> {
+    return this.request(`/products/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteProduct(id: string | number): Promise<any> {
+    return this.request(`/products/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  async createCategory(data: any): Promise<any> {
+    return this.request("/categories", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async updateCategory(id: string | number, data: any): Promise<any> {
+    return this.request(`/categories/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(data),
+    });
+  }
+
+  async deleteCategory(id: string | number): Promise<any> {
+    return this.request(`/categories/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  async getUsers(): Promise<any[]> {
+    return this.request<any[]>("/auth/users", {
+      method: "GET",
     });
   }
 }

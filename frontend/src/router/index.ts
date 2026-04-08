@@ -46,6 +46,12 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true },
   },
   {
+    path: '/cart',
+    name: 'cart',
+    component: () => import('@/views/CartView.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
     path: '/checkout',
     name: 'checkout',
     component: () => import('@/views/CheckoutView.vue'),
@@ -76,29 +82,47 @@ const routes: RouteRecordRaw[] = [
   {
     path: '/admin/login',
     name: 'admin-login',
-    component: () => import('@/views/admin/AdminLoginView.vue'),
+    component: () => import('@/modules/admin/pages/AdminLoginPage.vue'),
+    meta: { requiresGuest: false, requiresAuth: false, requiresAdmin: false, hideNavbar: true },
+  },
+  {
+    path: '/admin/signup',
+    name: 'admin-signup',
+    component: () => import('@/modules/admin/pages/AdminSignUpPage.vue'),
   },
   {
     path: '/admin',
-    component: () => import('@/layouts/AdminLayouts.vue'),
+    component: () => import('@/modules/admin/layouts/AdminLayout.vue'),
     meta: { requiresAdmin: true },
     children: [
       {
         path: 'dashboard',
         name: 'admin-dashboard',
-        component: () => import('@/views/admin/DashboardView.vue'),
+        component: () => import('@/modules/admin/pages/DashboardPage.vue'),
         meta: { requiresAdmin: true },
       },
       {
         path: 'products',
         name: 'admin-products',
-        component: () => import('@/views/admin/ProductListView.vue'),
+        component: () => import('@/modules/admin/pages/ProductsPage.vue'),
+        meta: { requiresAdmin: true },
+      },
+      {
+        path: 'categories',
+        name: 'admin-categories',
+        component: () => import('@/modules/admin/pages/CategoriesPage.vue'),
         meta: { requiresAdmin: true },
       },
       {
         path: 'orders',
         name: 'admin-orders',
-        component: () => import('@/views/admin/OrderListView.vue'),
+        component: () => import('@/modules/admin/pages/OrdersPage.vue'),
+        meta: { requiresAdmin: true },
+      },
+      {
+        path: 'customers',
+        name: 'admin-customers',
+        component: () => import('@/modules/admin/pages/CustomersPage.vue'),
         meta: { requiresAdmin: true },
       },
     ]
@@ -117,28 +141,43 @@ const router = createRouter({
 })
 
 
-router.beforeEach((to, _from, next) => {
+router.beforeEach(async (to, _from, next) => {
   const authStore = useAuthStore()
   const isAuthenticated = authStore.isAuthenticated
-  const userRole = authStore.user?.role
 
-  console.log(`Route Guard: ${to.path} | Authenticated: ${isAuthenticated} | Role: ${userRole}`) // DEBUG
-
-  if (to.meta.requiresGuest && isAuthenticated) {
-    console.log('User sudah login, redirect ke /home') 
-    next({ name: 'home', replace: true })
+  // Public paths - no auth needed
+  const publicPaths = ['/admin/login', '/admin/signup', '/']
+  if (publicPaths.includes(to.path)) {
+    next()
     return
   }
 
+  // Admin routes - require auth + ADMIN role
+  if (to.path.startsWith('/admin')) {
+    if (!isAuthenticated) {
+      next({ path: '/admin/login' })
+      return
+    }
+
+    const userRole = (authStore.user as any)?.role
+    if (userRole !== 'ADMIN') {
+      next({ path: '/home' })
+      return
+    }
+
+    next()
+    return
+  }
+
+  // Protected user routes
   if (to.meta.requiresAuth && !isAuthenticated) {
-    console.log('User belum login, redirect ke /') 
-    next({ name: 'landing', replace: true })
+    next({ path: '/' })
     return
   }
 
-  if (to.meta.requiresAdmin && (!isAuthenticated || userRole !== 'ADMIN')) {
-    console.log('User tidak memiliki akses admin, redirect ke /') 
-    next({ name: 'landing', replace: true })
+  // Guest-only routes (landing page) - don't auto-redirect
+  if (to.meta.requiresGuest && isAuthenticated && to.path !== '/') {
+    next({ path: '/home' })
     return
   }
 

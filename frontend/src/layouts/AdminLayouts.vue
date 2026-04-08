@@ -40,17 +40,17 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore, useI18nStore } from '@/shared/stores'
-import { useRouter } from 'vue-router'
+import { useI18nStore } from '@/shared/stores'
 
-const authStore = useAuthStore()
-const router = useRouter()
 const i18nStore = useI18nStore()
 
-const handleLogout = () => {
+const handleLogout = async () => {
   if(confirm(i18nStore.t('admin.confirmLogout'))) {
-    authStore.logout()
-    router.push('/')
+    // Clear token immediately from localStorage
+    localStorage.removeItem('token')
+    
+    // Reload page - server will redirect to /admin/login because no token
+    window.location.reload()
   }
 }
 </script>

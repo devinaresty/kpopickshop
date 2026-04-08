@@ -111,7 +111,6 @@
               class="flex items-center gap-2 hover:opacity-80 transition-all duration-300"
               :title="authStore.user?.name"
             >
-              <!-- Profile Avatar -->
               <div class="w-7 h-7 sm:w-8 sm:h-8 md:w-9 md:h-9 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center overflow-hidden border-2 border-gray-300 flex-shrink-0">
                 <img 
                   v-if="(authStore.user as any)?.photoUrl" 

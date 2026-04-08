@@ -98,16 +98,11 @@ const initialValues = reactive({
 })
 
 onMounted(() => {
-  const stored = localStorage.getItem('kpopick_login_credentials')
-  if (stored) {
-    try {
-      const { email, password } = JSON.parse(stored)
-      initialValues.email = email
-      initialValues.password = password
-      rememberMe.value = true
-    } catch (err) {
-      console.error('Failed to load saved credentials:', err)
-    }
+  // Load only email if remembered (NOT password - security risk)
+  const storedEmail = localStorage.getItem('kpopick_remembered_email')
+  if (storedEmail) {
+    initialValues.email = storedEmail
+    rememberMe.value = true
   }
 })
 
@@ -125,13 +120,11 @@ const onSubmit = async (values: Record<string, any>) => {
     
     await authStore.login(email, password)
     
+    // Remember only email, NEVER store password
     if (rememberMe.value) {
-      localStorage.setItem(
-        'kpopick_login_credentials',
-        JSON.stringify({ email, password })
-      )
+      localStorage.setItem('kpopick_remembered_email', email)
     } else {
-      localStorage.removeItem('kpopick_login_credentials')
+      localStorage.removeItem('kpopick_remembered_email')
     }
     
     console.log('Login berhasil!')

@@ -21,7 +21,6 @@ export const useProfileStore = defineStore('profile', () => {
     isLoading.value = true
     error.value = null
     try {
-      // Get user profile from API
       const userData = await apiClient.getCurrentUser()
       profile.value = userData
     } catch (err: any) {
@@ -37,21 +36,17 @@ export const useProfileStore = defineStore('profile', () => {
     error.value = null
     successMessage.value = null
     try {
-      // For now, we'll update locally since backend may not have updateProfile endpoint
-      // In production, call: await apiClient.updateProfile(data)
       if (profile.value) {
         profile.value.name = data.name || profile.value.name
         profile.value.email = data.email || profile.value.email
         profile.value.phone = data.phone || profile.value.phone
         profile.value.address = data.address || profile.value.address
         profile.value.dateOfBirth = data.dateOfBirth || profile.value.dateOfBirth
-        // Handle photo deletion (null) or update
         if (data.photoUrl !== undefined) {
           profile.value.photoUrl = data.photoUrl || undefined
         }
       }
       
-      // Also update auth store user with latest profile data
       if (authStore.user && profile.value) {
         authStore.user.name = profile.value.name
         authStore.user.email = profile.value.email
@@ -77,19 +72,14 @@ export const useProfileStore = defineStore('profile', () => {
       const formData = new FormData()
       formData.append('file', file)
 
-      // Call backend endpoint with custom multipart/form-data handling
       const token = localStorage.getItem('token')
       const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
       const url = `${baseUrl}/auth/upload-profile-photo`
-
-      console.log('Uploading photo to:', url)
-      console.log('File:', file.name, file.size, file.type)
 
       const response = await fetch(url, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
-          // Let browser set Content-Type for FormData
         },
         body: formData,
       })
@@ -100,22 +90,18 @@ export const useProfileStore = defineStore('profile', () => {
 
       if (!response.ok) {
         const errorData = await response.json()
-        console.error('Upload error response:', errorData)
         throw new Error(errorData.message || `HTTP ${response.status}`)
       }
 
       const result = await response.json()
-      console.log('Upload response:', result)
 
       if (result && (result.photoUrl || result.data?.photoUrl)) {
         const photoUrl = result.photoUrl || result.data?.photoUrl
         
-        // Update profile with new photo URL
         if (profile.value) {
           profile.value.photoUrl = photoUrl
         }
         
-        // Also update auth store user
         if (authStore.user) {
           (authStore.user as any).photoUrl = photoUrl
         }
@@ -152,8 +138,6 @@ export const useProfileStore = defineStore('profile', () => {
       const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
       const url = `${baseUrl}/auth/delete-profile-photo`
 
-      console.log('Deleting profile photo...')
-
       const response = await fetch(url, {
         method: 'DELETE',
         headers: {
@@ -168,12 +152,10 @@ export const useProfileStore = defineStore('profile', () => {
 
       if (!response.ok) {
         const errorData = await response.json()
-        console.error('Delete error response:', errorData)
         throw new Error(errorData.message || `HTTP ${response.status}`)
       }
 
       const result = await response.json()
-      console.log('Delete response:', result)
 
       // Update profile with deleted photo
       if (profile.value) {
@@ -186,12 +168,10 @@ export const useProfileStore = defineStore('profile', () => {
       }
 
       successMessage.value = 'Profile photo deleted successfully'
-      console.log('Profile photo deleted')
       
       return result
     } catch (err: any) {
       error.value = err.message || 'Failed to delete profile photo'
-      console.error('Delete profile photo error:', err)
       throw err
     } finally {
       isSaving.value = false
@@ -199,7 +179,6 @@ export const useProfileStore = defineStore('profile', () => {
   }
 
   return {
-    // State
     profile,
     isLoading,
     isSaving,
@@ -207,10 +186,8 @@ export const useProfileStore = defineStore('profile', () => {
     error,
     successMessage,
 
-    // Computed
     isProfileComplete,
 
-    // Methods
     loadProfile,
     updateProfile,
     uploadProfilePhoto,
