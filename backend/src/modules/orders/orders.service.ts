@@ -206,7 +206,6 @@ export class OrdersService {
       throw new NotFoundException(`Order #${id} not found`);
     }
 
-    // Users can only view their own orders, admins can view any order
     if (userRole !== 'ADMIN' && order.userId !== userId) {
       throw new BadRequestException('You can only view your own orders');
     }

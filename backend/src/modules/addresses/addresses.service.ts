@@ -8,7 +8,6 @@ export class AddressesService {
   constructor(private prisma: PrismaService) {}
 
   async create(userId: number, createAddressDto: CreateAddressDto) {
-    // If setting as default, unset all other addresses as default
     if (createAddressDto.isDefault) {
       await this.prisma.userAddress.updateMany({
         where: { userId },
@@ -38,7 +37,6 @@ export class AddressesService {
   }
 
   async update(id: number, userId: number, updateAddressDto: UpdateAddressDto) {
-    // If setting as default, unset all other addresses as default
     if (updateAddressDto.isDefault) {
       await this.prisma.userAddress.updateMany({
         where: { userId, id: { not: id } },

@@ -96,7 +96,6 @@ export class StorageService {
         size: fileBuffer.length,
       };
     } catch (error: any) {
-      // Upload error handled
       throw new InternalServerErrorException(
         `Failed to upload file: ${error?.message || 'Unknown error'}`,
       );
@@ -141,7 +140,6 @@ export class StorageService {
         size: fileBuffer.length,
       };
     } catch (error: any) {
-      // Upload error handled
       throw new InternalServerErrorException(
         `Failed to upload file: ${error?.message || 'Unknown error'}`,
       );
@@ -156,9 +154,7 @@ export class StorageService {
 
       const objectName = `products/${fileName}`;
       await minioClient.removeObject(this.bucketName, objectName);
-      // File deleted successfully
     } catch (error: any) {
-      // Delete error handled
       throw new InternalServerErrorException(
         `Failed to delete file: ${error?.message || 'Unknown error'}`,
       );

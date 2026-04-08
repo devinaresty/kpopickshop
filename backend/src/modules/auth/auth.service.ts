@@ -174,7 +174,6 @@ export class AuthService {
         data: { photoUrl: null }
       });
 
-      // Profile photo deleted successfully
       return this.mapUserToResponse(user);
     } catch (error: any) {
 

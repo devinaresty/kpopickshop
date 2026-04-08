@@ -148,13 +148,11 @@ export class AuthController {
       throw new BadRequestException("File is required");
     }
 
-    // Validate file size (max 10MB)
     const MAX_FILE_SIZE = 10 * 1024 * 1024;
     if (file.size > MAX_FILE_SIZE) {
       throw new BadRequestException("File size exceeds 10MB limit");
     }
 
-    // Validate file type
     const allowedMimes = ["image/jpeg", "image/png", "image/webp"];
     if (!allowedMimes.includes(file.mimetype)) {
       throw new BadRequestException("Only JPG, PNG, and WebP images are allowed");
