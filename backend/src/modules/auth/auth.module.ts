@@ -14,7 +14,7 @@ import { StorageModule } from "../../common/services/storage.module";
     PrismaModule,
     StorageModule,
     JwtModule.register({
-      secret: process.env.JWT_SECRET || "your-secret-key",
+      secret: process.env.JWT_SECRET || "MISSING_JWT_SECRET_IN_ENV",
       signOptions: { expiresIn: "24h" },
     }),
   ],

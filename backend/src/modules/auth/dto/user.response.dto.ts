@@ -6,6 +6,6 @@ export class UserResponseDto {
   phone?: string;
   address?: string;
   photoUrl?: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }

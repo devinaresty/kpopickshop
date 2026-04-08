@@ -7,6 +7,8 @@ import { LoginDto } from "./dto/login.dto";
 import { AuthResponseDto } from "./dto/auth.response.dto";
 import { UserResponseDto } from "./dto/user.response.dto";
 import { JwtAuthGuard } from "../../common/guards/jwt-auth.guard";
+import { RolesGuard } from "../../common/guards/roles.guard";
+import { Roles } from "../../common/decorators/roles.decorator";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
 
 @ApiTags("Auth")
@@ -35,6 +37,29 @@ export class AuthController {
   })
   async register(@Body() registerDto: RegisterDto): Promise<AuthResponseDto> {
     return this.authService.register(registerDto);
+  }
+
+  @Post("admin/register")
+  @HttpCode(201)
+  @ApiOperation({ summary: "Register a new admin user" })
+  @ApiBody({
+    schema: {
+      example: {
+        email: "admin@example.com",
+        name: "Admin User",
+        password: "password123",
+        phone: "08123456789",
+        address: "Jl. K-pop No. 123"
+      }
+    }
+  })
+  @ApiResponse({
+    status: 201,
+    description: "Admin user registered successfully",
+    type: AuthResponseDto,
+  })
+  async registerAdmin(@Body() registerDto: RegisterDto): Promise<AuthResponseDto> {
+    return this.authService.registerAdmin(registerDto);
   }
 
   @Post("login")
@@ -71,6 +96,20 @@ export class AuthController {
       throw new BadRequestException("User not found in token");
     }
     return this.authService.getUserById(user.id);
+  }
+
+  @Get("users")
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles("admin")
+  @ApiBearerAuth()
+  @ApiOperation({ summary: "Get all users (Admin only)" })
+  @ApiResponse({
+    status: 200,
+    description: "List of all users",
+    type: [UserResponseDto],
+  })
+  async getAllUsers(): Promise<UserResponseDto[]> {
+    return this.authService.getAllUsers();
   }
 
   @Post("upload-profile-photo")

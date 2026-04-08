@@ -4,7 +4,6 @@ import { ApiOperation, ApiTags, ApiResponse, ApiBearerAuth, ApiQuery, ApiBody, A
 import { ProductService } from "./product.service";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { UpdateProductDto } from "./dto/update-product.dto";
-import { UploadProductImageDto } from "./dto/upload-product-image.dto";
 import { JwtAuthGuard } from "../../common/guards/jwt-auth.guard";
 import { RolesGuard } from "../../common/guards/roles.guard";
 import { Roles } from "../../common/decorators/roles.decorator";
@@ -154,6 +153,12 @@ export class ProductController {
     @UploadedFile() file: any,
     @Body() body: any,
   ) {
+    console.log("📤 Upload request received:", { 
+      fileName: file?.originalname, 
+      size: file?.size,
+      mimetype: file?.mimetype 
+    });
+
     if (!file) {
       throw new BadRequestException("No file provided");
     }
@@ -177,6 +182,25 @@ export class ProductController {
     const extension = file.originalname.split(".").pop();
     const fileName = `${timestamp}-${randomStr}.${extension}`;
 
-    return await this.storageService.uploadFile(fileName, file.buffer, file.mimetype);
+    console.log("🔄 Starting Minio upload:", fileName);
+
+    try {
+      const uploadResult = await this.storageService.uploadFile(fileName, file.buffer, file.mimetype);
+      
+      console.log("✅ Upload successful:", uploadResult);
+      
+      return {
+        success: true,
+        message: "Image uploaded successfully",
+        data: {
+          imageUrl: uploadResult.fileUrl,
+          fileName: uploadResult.fileName,
+          size: uploadResult.size,
+        }
+      };
+    } catch (error: any) {
+      console.error("❌ Upload failed:", error);
+      throw error;
+    }
   }
 }

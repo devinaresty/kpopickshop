@@ -1,6 +1,7 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CreateOrderDto } from './dto/create-order.dto';
+import { OrderResponseDto } from './dto/order.response.dto';
 import { PaymentService } from '../payment/payment.service';
 import { OrderStatus } from '@prisma/client';
 
@@ -10,6 +11,39 @@ export class OrdersService {
     private prisma: PrismaService,
     private paymentService: PaymentService,
   ) {}
+
+  private mapOrderToResponse(order: any): OrderResponseDto {
+    return {
+      id: order.id,
+      userId: order.userId,
+      totalPrice: order.totalPrice,
+      status: order.status,
+      createdAt: new Date(order.createdAt).toISOString(),
+      updatedAt: new Date(order.updatedAt).toISOString(),
+      user: order.user
+        ? {
+            name: order.user.name,
+            email: order.user.email,
+          }
+        : undefined,
+      items: order.items
+        ? order.items.map((item: any) => ({
+            id: item.id,
+            orderId: item.orderId,
+            productId: item.productId,
+            quantity: item.quantity,
+            price: item.price,
+            product: item.product
+              ? {
+                  id: item.product.id,
+                  name: item.product.name,
+                  imageUrl: item.product.imageUrl,
+                }
+              : undefined,
+          }))
+        : undefined,
+    };
+  }
 
   async create(userId: number, dto: CreateOrderDto) {
     const { items, ...shippingData } = dto;
@@ -131,13 +165,15 @@ export class OrdersService {
   }
 
   async findAll() {
-    return this.prisma.order.findMany({
+    const orders = await this.prisma.order.findMany({
       include: {
         user: { select: { name: true, email: true } },
         items: { include: { product: true } },
       },
       orderBy: { createdAt: 'desc' },
     });
+
+    return orders.map((order) => this.mapOrderToResponse(order));
   }
 
   async updateStatus(id: number, status: OrderStatus) {

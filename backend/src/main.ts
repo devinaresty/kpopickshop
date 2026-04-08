@@ -6,29 +6,32 @@ import { AppModule } from "./app.module";
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // SIMPLE & PROVEN WORKING CORS Configuration
-  // Allow both localhost and ngrok - permissive for development
+  const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || [
+    'http://localhost:5173', 
+    'http://localhost:3000',  
+  ];
+  
   app.enableCors({
-    origin: true, // Allow ALL origins (safe for dev, not for production)
+    origin: process.env.NODE_ENV === 'production' ? allowedOrigins : true,
     credentials: true,
     methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Callback-Token', 'ngrok-skip-browser-warning'],
     optionsSuccessStatus: 200,
   });
 
-  // CSP headers - AFTER CORS
+  const cspConfig = process.env.CSP_POLICY || (
+    "default-src 'self'; " +
+    "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.xendit.co; " +
+    "style-src 'self' 'unsafe-inline'; " +
+    "connect-src 'self' https://*.xendit.co https://*.forter.com wss://cdn0.forter.com https://browser-intake-datadoghq.com https://*.sentry.io https://stats.g.doubleclick.net https://snowplow-collector.iluma.ai https://www.google-analytics.com https://*.cardinalcommerce.com https://kg668dbov0.execute-api.us-east-1.amazonaws.com https://api.ipify.org https://rum.browser-intake-datadoghq.com https://analytics.google.com https://connect.facebook.net https://cdn.growthbook.io https://cloudflareinsights.com; " +
+    "img-src 'self' data: https:; " +
+    "font-src 'self' data:; " +
+    "frame-src 'self' https://*.xendit.co; " +
+    "object-src 'none'"
+  );
+  
   app.use((req: any, res: any, next: any) => {
-    res.setHeader(
-      'Content-Security-Policy',
-      "default-src 'self'; " +
-      "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://*.xendit.co https://d39ewjhej4wmka.cloudfront.net; " +
-      "style-src 'self' 'unsafe-inline'; " +
-      "connect-src 'self' https://*.xendit.co https://*.forter.com wss://cdn0.forter.com https://browser-intake-datadoghq.com https://*.sentry.io https://stats.g.doubleclick.net https://snowplow-collector.iluma.ai https://www.google-analytics.com https://*.cardinalcommerce.com https://kg668dbov0.execute-api.us-east-1.amazonaws.com https://api.ipify.org https://rum.browser-intake-datadoghq.com https://analytics.google.com https://connect.facebook.net https://cdn.growthbook.io https://cloudflareinsights.com https://d39ewjhej4wmka.cloudfront.net; " +
-      "img-src 'self' data: https:; " +
-      "font-src 'self' data:; " +
-      "frame-src 'self' https://*.xendit.co; " +
-      "object-src 'none'"
-    );
+    res.setHeader('Content-Security-Policy', cspConfig);
     next();
   });
 

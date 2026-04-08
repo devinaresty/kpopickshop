@@ -34,6 +34,38 @@ export class AuthService {
         name: registerDto.name,
         phone: registerDto.phone,
         address: registerDto.address,
+        role: "USER",
+      },
+    });
+
+    const userResponse = this.mapUserToResponse(user);
+    const access_token = this.generateAccessToken(user);
+
+    return {
+      access_token,
+      user: userResponse,
+    };
+  }
+
+  async registerAdmin(registerDto: RegisterDto): Promise<AuthResponseDto> {
+    const existingUser = await this.prisma.user.findUnique({
+      where: { email: registerDto.email },
+    });
+
+    if (existingUser) {
+      throw new BadRequestException("Email already exists");
+    }
+
+    const hashedPassword = await bcrypt.hash(registerDto.password, 10);
+
+    const user = await this.prisma.user.create({
+      data: {
+        email: registerDto.email,
+        password: hashedPassword,
+        name: registerDto.name,
+        phone: registerDto.phone,
+        address: registerDto.address,
+        role: "ADMIN",
       },
     });
 
@@ -103,9 +135,16 @@ export class AuthService {
     return this.mapUserToResponse(user);
   }
 
+  async getAllUsers(): Promise<UserResponseDto[]> {
+    const users = await this.prisma.user.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return users.map((user) => this.mapUserToResponse(user));
+  }
+
   async uploadProfilePhoto(userId: number, fileBuffer: Buffer, mimeType: string, fileName: string): Promise<UserResponseDto> {
     try {
-      // Step 1: Upload file to MinIO via StorageService
       const timestamp = Date.now();
       const uniqueFileName = `${timestamp}-${fileName}`;
       
@@ -116,13 +155,11 @@ export class AuthService {
         'profiles'
       );
       
-      // Step 2: Save photoUrl to database
       const user = await this.prisma.user.update({
         where: { id: userId },
         data: { photoUrl: uploadResult.fileUrl }
       });
 
-      console.log(`✅ Profile photo uploaded for user ${userId}: ${uploadResult.fileUrl}`);
       return this.mapUserToResponse(user);
     } catch (error: any) {
       console.error('❌ Profile photo upload error:', error?.message || error);
@@ -132,16 +169,15 @@ export class AuthService {
 
   async deleteProfilePhoto(userId: number): Promise<UserResponseDto> {
     try {
-      // Clear photoUrl from database
       const user = await this.prisma.user.update({
         where: { id: userId },
         data: { photoUrl: null }
       });
 
-      console.log(`✅ Profile photo deleted for user ${userId}`);
+      // Profile photo deleted successfully
       return this.mapUserToResponse(user);
     } catch (error: any) {
-      console.error('❌ Profile photo delete error:', error?.message || error);
+
       throw new BadRequestException(`Failed to delete profile photo: ${error?.message || 'Unknown error'}`);
     }
   }
@@ -149,7 +185,7 @@ export class AuthService {
   private generateAccessToken(user: any): string {
     const payload = { email: user.email, sub: user.id, role: user.role };
     return this.jwtService.sign(payload, {
-      secret: process.env.JWT_SECRET || "your-secret-key",
+      secret: process.env.JWT_SECRET || "MISSING_JWT_SECRET_IN_ENV",
       expiresIn: "24h",
     });
   }
@@ -163,8 +199,8 @@ export class AuthService {
       phone: user.phone,
       address: user.address,
       photoUrl: user.photoUrl,
-      createdAt: user.createdAt,
-      updatedAt: user.updatedAt,
+      createdAt: new Date(user.createdAt).toISOString(),
+      updatedAt: new Date(user.updatedAt).toISOString(),
     };
   }
 }

@@ -175,8 +175,6 @@ export class PaymentController {
     },
   })
   async handleWebhook(@Body() body: any, @Req() req: Request) {
-    console.log('🔍 Webhook received from Xendit');
-    console.log('📦 Body:', JSON.stringify(body, null, 2));
 
     const callbackToken = req.headers['x-callback-token'] as string;
     const expectedToken = process.env.XENDIT_CALLBACK_TOKEN;
@@ -190,10 +188,10 @@ export class PaymentController {
       throw new BadRequestException('Invalid webhook token');
     }
 
-    console.log('✅ Webhook verified');
+    // Webhook verified
 
     if (body.status !== 'PAID') {
-      console.log(`⏭️ Skipping - status is ${body.status}, not PAID`);
+      // Status not PAID, skipping
       return { success: true, message: 'Event received but not processed' };
     }
 

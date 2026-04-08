@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 
 let minioClient: any = null;
+let minioBucketName: string = '';
 
 @Injectable()
 export class StorageService {
@@ -25,12 +26,14 @@ export class StorageService {
           useSSL,
         });
 
-        this.bucketName = process.env.MINIO_BUCKET_NAME || 'kpopick-bucket';
-        console.log('✅ Minio client initialized successfully');
+        minioBucketName = process.env.MINIO_BUCKET_NAME || 'kpopick-bucket';
         this.ensureBucketExists();
       }
+      
+      this.bucketName = minioBucketName || 'kpopick-bucket';
     } catch (error: any) {
-      console.warn('⚠️  Minio initialization warning (non-critical):', error?.message || error);
+
+      this.bucketName = 'kpopick-bucket';
     }
   }
 
@@ -62,10 +65,18 @@ export class StorageService {
         throw new Error('Minio client not initialized');
       }
 
+      const bucketName = this.bucketName || minioBucketName || 'kpopick-bucket';
+      
+      if (!bucketName || bucketName === 'undefined') {
+        throw new Error(`Invalid bucket name: ${bucketName}`);
+      }
+
       const objectName = `products/${fileName}`;
 
+      console.log(`📤 Uploading file: ${objectName} to bucket: ${bucketName}`);
+
       await minioClient.putObject(
-        this.bucketName,
+        bucketName,
         objectName,
         fileBuffer,
         fileBuffer.length,
@@ -74,10 +85,10 @@ export class StorageService {
         },
       );
 
-      const baseUrl = `http://${process.env.MINIO_ENDPOINT || 'localhost:9000'}`;
-      const fileUrl = `${baseUrl}/${this.bucketName}/${objectName}`;
+      const publicUrl = process.env.MINIO_PUBLIC_URL || `http://${process.env.MINIO_ENDPOINT || 'localhost:9000'}`;
+      const fileUrl = `${publicUrl}/${bucketName}/${objectName}`;
 
-      console.log(`✅ File uploaded: ${fileUrl}`);
+      console.log(`✅ File uploaded successfully: ${fileUrl}`);
 
       return {
         fileUrl,
@@ -85,7 +96,7 @@ export class StorageService {
         size: fileBuffer.length,
       };
     } catch (error: any) {
-      console.error('Minio upload error:', error?.message || error);
+      // Upload error handled
       throw new InternalServerErrorException(
         `Failed to upload file: ${error?.message || 'Unknown error'}`,
       );
@@ -122,7 +133,7 @@ export class StorageService {
       const baseUrl = `http://${process.env.MINIO_ENDPOINT || 'localhost:9000'}`;
       const fileUrl = `${baseUrl}/${this.bucketName}/${objectName}`;
 
-      console.log(`✅ File uploaded to ${folderName}: ${fileUrl}`);
+      console.log(` File uploaded to ${folderName}: ${fileUrl}`);
 
       return {
         fileUrl,
@@ -130,7 +141,7 @@ export class StorageService {
         size: fileBuffer.length,
       };
     } catch (error: any) {
-      console.error('Minio upload error:', error?.message || error);
+      // Upload error handled
       throw new InternalServerErrorException(
         `Failed to upload file: ${error?.message || 'Unknown error'}`,
       );
@@ -145,9 +156,9 @@ export class StorageService {
 
       const objectName = `products/${fileName}`;
       await minioClient.removeObject(this.bucketName, objectName);
-      console.log(`✅ File deleted: ${objectName}`);
+      // File deleted successfully
     } catch (error: any) {
-      console.error('Minio delete error:', error?.message || error);
+      // Delete error handled
       throw new InternalServerErrorException(
         `Failed to delete file: ${error?.message || 'Unknown error'}`,
       );

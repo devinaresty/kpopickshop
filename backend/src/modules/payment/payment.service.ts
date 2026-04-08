@@ -14,12 +14,6 @@ export class PaymentService {
     }
   }
 
-  /**
-   * Maps payment method - ONLY return payment_methods for QRIS
-   * For other methods, return empty array to prevent Xendit validation errors
-   * Error: "The payment method choices did not match with the available one on this business"
-   * Solution: Only QRIS is confirmed working, let Xendit show default options for others
-   */
   private mapPaymentMethod(paymentMethod: any): string[] {
     if (!paymentMethod || !paymentMethod.method) {
       return [];
@@ -27,8 +21,6 @@ export class PaymentService {
 
     const method = paymentMethod.method;
 
-    // ONLY QRIS uses payment_methods restriction (confirmed working)
-    // All other methods return empty so Xendit doesn't throw validation errors
     switch (method) {
       case 'BANK_TRANSFER':
         console.log('Bank Transfer - using Xendit default options');
@@ -77,8 +69,6 @@ export class PaymentService {
         currency: 'IDR',
       };
 
-      // Add payment methods pre-selection if provided
-      // NOTE: Only QRIS works reliably; other methods return empty to prevent errors
       if (paymentMethod && paymentMethod.method) {
         const mappedMethods = this.mapPaymentMethod(paymentMethod);
         if (mappedMethods && mappedMethods.length > 0) {
@@ -89,15 +79,12 @@ export class PaymentService {
         }
       }
 
-      // Add callback URLs if provided
       if (callbackSuccessUrl) {
         invoicePayload.success_redirect_url = callbackSuccessUrl;
       }
       if (callbackFailureUrl) {
         invoicePayload.failure_redirect_url = callbackFailureUrl;
       }
-
-      // Add webhook URL for server-to-server payment status callback
       if (webhookUrl) {
         invoicePayload.webhook_url = webhookUrl;
         console.log(
@@ -131,7 +118,6 @@ export class PaymentService {
           invoice_url: response.data.invoice_url,
         };
       } catch (xenditError: any) {
-        // If first request fails, retry without payment_methods for safety
         if (invoicePayload.payment_methods && xenditError.response?.status) {
           console.warn(
             `Retrying without payment_methods restriction due to Xendit error... [Order #${orderId}]`,
