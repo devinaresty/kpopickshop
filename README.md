@@ -40,3 +40,13 @@ Platform e-commerce untuk penjualan produk K-Pop dengan sistem pembayaran terint
 ```bash
 git clone <https://github.com/devinaresty/kpopickshop.git>
 cd "c:\project ujikom (kpopick)"
+
+## 🔐 Test Credentials
+
+### User Account
+- **Email**: carmen@gmail.com
+- **Password**: carmen123
+
+### Admin Account
+- **Email**: admin@gmail.com
+- **Password**: kpk7887
