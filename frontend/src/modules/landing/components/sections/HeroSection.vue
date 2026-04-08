@@ -7,12 +7,10 @@
         @touchstart="handleTouchStart"
         @touchend="handleTouchEnd"
       >
-        <!-- Hero Banner Image Carousel Container -->
         <button
           @click="handleBannerClick"
           class="relative w-full h-full overflow-hidden hover:opacity-90 transition-opacity duration-300 cursor-pointer"
         >
-          <!-- Slides Wrapper with smooth horizontal scroll -->
           <div 
             class="flex h-full transition-transform duration-700 ease-in-out select-none"
             :style="{ transform: `translateX(${-currentBannerIndex * 100}%)` }"
@@ -27,7 +25,6 @@
           </div>
         </button>
 
-        <!-- Left Chevron -->
         <button
           @click="previousBanner"
           class="absolute left-2 sm:left-3 md:left-4 top-1/2 -translate-y-1/2 z-30 bg-gray-300/70 hover:bg-gray-400/80 text-gray-600 p-2 sm:p-2.5 rounded-full transition-all duration-300 transform hover:scale-105"
@@ -38,7 +35,6 @@
           </svg>
         </button>
 
-        <!-- Right Chevron -->
         <button
           @click="nextBanner"
           class="absolute right-2 sm:right-3 md:right-4 top-1/2 -translate-y-1/2 z-30 bg-gray-300/70 hover:bg-gray-400/80 text-gray-600 p-2 sm:p-2.5 rounded-full transition-all duration-300 transform hover:scale-105"
@@ -49,7 +45,6 @@
           </svg>
         </button>
 
-        <!-- Dynamic Pill/Dot Indicators -->
         <div class="absolute bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
           <button
             v-for="(_, index) in bannerImages"
@@ -76,10 +71,9 @@ const bannerImages = [
   '/images/bannerillit.png'
 ]
 
-// Map each banner to its navigation destination
 const bannerLinks: { [key: number]: { name: string; params?: Record<string, string>; query?: Record<string, string> } } = {
-  0: { name: 'product-detail', params: { id: '7' } }, // H2H banner - direct to product detail page (Hearts2Hearts lightstick)
-  1: { name: 'search', query: { artist: 'illit' } } // ILLIT banner - to search page
+  0: { name: 'product-detail', params: { id: '7' } },
+  1: { name: 'search', query: { artist: 'illit' } } 
 }
 
 const currentBannerIndex = ref(0)

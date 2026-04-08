@@ -136,7 +136,6 @@ const authStore = useAuthStore()
 const showPassword = ref(false)
 
 onMounted(() => {
-  // Only redirect ke dashboard jika user SUDAH authenticated sebagai ADMIN
   if (authStore.isAuthenticated && authStore.user?.role === 'ADMIN') {
     window.location.href = '/admin/dashboard'
   }
@@ -157,12 +156,11 @@ const onSubmit = async (values: Record<string, any>) => {
     console.log('[AdminLoginPage] Attempting login...')
     await authStore.login(email, password)
     
-    // Verify login was successful and user is admin
     if (authStore.user?.role === 'ADMIN') {
       console.log('[AdminLoginPage] Admin login successful, redirect to dashboard')
       await router.push({ name: 'admin-dashboard' })
     } else {
-      // Non-admin user tried to login via admin form
+      
       authStore.error = 'You do not have admin access. Please contact the administrator.'
       authStore.logout()
       console.warn('[AdminLoginPage] User is not an admin')

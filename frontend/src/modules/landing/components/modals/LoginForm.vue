@@ -97,8 +97,7 @@ const initialValues = reactive({
   password: ''
 })
 
-onMounted(() => {
-  // Load only email if remembered (NOT password - security risk)
+onMounted(() => { 
   const storedEmail = localStorage.getItem('kpopick_remembered_email')
   if (storedEmail) {
     initialValues.email = storedEmail
@@ -120,7 +119,6 @@ const onSubmit = async (values: Record<string, any>) => {
     
     await authStore.login(email, password)
     
-    // Remember only email, NEVER store password
     if (rememberMe.value) {
       localStorage.setItem('kpopick_remembered_email', email)
     } else {

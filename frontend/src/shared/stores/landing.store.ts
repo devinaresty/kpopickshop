@@ -11,7 +11,6 @@ export const useLandingStore = defineStore('landing', () => {
     cartItems: []
   })
 
-  // Auth Modal Actions
   const openAuthModal = (mode: 'login' | 'register' = 'login') => {
     state.value.authModalMode = mode
     state.value.isAuthModalOpen = true
@@ -26,7 +25,6 @@ export const useLandingStore = defineStore('landing', () => {
     state.value.authModalMode = state.value.authModalMode === 'login' ? 'register' : 'login'
   }
 
-  // Other Options Modal
   const openOtherOptionsModal = () => {
     state.value.isOtherOptionsModalOpen = true
   }
@@ -35,7 +33,6 @@ export const useLandingStore = defineStore('landing', () => {
     state.value.isOtherOptionsModalOpen = false
   }
 
-  // Cart Actions
   const toggleCart = () => {
     state.value.isCartOpen = !state.value.isCartOpen
   }

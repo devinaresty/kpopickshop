@@ -1,6 +1,5 @@
 <template>
   <div class="mb-8 bg-gray-200 rounded-lg p-6 flex items-center gap-6">
-    <!-- Avatar Section -->
     <div class="flex-shrink-0">
       <div class="w-20 h-20 rounded-full bg-gradient-to-br from-gray-400 to-gray-600 flex items-center justify-center overflow-hidden border-3 border-white shadow-md">
         <img v-if="profile?.photoUrl" :src="profile.photoUrl" :alt="profile.name" class="w-full h-full object-cover">
@@ -10,7 +9,6 @@
       </div>
     </div>
 
-    <!-- User Info Section -->
     <div class="flex-1">
       <h2 class="text-2xl font-bold text-black">{{ profile?.name }}</h2>
       <p class="text-gray-600 text-sm">{{ profile?.email }}</p>

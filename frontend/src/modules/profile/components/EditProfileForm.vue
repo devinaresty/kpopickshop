@@ -2,19 +2,15 @@
   <div class="bg-white border border-gray-200 rounded-lg p-6">
     <h2 class="text-2xl font-bold text-black mb-6">Edit Profile</h2>
 
-    <!-- Error Message -->
     <div v-if="error" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
       <p class="text-sm text-red-700">{{ error }}</p>
     </div>
 
-    <!-- Success Message -->
     <div v-if="successMessage" class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
       <p class="text-sm text-green-700">{{ successMessage }}</p>
     </div>
 
-    <!-- Form -->
     <form @submit.prevent="handleSubmit" class="space-y-4">
-      <!-- Full Name -->
       <div>
         <label for="name" class="block text-sm font-semibold text-gray-700 mb-2">
           Full Name <span class="text-red-500">*</span>
@@ -29,7 +25,6 @@
         />
       </div>
 
-      <!-- Email (Read-only) -->
       <div>
         <label for="email" class="block text-sm font-semibold text-gray-700 mb-2">
           Email Address
@@ -45,7 +40,6 @@
         <p class="text-xs text-gray-500 mt-1">Email cannot be changed</p>
       </div>
 
-      <!-- Phone Number -->
       <div>
         <label for="phone" class="block text-sm font-semibold text-gray-700 mb-2">
           Phone Number
@@ -59,7 +53,6 @@
         />
       </div>
 
-      <!-- Address -->
       <div>
         <label for="address" class="block text-sm font-semibold text-gray-700 mb-2">
           Address
@@ -73,7 +66,6 @@
         ></textarea>
       </div>
 
-      <!-- Action Buttons -->
       <div class="flex gap-4 pt-4 border-t border-gray-200">
         <button
           type="button"
@@ -121,7 +113,6 @@ const form = ref<ProfileFormData>({
   address: '',
 })
 
-// Sync form with profile data
 watch(
   () => props.profile,
   (newProfile) => {

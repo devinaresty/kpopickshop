@@ -1,4 +1,3 @@
-// Landing Domain Types
 export interface Product {
   id: string
   title: string

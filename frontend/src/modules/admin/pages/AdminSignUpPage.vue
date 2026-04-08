@@ -217,8 +217,6 @@ const onSubmit = async (values: Record<string, any>) => {
     
     await authStore.adminRegister(email, password, name)
     
-    // After successful registration, redirect to login
-    // Admin role verification will happen during login
     console.log('Admin registration successful! Redirecting to login...')
     await router.push({ name: 'admin-login' })
   } catch (error) {

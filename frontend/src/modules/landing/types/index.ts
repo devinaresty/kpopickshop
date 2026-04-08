@@ -1,41 +1,31 @@
 
 export interface Product {
   id: string | number
-  name: string                    // Nama produk (yang di DB)
-  description?: string            // Deskripsi
-  price: number                   // Harga
-  stock: number                   // Jumlah stok
-  imageUrl: string               // URL gambar (yang di DB)
-  category?: string              // Kategori
-  artist?: string                // Artist/Brand
-  badge?: string                 // Label: 'Hot', 'New', 'Sale', 'Rare'
-  rating?: number                // Rating 1-5
-  sold?: number                  // Terjual (untuk tracking)
-  createdAt?: string             // Tanggal dibuat
-  updatedAt?: string             // Tanggal update
-  isFlashSale?: boolean          // Flag untuk Flash Sale
-  discountPercentage?: number    // Persentase diskon (0-100)
+  name: string                   
+  description?: string            
+  price: number                   
+  stock: number                   
+  imageUrl: string               
+  category?: string              
+  artist?: string                
+  badge?: string                 
+  rating?: number                
+  sold?: number                  
+  createdAt?: string             
+  updatedAt?: string             
+  isFlashSale?: boolean          
+  discountPercentage?: number    
 }
 
-/**
- * FEATURED PRODUCT (untuk HeroSection)
- * Subset dari Product dengan field minimal
- */
 export interface FeaturedProduct extends Omit<Product, 'description' | 'category'> {
-  badge: string  // Badge wajib untuk featured
+  badge: string 
 }
 
-/**
- * CART ITEM
- */
 export interface CartItem extends Product {
   quantity: number
   selectedVariant?: string
 }
 
-/**
- * API RESPONSE
- */
 export interface ApiResponse<T> {
   success: boolean
   data?: T

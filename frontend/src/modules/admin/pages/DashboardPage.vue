@@ -1,12 +1,10 @@
 <template>
   <div>
-    <!-- Top Navbar -->
     <AdminTopbar 
       title="Dashboard"
     />
     
     <div class="p-6">
-    <!-- Loading State -->
     <div v-if="isLoading" class="flex items-center justify-center py-20">
       <div class="text-center">
         <div class="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-gray-400"></div>
@@ -14,7 +12,6 @@
       </div>
     </div>
 
-    <!-- Error State -->
     <div v-else-if="error" class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
       <p class="text-red-800 font-semibold mb-2 text-sm">Failed to load dashboard data</p>
       <p class="text-red-700 text-xs mb-3">{{ error }}</p>
@@ -23,11 +20,8 @@
       </button>
     </div>
 
-    <!-- Dashboard Content -->
     <div v-else>
-      <!-- KPI Cards -->
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <!-- Total Products Card -->
         <div class="relative overflow-hidden bg-gradient-to-br from-black to-gray-700 rounded-xl shadow-lg p-6 text-white hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
           <div class="absolute -right-8 -top-8 w-32 h-32 bg-gray-600 opacity-20 rounded-full"></div>
           <div class="absolute -left-8 -bottom-8 w-32 h-32 bg-gray-500 opacity-20 rounded-full"></div>
@@ -47,7 +41,6 @@
           </div>
         </div>
 
-        <!-- Total Orders Card -->
         <div class="relative overflow-hidden bg-gradient-to-br from-gray-700 to-gray-500 rounded-xl shadow-lg p-6 text-white hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
           <div class="absolute -right-8 -top-8 w-32 h-32 bg-gray-600 opacity-20 rounded-full"></div>
           <div class="absolute -left-8 -bottom-8 w-32 h-32 bg-gray-500 opacity-20 rounded-full"></div>
@@ -67,7 +60,6 @@
           </div>
         </div>
 
-        <!-- Revenue Card -->
         <div class="relative overflow-hidden bg-gradient-to-br from-gray-600 to-gray-400 rounded-xl shadow-lg p-6 text-white hover:shadow-2xl transition-all duration-300 transform hover:scale-105">
           <div class="absolute -right-8 -top-8 w-32 h-32 bg-gray-500 opacity-20 rounded-full"></div>
           <div class="absolute -left-8 -bottom-8 w-32 h-32 bg-gray-400 opacity-20 rounded-full"></div>
@@ -88,7 +80,6 @@
         </div>
       </div>
 
-      <!-- Analytics Section: Detailed Product Stats -->
       <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl shadow-lg border border-gray-200 p-6">
         <div class="flex items-center gap-3 mb-6">
           <div class="p-3 bg-gradient-to-br from-gray-800 to-black rounded-lg">
@@ -99,7 +90,6 @@
           <h3 class="text-lg font-bold text-gray-900">Product Sales Analytics</h3>
         </div>
 
-        <!-- Table Header -->
         <div class="grid grid-cols-12 gap-3 mb-3 px-4 py-3 bg-white rounded-lg border border-gray-200 shadow-sm">
           <div class="col-span-1">
             <p class="text-xs font-bold text-gray-700">#</p>
@@ -121,7 +111,6 @@
           </div>
         </div>
 
-        <!-- Table Rows -->
         <div class="space-y-2 mb-4">
           <div 
             v-for="(product, idx) in (topProducts.length > 0 ? topProducts : placeholderProducts)" 
@@ -133,7 +122,6 @@
                 : 'bg-gray-100 border-gray-300 opacity-60'
             ]"
           >
-            <!-- Rank -->
             <div class="col-span-1 flex items-center">
               <span class="text-xs font-bold w-6 h-6 flex items-center justify-center rounded-full" :class="[
                 topProducts.length > 0 
@@ -144,7 +132,6 @@
               </span>
             </div>
 
-            <!-- Product Photo -->
             <div class="col-span-1 flex items-center">
               <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center overflow-hidden flex-shrink-0 shadow-sm">
                 <img 
@@ -159,17 +146,14 @@
               </div>
             </div>
 
-            <!-- Product Name -->
             <div class="col-span-4 flex items-center">
               <p class="text-sm font-semibold text-gray-900 truncate">{{ product.name }}</p>
             </div>
 
-            <!-- Units Sold -->
             <div class="col-span-2 flex items-center justify-end">
               <p class="text-sm font-bold text-gray-900">{{ product.soldCount }}</p>
             </div>
 
-            <!-- Percentage -->
             <div class="col-span-2 flex items-center justify-end">
               <div class="flex items-center gap-2 w-full">
                 <div class="flex-1 min-w-0">
@@ -187,14 +171,12 @@
               </div>
             </div>
 
-            <!-- Revenue -->
             <div class="col-span-2 flex items-center justify-end">
               <p class="text-sm font-semibold text-gray-800">{{ formatCurrency(calculateProductRevenue(product.id)) }}</p>
             </div>
           </div>
         </div>
 
-        <!-- Summary Footer -->
         <div class="grid grid-cols-12 gap-3 px-4 py-3 bg-gradient-to-r from-gray-800 to-gray-900 rounded-lg border border-gray-700 shadow-sm">
           <div class="col-span-1"></div>
           <div class="col-span-1"></div>
@@ -212,7 +194,6 @@
           </div>
         </div>
 
-        <!-- Info message -->
         <div v-if="topProducts.length === 0" class="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-start gap-3">
           <svg class="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
@@ -237,7 +218,6 @@ const isLoading = ref(true)
 const error = ref<string | null>(null)
 const topProducts = ref<any[]>([])
 
-// Placeholder data untuk tampilan ketika belum ada sales
 const placeholderProducts = ref<any[]>([
   { id: 1, name: 'Premium Album Collection', soldCount: 0, imageUrl: '' },
   { id: 2, name: 'Official Lightstick Ver 4', soldCount: 0, imageUrl: '' },
@@ -268,22 +248,20 @@ const getProductPercentage = (soldCount: number): number => {
 
 const getProductBarColor = (index: number): string => {
   const colors: string[] = [
-    '#000000', // pure black
-    '#1a1a1a', // very dark gray
-    '#2d2d2d', // dark gray
-    '#404040', // medium dark gray
-    '#525252', // medium gray
-    '#6b6b6b'  // light gray
+    '#000000', 
+    '#1a1a1a', 
+    '#2d2d2d', 
+    '#404040', 
+    '#525252', 
+    '#6b6b6b'  
   ]
   return colors[index % colors.length] || '#000000'
 }
 
 const calculateProductRevenue = (productId: number): number => {
-  // Estimate based on units sold * average transaction value
   const product = topProducts.value.find(p => p.id === productId) || 
                   placeholderProducts.value.find(p => p.id === productId)
   if (!product) return 0
-  // Simple estimate: average price per unit based on total revenue / total units
   const avgPricePerUnit = totalUnitsSold.value > 0 ? revenue.value / totalUnitsSold.value : 0
   return Math.round(product.soldCount * avgPricePerUnit)
 }
@@ -307,7 +285,6 @@ const loadDashboardData = async () => {
     const orders = await apiClient.getAllOrdersAdmin()
     ordersCount.value = orders.length
     
-    // Calculate revenue - use totalPrice field
     revenue.value = orders
       .filter((o: any) => {
         const hasAmount = o.totalPrice
@@ -320,7 +297,6 @@ const loadDashboardData = async () => {
 
     console.log('Orders loaded:', orders.length, 'Total revenue calculated:', revenue.value)
 
-    // Calculate top products by sold count
     const productSalesMap = new Map<number, { id: number; name: string; soldCount: number; imageUrl?: string }>()
     
     orders.forEach((order: any) => {
@@ -348,7 +324,6 @@ const loadDashboardData = async () => {
       }
     })
     
-    // Sort and get top 6
     topProducts.value = Array.from(productSalesMap.values())
       .sort((a, b) => b.soldCount - a.soldCount)
       .slice(0, 6)
