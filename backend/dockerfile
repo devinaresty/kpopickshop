@@ -3,8 +3,12 @@ FROM node:20-alpine
 WORKDIR /app
 
 COPY package*.json ./
+# Copy folder prisma agar bisa generate client
+COPY prisma ./prisma/ 
 
 RUN npm ci
+# Penting agar Prisma Client tersedia di dalam container
+RUN npx prisma generate 
 
 COPY . .
 
@@ -12,5 +16,5 @@ RUN npm run build
 
 EXPOSE 3000
 
-CMD [ "node", "dist/main.ts" ]
-
+# Perhatikan perubahan dari .ts ke .js
+CMD [ "node", "dist/main.js" ]
