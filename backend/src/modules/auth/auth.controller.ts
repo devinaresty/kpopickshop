@@ -10,6 +10,7 @@ import { JwtAuthGuard } from "../../common/guards/jwt-auth.guard";
 import { RolesGuard } from "../../common/guards/roles.guard";
 import { Roles } from "../../common/decorators/roles.decorator";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
+import { ImageUrlInterceptor } from "../../interceptors/image-url.interceptor";
 
 @ApiTags("Auth")
 @Controller("api/auth")
@@ -84,6 +85,7 @@ export class AuthController {
 
   @Get("me")
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(ImageUrlInterceptor)
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get current user profile" })
   @ApiResponse({
@@ -101,6 +103,7 @@ export class AuthController {
   @Get("users")
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin")
+  @UseInterceptors(ImageUrlInterceptor)
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get all users (Admin only)" })
   @ApiResponse({
@@ -114,7 +117,7 @@ export class AuthController {
 
   @Post("upload-profile-photo")
   @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor("file"))
+  @UseInterceptors(FileInterceptor("file"), ImageUrlInterceptor)
   @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: "Upload user profile photo" })
@@ -168,6 +171,7 @@ export class AuthController {
 
   @Delete("delete-profile-photo")
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(ImageUrlInterceptor)
   @ApiBearerAuth()
   @ApiOperation({ summary: "Delete user profile photo" })
   @ApiResponse({

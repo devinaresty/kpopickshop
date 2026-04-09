@@ -129,7 +129,7 @@ export class StorageService {
         },
       );
 
-      const baseUrl = `http://${process.env.MINIO_ENDPOINT || 'localhost:9000'}`;
+      const baseUrl = process.env.MINIO_PUBLIC_URL || `http://${process.env.MINIO_ENDPOINT || 'localhost:9000'}`;
       const fileUrl = `${baseUrl}/${this.bucketName}/${objectName}`;
 
       console.log(` File uploaded to ${folderName}: ${fileUrl}`);

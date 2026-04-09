@@ -25,7 +25,7 @@ export class ImageUrlInterceptor implements NestInterceptor {
       const transformed = { ...obj };
       for (const key in transformed) {
         if (
-          (key === 'imageUrl' || key === 'image') &&
+          (key === 'imageUrl' || key === 'image' || key === 'photoUrl') &&
           typeof transformed[key] === 'string'
         ) {
           // Debug log
