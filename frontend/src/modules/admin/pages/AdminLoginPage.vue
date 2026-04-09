@@ -153,17 +153,33 @@ const onSubmit = async (values: Record<string, any>) => {
   try {
     const { email, password } = values as { email: string; password: string }
     
-    console.log('[AdminLoginPage] Attempting login...')
+    console.log('[AdminLoginPage] Attempting login with:', email)
     await authStore.login(email, password)
     
-    if (authStore.user?.role === 'ADMIN') {
-      console.log('[AdminLoginPage] Admin login successful, redirect to dashboard')
+    console.log('[AdminLoginPage] Login response:', {
+      user: authStore.user,
+      role: authStore.user?.role,
+      token: authStore.token ? 'exists' : 'missing'
+    })
+    
+    const userRole = authStore.user?.role?.toUpperCase()
+    
+    console.log('[AdminLoginPage] Role check:', {
+      userRole: authStore.user?.role,
+      upperCase: userRole,
+      isAdmin: userRole === 'ADMIN',
+      fullUser: JSON.stringify(authStore.user)
+    })
+    
+    if (userRole === 'ADMIN') {
+      console.log('[AdminLoginPage] ✅ Admin login successful, role:', authStore.user?.role)
+      
+      await new Promise(resolve => setTimeout(resolve, 500))
       await router.push({ name: 'admin-dashboard' })
     } else {
-      
+      console.warn('[AdminLoginPage] ❌ User is not an admin, role:', authStore.user?.role, 'Type:', typeof authStore.user?.role)
       authStore.error = 'You do not have admin access. Please contact the administrator.'
       authStore.logout()
-      console.warn('[AdminLoginPage] User is not an admin')
     }
   } catch (error) {
     console.error('[AdminLoginPage] Login error:', error)

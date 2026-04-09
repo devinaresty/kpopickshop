@@ -155,27 +155,37 @@ router.beforeEach(async (to, _from, next) => {
   // Admin routes - require auth + ADMIN role
   if (to.path.startsWith('/admin')) {
     if (!isAuthenticated) {
+      console.log('[Router Guard] Not authenticated, redirecting to /admin/login')
       next({ path: '/admin/login' })
       return
     }
 
-    const userRole = (authStore.user as any)?.role
-    if (userRole !== 'ADMIN') {
-      next({ path: '/home' })
+    if (!authStore.user) {
+      console.log('[Router Guard] User data not loaded, fetching from API...')
+      await authStore.getCurrentUser()
+    }
+
+    const userRole = authStore.user?.role
+    const userEmail = authStore.user?.email
+    
+    console.log(`[Router Guard] Checking admin access - Email: ${userEmail}, Role: ${userRole}, Type: ${typeof userRole}`)
+    
+    if (userRole?.toUpperCase() !== 'ADMIN') {
+      console.warn(`[Router Guard] Access denied - User role is '${userRole}', not ADMIN. Redirecting to /admin/login`)
+      next({ path: '/admin/login' })  
       return
     }
 
+    console.log(`[Router Guard] ✅ Admin access granted for ${userEmail}`)
     next()
     return
   }
 
-  // Protected user routes
   if (to.meta.requiresAuth && !isAuthenticated) {
     next({ path: '/' })
     return
   }
 
-  // Guest-only routes (landing page) - don't auto-redirect
   if (to.meta.requiresGuest && isAuthenticated && to.path !== '/') {
     next({ path: '/home' })
     return

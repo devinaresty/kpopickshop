@@ -15,7 +15,8 @@ interface User {
 }
 
 export const useAuthStore = defineStore('auth', () => {
-  const user = ref<User | null>(null)
+  const storedUser = localStorage.getItem('user')
+  const user = ref<User | null>(storedUser ? JSON.parse(storedUser) : null)
   const token = ref<string | null>(localStorage.getItem('token'))
   const isLoading = ref(false)
   const error = ref<string | null>(null)
@@ -35,6 +36,7 @@ export const useAuthStore = defineStore('auth', () => {
       token.value = response.access_token
       user.value = response.user
       localStorage.setItem('token', response.access_token)
+      localStorage.setItem('user', JSON.stringify(response.user))
       
       error.value = null
       
@@ -61,6 +63,7 @@ export const useAuthStore = defineStore('auth', () => {
       token.value = response.access_token
       user.value = response.user
       localStorage.setItem('token', response.access_token)
+      localStorage.setItem('user', JSON.stringify(response.user))
       
       error.value = null
       
@@ -87,6 +90,7 @@ export const useAuthStore = defineStore('auth', () => {
       token.value = response.access_token
       user.value = response.user
       localStorage.setItem('token', response.access_token)
+      localStorage.setItem('user', JSON.stringify(response.user))
       
       error.value = null
       
@@ -109,6 +113,7 @@ export const useAuthStore = defineStore('auth', () => {
     try {
       const userData = await apiClient.getCurrentUser()
       user.value = userData
+      localStorage.setItem('user', JSON.stringify(userData))
       return userData
     } catch (err) {
       logout()
@@ -121,6 +126,7 @@ export const useAuthStore = defineStore('auth', () => {
     token.value = null
     error.value = null
     localStorage.removeItem('token')
+    localStorage.removeItem('user')
   }
 
   return {
