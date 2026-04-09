@@ -197,7 +197,7 @@ export class AuthService {
       role: user.role,
       phone: user.phone,
       address: user.address,
-      photoUrl: user.photoUrl,
+      photoUrl: user.photoUrl || null, 
       createdAt: new Date(user.createdAt).toISOString(),
       updatedAt: new Date(user.updatedAt).toISOString(),
     };
