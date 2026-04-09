@@ -58,7 +58,7 @@ async function bootstrap() {
 
   const port = process.env.PORT ?? 3000;
   const minioUrl = process.env.MINIO_PUBLIC_URL || 'http://localhost:9000';
-  const server = await app.listen(port);
+  const server = await app.listen(port, '0.0.0.0');
   
   console.log(`\n MinIO (Storage)        ${minioUrl}`);
   console.log(`Backend API            http://localhost:${port}`);
