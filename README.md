@@ -49,4 +49,4 @@ cd "c:\project ujikom (kpopick)"
 
 ### Admin Account
 - **Email**: admin@gmail.com
-- **Password**: kpk7887
+- **Password**: admin123
