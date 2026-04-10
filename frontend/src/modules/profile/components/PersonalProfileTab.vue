@@ -115,43 +115,43 @@
             </p>
           </div>
 
-          <div class="space-y-5">
+          <div class="space-y-3">
             <div>
-              <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-3">{{ i18nStore.t('personalProfile.fullName') }} <span class="text-red-500">*</span></label>
+              <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">{{ i18nStore.t('personalProfile.fullName') }} <span class="text-red-500">*</span></label>
               <input
                 v-model="formData.name"
                 type="text"
                 :placeholder="i18nStore.t('personalProfile.fullName')"
-                class="w-full px-5 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-gray-900 placeholder-gray-500 transition-all"
+                class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-gray-900 placeholder-gray-500 transition-all"
               />
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-3">{{ i18nStore.t('personalProfile.dateOfBirth') }}</label>
+              <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">{{ i18nStore.t('personalProfile.dateOfBirth') }}</label>
               <input
                 v-model="formData.dateOfBirth"
                 type="date"
-                class="w-full px-5 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-gray-900 transition-all"
+                class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-gray-900 transition-all"
               />
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-3">{{ i18nStore.t('common.email') }}</label>
+              <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">{{ i18nStore.t('common.email') }}</label>
               <input
                 v-model="formData.email"
                 type="email"
                 :placeholder="i18nStore.t('common.email')"
-                class="w-full px-5 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-gray-900 placeholder-gray-500 transition-all"
+                class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-gray-900 placeholder-gray-500 transition-all"
               />
             </div>
 
             <div>
-              <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-3">{{ i18nStore.t('personalProfile.phoneNumber') }}</label>
+              <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">{{ i18nStore.t('personalProfile.phoneNumber') }}</label>
               <input
                 v-model="formData.phone"
                 type="text"
                 :placeholder="i18nStore.t('personalProfile.phoneNumber')"
-                class="w-full px-5 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-gray-900 placeholder-gray-500 transition-all"
+                class="w-full px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-gray-900 placeholder-gray-500 transition-all"
               />
             </div>
           </div>
