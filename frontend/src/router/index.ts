@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '@/shared/stores'
+import { getAuthTokenByRole } from '@/shared/config/auth.config'
 
 declare module 'vue-router' {
   interface RouteMeta {
@@ -145,17 +146,17 @@ router.beforeEach(async (to, _from, next) => {
   const authStore = useAuthStore()
   const isAuthenticated = authStore.isAuthenticated
 
-  // Public paths - no auth needed
   const publicPaths = ['/admin/login', '/admin/signup', '/']
   if (publicPaths.includes(to.path)) {
     next()
     return
   }
 
-  // Admin routes - require auth + ADMIN role
   if (to.path.startsWith('/admin')) {
-    if (!isAuthenticated) {
-      console.log('[Router Guard] Not authenticated, redirecting to /admin/login')
+    const adminToken = getAuthTokenByRole('ADMIN')
+    
+    if (!adminToken) {
+      console.log('[Router Guard] Admin token not found, redirecting to /admin/login')
       next({ path: '/admin/login' })
       return
     }
@@ -168,7 +169,7 @@ router.beforeEach(async (to, _from, next) => {
     const userRole = authStore.user?.role
     const userEmail = authStore.user?.email
     
-    console.log(`[Router Guard] Checking admin access - Email: ${userEmail}, Role: ${userRole}, Type: ${typeof userRole}`)
+    console.log(`[Router Guard] Checking admin access - Email: ${userEmail}, Role: ${userRole}`)
     
     if (userRole?.toUpperCase() !== 'ADMIN') {
       console.warn(`[Router Guard] Access denied - User role is '${userRole}', not ADMIN. Redirecting to /admin/login`)
@@ -181,9 +182,14 @@ router.beforeEach(async (to, _from, next) => {
     return
   }
 
-  if (to.meta.requiresAuth && !isAuthenticated) {
-    next({ path: '/' })
-    return
+  if (to.meta.requiresAuth) {
+    const userToken = getAuthTokenByRole('USER')
+    
+    if (!userToken) {
+      console.log('[Router Guard] User token not found, redirecting to /')
+      next({ path: '/' })
+      return
+    }
   }
 
   if (to.meta.requiresGuest && isAuthenticated && to.path !== '/') {

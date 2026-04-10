@@ -1,3 +1,5 @@
+import { getAuthToken, clearAllAuth } from '@/shared/config/auth.config'
+
 const API_BASE_URL =
   import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
@@ -86,12 +88,7 @@ class ApiClient {
   }
 
   private getAuthToken(): string | null {
-    // Check for either admin or user token
-    const adminToken = localStorage.getItem("ADMIN_TOKEN");
-    const userToken = localStorage.getItem("USER_TOKEN");
-    
-    // Prefer admin token if both exist
-    return adminToken || userToken;
+    return getAuthToken();
   }
 
   private async request<T>(
@@ -121,11 +118,7 @@ class ApiClient {
     });
 
     if (response.status === 401) {
-      // Clear both possible auth storage on 401
-      localStorage.removeItem("ADMIN_TOKEN");
-      localStorage.removeItem("ADMIN_USER");
-      localStorage.removeItem("USER_TOKEN");
-      localStorage.removeItem("USER_USER");
+      clearAllAuth();
       if (typeof window !== "undefined") {
         window.location.href = "/";
       }
