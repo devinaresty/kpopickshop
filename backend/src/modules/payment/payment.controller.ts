@@ -33,6 +33,7 @@ export class PaymentController {
   async createPayment(
     @CurrentUser() user: any,
     @Body() body: { orderId: number; paymentMethod?: any },
+    @Req() req: Request,
   ) {
     if (!user || !user.id) {
       throw new BadRequestException('User not authenticated');
@@ -60,14 +61,61 @@ export class PaymentController {
       throw new BadRequestException(`Order #${orderId} is already ${order.status}, cannot create new payment`);
     }
 
-    // Determine frontend base URL (support both dev and production)
-    const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    // Determine frontend base URL (support both dev and production with auto-detection)
+    let frontendUrl = process.env.FRONTEND_URL;
+    
+    if (!frontendUrl) {
+      // Auto-detect from request headers if in production (Railway)
+      if (process.env.NODE_ENV === 'production') {
+        const origin = req.headers.origin || req.headers.referer;
+        if (origin) {
+          // Extract domain from origin (e.g., https://kpopickshop.vercel.app from referer)
+          frontendUrl = origin.split('/').slice(0, 3).join('/');
+          console.log(`🔍 Auto-detected frontend URL from request: ${frontendUrl}`);
+        }
+      }
+      
+      // Fallback to default (localhost for dev, or error message for production)
+      if (!frontendUrl) {
+        frontendUrl = process.env.NODE_ENV === 'production' 
+          ? 'https://kpopickshop.vercel.app' // Default production domain
+          : 'http://localhost:5173';
+        console.log(`📌 Using fallback frontend URL: ${frontendUrl}`);
+      }
+    }
+    
     const successUrl = `${frontendUrl}/payment-success?orderId=${orderId}`;
     const failureUrl = `${frontendUrl}/payment-failed?orderId=${orderId}`;
 
-    // Determine backend base URL for webhook callback
-    const backendUrl = process.env.BACKEND_URL || 'http://localhost:3000';
+    // Determine backend base URL for webhook callback (support both dev and production)
+    let backendUrl = process.env.BACKEND_URL;
+    
+    if (!backendUrl) {
+      // Auto-detect from request headers if in production (Railway)
+      if (process.env.NODE_ENV === 'production') {
+        const host = req.headers.host;
+        const protocol = req.protocol || 'https';
+        if (host) {
+          backendUrl = `${protocol}://${host}`;
+          console.log(`🔍 Auto-detected backend URL from request: ${backendUrl}`);
+        }
+      }
+      
+      // Fallback to default
+      if (!backendUrl) {
+        backendUrl = process.env.NODE_ENV === 'production'
+          ? 'https://api.railway.com' // Placeholder - will use auto-detect
+          : 'http://localhost:3000';
+        console.log(`📌 Using fallback backend URL: ${backendUrl}`);
+      }
+    }
+    
     const webhookUrl = `${backendUrl}/api/payments/webhook/xendit`;
+    
+    console.log(`\n💳 Payment URLs for Order #${orderId}:`);
+    console.log(`   Success URL: ${successUrl}`);
+    console.log(`   Failure URL: ${failureUrl}`);
+    console.log(`   Webhook URL: ${webhookUrl}\n`);
 
     const invoice = await this.paymentService.createInvoice(
       orderId,
