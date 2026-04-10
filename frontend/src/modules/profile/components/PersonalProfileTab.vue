@@ -10,9 +10,9 @@
       </button>
     </div>
 
-    <div class="px-8 py-8">
+    <div class="px-6 py-6">
       <template v-if="!isEditing">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div class="flex flex-col items-center">
             <div class="w-48 h-48 rounded-full bg-gradient-to-br from-gray-200 to-gray-400 flex items-center justify-center overflow-hidden mb-8 shadow-lg border-4 border-white hover:shadow-xl transition-shadow">
               <img v-if="profile?.photoUrl" :src="profile.photoUrl" :alt="profile.name" class="w-full h-full object-cover">
@@ -75,7 +75,7 @@
       </template>
 
       <template v-else>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
           <div class="flex flex-col items-center">
             <div class="relative w-48 h-48 rounded-full bg-gradient-to-br from-gray-200 to-gray-400 flex items-center justify-center overflow-hidden mb-8 shadow-lg border-4 border-white hover:shadow-xl transition-all group cursor-pointer">
               <img v-if="formData.photoPreview || profile?.photoUrl" :src="formData.photoPreview || profile?.photoUrl" :alt="profile?.name" class="w-full h-full object-cover">
@@ -157,7 +157,7 @@
           </div>
         </div>
 
-        <div class="mt-8 space-y-4">
+        <div class="mt-6 space-y-4">
           <div v-if="error" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm font-medium">
             {{ error }}
           </div>
@@ -166,19 +166,13 @@
           </div>
         </div>
 
-        <div class="mt-8 flex gap-3">
+        <div class="mt-6">
           <button
             @click="saveProfile"
             :disabled="isSaving"
-            class="flex-1 px-5 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-900 active:scale-95 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
+            class="w-full px-5 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-900 active:scale-95 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
           >
             {{ isSaving ? i18nStore.t('personalProfile.saving') : i18nStore.t('personalProfile.saveChanges') }}
-          </button>
-          <button
-            @click="isEditing = false"
-            class="px-5 py-3 bg-gray-100 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 active:scale-95 transition-all duration-150"
-          >
-            {{ i18nStore.t('common.cancel') }}
           </button>
         </div>
       </template>
