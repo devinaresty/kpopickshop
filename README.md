@@ -210,4 +210,4 @@ npm run lint            # Run linting
 ### Admin Account
 - **Email**: admin@gmail.com
 - **Password**: admin123
->>>>>>> e1cd1075d38dee86358f4356eb8ac5fbf2429df7
+
