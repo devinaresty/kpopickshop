@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { apiClient } from '@/core/api'
 import { useAuthStore } from './auth.store'
+import { getAuthToken } from '@/shared/config/auth.config'
 import type { UserProfile, UpdateProfileDto } from '@/modules/profile/types'
 
 export const useProfileStore = defineStore('profile', () => {
@@ -72,7 +73,7 @@ export const useProfileStore = defineStore('profile', () => {
       const formData = new FormData()
       formData.append('file', file)
 
-      const token = localStorage.getItem('ADMIN_TOKEN') || localStorage.getItem('USER_TOKEN')
+      const token = getAuthToken()
       const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
       const url = `${baseUrl}/auth/upload-profile-photo`
 
@@ -134,7 +135,7 @@ export const useProfileStore = defineStore('profile', () => {
     successMessage.value = null
     
     try {
-      const token = localStorage.getItem('ADMIN_TOKEN') || localStorage.getItem('USER_TOKEN')
+      const token = getAuthToken()
       const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
       const url = `${baseUrl}/auth/delete-profile-photo`
 
@@ -157,12 +158,10 @@ export const useProfileStore = defineStore('profile', () => {
 
       const result = await response.json()
 
-      // Update profile with deleted photo
       if (profile.value) {
         profile.value.photoUrl = undefined
       }
       
-      // Also update auth store user
       if (authStore.user) {
         (authStore.user as any).photoUrl = undefined
       }

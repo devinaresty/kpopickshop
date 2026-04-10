@@ -316,6 +316,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { apiClient } from '@/core/api'
+import { getAuthToken } from '@/shared/config/auth.config'
 import AdminTopbar from '@/modules/admin/components/AdminTopbar.vue'
 
 const products = ref<any[]>([])
@@ -478,7 +479,7 @@ const uploadImage = async (): Promise<string | null> => {
 
   try {
     const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
-    const token = localStorage.getItem('ADMIN_TOKEN') || localStorage.getItem('USER_TOKEN')
+    const token = getAuthToken()
     const response = await fetch(`${baseUrl}/products/upload`, {
       method: 'POST',
       headers: {
