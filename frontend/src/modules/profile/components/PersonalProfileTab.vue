@@ -42,31 +42,31 @@
             </p>
           </div>
 
-          <div class="space-y-5">
-            <div class="bg-gray-50 rounded-lg p-5 border border-gray-100 hover:border-gray-200 transition-colors">
-              <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{{ i18nStore.t('personalProfile.fullName') }}</label>
-              <div class="text-lg font-semibold text-gray-900">
+          <div class="space-y-3">
+            <div class="bg-gray-50 rounded-lg p-3 border border-gray-100 hover:border-gray-200 transition-colors">
+              <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">{{ i18nStore.t('personalProfile.fullName') }}</label>
+              <div class="text-base font-semibold text-gray-900">
                 {{ profile?.name }}
               </div>
             </div>
 
-            <div class="bg-gray-50 rounded-lg p-5 border border-gray-100 hover:border-gray-200 transition-colors">
-              <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{{ i18nStore.t('personalProfile.dateOfBirth') }}</label>
-              <div class="text-lg font-semibold text-gray-900">
+            <div class="bg-gray-50 rounded-lg p-3 border border-gray-100 hover:border-gray-200 transition-colors">
+              <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">{{ i18nStore.t('personalProfile.dateOfBirth') }}</label>
+              <div class="text-base font-semibold text-gray-900">
                 {{ profile?.dateOfBirth ? new Date(profile.dateOfBirth).toLocaleDateString('id-ID') : '-' }}
               </div>
             </div>
 
-            <div class="bg-gray-50 rounded-lg p-5 border border-gray-100 hover:border-gray-200 transition-colors">
-              <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{{ i18nStore.t('common.email') }}</label>
-              <div class="text-lg font-semibold text-gray-900">
+            <div class="bg-gray-50 rounded-lg p-3 border border-gray-100 hover:border-gray-200 transition-colors">
+              <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">{{ i18nStore.t('common.email') }}</label>
+              <div class="text-base font-semibold text-gray-900">
                 {{ profile?.email }}
               </div>
             </div>
 
-            <div class="bg-gray-50 rounded-lg p-5 border border-gray-100 hover:border-gray-200 transition-colors">
-              <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{{ i18nStore.t('personalProfile.phoneNumber') }}</label>
-              <div class="text-lg font-semibold text-gray-900">
+            <div class="bg-gray-50 rounded-lg p-3 border border-gray-100 hover:border-gray-200 transition-colors">
+              <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-1">{{ i18nStore.t('personalProfile.phoneNumber') }}</label>
+              <div class="text-base font-semibold text-gray-900">
                 {{ profile?.phone || '-' }}
               </div>
             </div>
