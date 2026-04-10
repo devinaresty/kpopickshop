@@ -212,6 +212,19 @@
               </select>
             </div>
 
+            <div class="flex items-center gap-3 p-3 bg-blue-50 rounded-lg border-2 border-blue-100">
+              <input 
+                v-model="formData.isPromoted"
+                type="checkbox"
+                id="isPromoted"
+                class="w-5 h-5 rounded-md border-2 border-blue-300 accent-blue-600 cursor-pointer"
+              />
+              <label for="isPromoted" class="flex-1 cursor-pointer">
+                <p class="text-sm font-bold text-gray-900">Mark as Flash Sale</p>
+                <p class="text-xs text-gray-600 mt-0.5">This product will appear in the Flash Sale section</p>
+              </label>
+            </div>
+
             <div>
               <label class="block text-sm font-bold text-gray-900 mb-2">Product Image</label>
               
@@ -340,7 +353,8 @@ const formData = ref<any>({
   price: 0,
   stock: 0,
   categoryId: '',
-  imageUrl: ''
+  imageUrl: '',
+  isPromoted: false
 })
 
 const imageFile = ref<File | null>(null)
@@ -383,7 +397,8 @@ const openAddProductModal = () => {
     description: '',
     price: 0,
     stock: 0,
-    categoryId: ''
+    categoryId: '',
+    isPromoted: false
   }
   imageFile.value = null
   imagePreview.value = ''
@@ -397,7 +412,8 @@ const openEditProductModal = (product: any) => {
     description: product.description || '',
     price: product.price,
     stock: product.stock,
-    categoryId: product.categoryId
+    categoryId: product.categoryId,
+    isPromoted: product.isPromoted || false
   }
   ;(formData.value as any).id = product.id
   ;(formData.value as any).imageUrl = product.imageUrl || product.image
@@ -413,7 +429,8 @@ const closeProductModal = () => {
     description: '',
     price: 0,
     stock: 0,
-    categoryId: ''
+    categoryId: '',
+    isPromoted: false
   }
   imageFile.value = null
   imagePreview.value = ''
@@ -547,7 +564,7 @@ const submitProductForm = async () => {
         stock: formData.value.stock,
         categoryId: formData.value.categoryId,
         imageUrl: (formData.value as any).imageUrl,
-        isPromoted: false
+        isPromoted: formData.value.isPromoted || false
       })
     } else {
       await apiClient.createProduct({
@@ -558,7 +575,7 @@ const submitProductForm = async () => {
         stock: formData.value.stock,
         categoryId: formData.value.categoryId,
         imageUrl: (formData.value as any).imageUrl,
-        isPromoted: false
+        isPromoted: formData.value.isPromoted || false
       })
     }
 

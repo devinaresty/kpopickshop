@@ -158,16 +158,17 @@ const reloadProducts = async () => {
     isLoading.value = true
     error.value = null
     
-    const allProductsResponse = await apiClient.getProducts(0, 50)
-    
-    if (!allProductsResponse || !Array.isArray(allProductsResponse.data)) {
-      throw new Error('Invalid products response format')
+    const forYouResponse = await apiClient.getProducts(0, 50)
+    if (!forYouResponse || !Array.isArray(forYouResponse.data)) {
+      throw new Error('Invalid for you products response format')
     }
+    forYouProducts.value = forYouResponse.data.map(mapProductFromAPI)
     
-    const allProducts = allProductsResponse.data.map(mapProductFromAPI)
-    
-    forYouProducts.value = allProducts
-    flashSaleProducts.value = allProducts.filter(product => product.isFlashSale === true)
+    const flashSaleResponse = await apiClient.getPromotedProducts(0, 50)
+    if (!flashSaleResponse || !Array.isArray(flashSaleResponse.data)) {
+      throw new Error('Invalid flash sale products response format')
+    }
+    flashSaleProducts.value = flashSaleResponse.data.map(mapProductFromAPI)
     
     console.log('RecommendationSection - For You:', forYouProducts.value.length, 'items')
     console.log('RecommendationSection - Flash Sale:', flashSaleProducts.value.length, 'items')
