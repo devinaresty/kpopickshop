@@ -1,9 +1,9 @@
 <template>
   <div class="min-h-screen bg-gray-100 flex font-sans">
     <aside class="w-64 bg-white flex flex-col fixed h-full shadow-lg z-10 border-r border-gray-200">
-      <div class="h-20 px-5 border-b border-gray-100 flex items-center gap-3 bg-gradient-to-r from-white to-gray-50">
-        <img src="/logo (5).png" alt="KPopick Logo" class="w-12 h-12 object-contain flex-shrink-0" />
-        <span class="text-lg font-bold text-gray-900 tracking-tight">KPopick Admin</span>
+      <div class="h-16 px-5 border-b border-gray-100 flex items-center gap-3 bg-gradient-to-r from-white to-gray-50">
+        <img src="/logo (5).png" alt="KPopick Logo" class="w-10 h-10 object-contain flex-shrink-0" />
+        <span class="text-base font-bold text-gray-900 tracking-tight">KPopick Admin</span>
       </div>
 
       <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
