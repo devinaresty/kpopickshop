@@ -4,7 +4,7 @@
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
         <div>
           <div class="flex items-center overflow-visible mb-3 sm:mb-4">
-            <img src="/logo (3).png" alt="K Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
+            <img src="/logo (4).png" alt="K Logo" class="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
           </div>
           <p class="text-gray-600 text-xs sm:text-sm leading-relaxed">
             {{ i18nStore.t('footer.description') }}

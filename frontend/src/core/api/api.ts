@@ -85,6 +85,15 @@ class ApiClient {
     this.baseUrl = baseUrl;
   }
 
+  private getAuthToken(): string | null {
+    // Check for either admin or user token
+    const adminToken = localStorage.getItem("ADMIN_TOKEN");
+    const userToken = localStorage.getItem("USER_TOKEN");
+    
+    // Prefer admin token if both exist
+    return adminToken || userToken;
+  }
+
   private async request<T>(
     endpoint: string,
     options?: RequestInit,
@@ -95,7 +104,7 @@ class ApiClient {
       "ngrok-skip-browser-warning": "69420",
     };
 
-    const token = localStorage.getItem("token");
+    const token = this.getAuthToken();
     if (token) {
       headers["Authorization"] = `Bearer ${token}`;
     }
@@ -112,8 +121,11 @@ class ApiClient {
     });
 
     if (response.status === 401) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      // Clear both possible auth storage on 401
+      localStorage.removeItem("ADMIN_TOKEN");
+      localStorage.removeItem("ADMIN_USER");
+      localStorage.removeItem("USER_TOKEN");
+      localStorage.removeItem("USER_USER");
       if (typeof window !== "undefined") {
         window.location.href = "/";
       }

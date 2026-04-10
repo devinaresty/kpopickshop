@@ -40,14 +40,15 @@
 </template>
 
 <script setup lang="ts">
-import { useI18nStore } from '@/shared/stores'
+import { useI18nStore, useAuthStore } from '@/shared/stores'
 
 const i18nStore = useI18nStore()
+const authStore = useAuthStore()
 
 const handleLogout = async () => {
   if(confirm(i18nStore.t('admin.confirmLogout'))) {
-    // Clear token immediately from localStorage
-    localStorage.removeItem('token')
+    // Use authStore logoutAdmin to clear only ADMIN_TOKEN
+    authStore.logoutAdmin()
     
     // Reload page - server will redirect to /admin/login because no token
     window.location.reload()

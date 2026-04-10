@@ -72,7 +72,7 @@ export const useProfileStore = defineStore('profile', () => {
       const formData = new FormData()
       formData.append('file', file)
 
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('ADMIN_TOKEN') || localStorage.getItem('USER_TOKEN')
       const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
       const url = `${baseUrl}/auth/upload-profile-photo`
 
@@ -134,7 +134,7 @@ export const useProfileStore = defineStore('profile', () => {
     successMessage.value = null
     
     try {
-      const token = localStorage.getItem('token')
+      const token = localStorage.getItem('ADMIN_TOKEN') || localStorage.getItem('USER_TOKEN')
       const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
       const url = `${baseUrl}/auth/delete-profile-photo`
 

@@ -478,10 +478,11 @@ const uploadImage = async (): Promise<string | null> => {
 
   try {
     const baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
+    const token = localStorage.getItem('ADMIN_TOKEN') || localStorage.getItem('USER_TOKEN')
     const response = await fetch(`${baseUrl}/products/upload`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Authorization': `Bearer ${token}`,
         'ngrok-skip-browser-warning': '69420'
       },
       body: formDataImage,
