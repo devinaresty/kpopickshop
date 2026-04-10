@@ -12,7 +12,6 @@ export class ImageUrlInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
     return next.handle().pipe(
       map((data) => {
-        // Transform image URLs in the response
         return this.transformImageUrls(data);
       }),
     );
@@ -28,10 +27,9 @@ export class ImageUrlInterceptor implements NestInterceptor {
           (key === 'imageUrl' || key === 'image' || key === 'photoUrl') &&
           typeof transformed[key] === 'string'
         ) {
-          // Debug log
+
           console.log(`[ImageUrlInterceptor] Processing ${key}: ${transformed[key]}`);
-          // If it's a signed Minio URL, convert to public URL
-          // If already public, keep as is
+
           transformed[key] = this.transformMinionUrl(transformed[key]);
           console.log(`[ImageUrlInterceptor] Result: ${transformed[key]}`);
         } else if (typeof transformed[key] === 'object') {
@@ -49,23 +47,20 @@ export class ImageUrlInterceptor implements NestInterceptor {
       return url;
     }
 
-    // If URL is from Minio (contains X-Amz-Signature), transform to public bucket URL
     if (
       url.includes('X-Amz-Signature') ||
       url.includes('X-Amz-Credential')
     ) {
-      // Extract bucket and object name from Minio URL
-      // Format: http://minio:9000/bucket-name/object-name?...query-params
+
       try {
         const urlObj = new URL(url);
         const pathname = urlObj.pathname;
         console.log(`[ImageUrlInterceptor] Minio URL detected, pathname: ${pathname}`);
-        // pathname format: /bucket-name/object-name
+
         const parts = pathname.split('/').filter((p) => p);
         if (parts.length >= 2) {
           const bucket = parts[0];
           const objectName = parts.slice(1).join('/');
-          // Return public URL without signed parameters
           const publicHost = process.env.MINIO_PUBLIC_URL || 'http://localhost:9000';
           const publicUrl = `${publicHost}/${bucket}/${objectName}`;
           console.log(`[ImageUrlInterceptor] Transformed to: ${publicUrl}`);
