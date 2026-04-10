@@ -47,10 +47,8 @@ const authStore = useAuthStore()
 
 const handleLogout = async () => {
   if(confirm(i18nStore.t('admin.confirmLogout'))) {
-    // Use authStore logoutAdmin to clear only ADMIN_TOKEN
     authStore.logoutAdmin()
     
-    // Reload page - server will redirect to /admin/login because no token
     window.location.reload()
   }
 }
