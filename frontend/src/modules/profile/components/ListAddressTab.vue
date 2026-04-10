@@ -12,46 +12,46 @@
     </div>
 
     <div class="p-6">
-      <div v-if="showAddForm" class="mb-6 p-6 bg-gray-50 border border-gray-200 rounded-lg">
+      <div v-if="showAddForm" class="mb-6 p-4 bg-gray-50 border border-gray-200 rounded-lg">
         <h4 class="text-lg font-bold text-black mb-4">{{ i18nStore.t('address.formTitle') }}</h4>
         <form @submit.prevent="addNewAddress" class="space-y-4">
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('address.recipientName') }} <span class="text-red-500">*</span></label>
+            <label class="block text-xs font-bold text-gray-900 uppercase tracking-wide mb-2">{{ i18nStore.t('address.recipientName') }} <span class="text-red-500">*</span></label>
             <input
               v-model="newAddress.fullName"
               type="text"
               placeholder="Enter recipient name"
               required
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-gray-900"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-gray-900 placeholder-gray-400"
             />
           </div>
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('address.address') }} <span class="text-red-500">*</span></label>
+            <label class="block text-xs font-bold text-gray-900 uppercase tracking-wide mb-2">{{ i18nStore.t('address.address') }} <span class="text-red-500">*</span></label>
             <textarea
               v-model="newAddress.address"
               placeholder="Enter full address"
               rows="3"
               required
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-gray-900"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-gray-900 placeholder-gray-400"
             ></textarea>
           </div>
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('address.phoneNumber') }} <span class="text-red-500">*</span></label>
+            <label class="block text-xs font-bold text-gray-900 uppercase tracking-wide mb-2">{{ i18nStore.t('address.phoneNumber') }} <span class="text-red-500">*</span></label>
             <input
               v-model="newAddress.phone"
               type="text"
               placeholder="Enter phone number"
               required
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-gray-900"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-gray-900 placeholder-gray-400"
             />
           </div>
           <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('address.detail') }} (Optional)</label>
+            <label class="block text-xs font-bold text-gray-900 uppercase tracking-wide mb-2">{{ i18nStore.t('address.detail') }} (Optional)</label>
             <textarea
               v-model="newAddress.detail"
               placeholder="Additional details"
               rows="2"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-gray-900"
+              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-gray-900 placeholder-gray-400"
             ></textarea>
           </div>
           <div>
