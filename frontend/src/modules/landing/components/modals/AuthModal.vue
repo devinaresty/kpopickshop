@@ -14,7 +14,7 @@
       @click.stop
     >
       <div class="hidden sm:flex flex-col items-center justify-center p-8 lg:p-10 bg-gradient-to-br from-gray-50 to-gray-100">
-        <img src="/logo (4).png" alt="K Logo" class="w-40 h-40 lg:w-48 lg:h-48 object-contain mb-6" />
+        <img src="/logo (6).png" alt="K Logo" class="w-40 h-40 lg:w-48 lg:h-48 object-contain mb-6" />
         <p class="text-xs lg:text-sm text-gray-600 text-center leading-relaxed">
           Your ultimate K-pop destination for albums, merchandise, and exclusive collectibles.
         </p>
@@ -22,7 +22,7 @@
 
       <div class="flex flex-col">
         <div class="flex justify-between items-center p-4 sm:p-5 lg:p-6 border-b border-gray-100 sm:border-b-0">
-          <img src="/logo (4).png" alt="K Logo" class="sm:hidden w-20 h-20 object-contain" />
+          <img src="/logo (6).png" alt="K Logo" class="sm:hidden w-20 h-20 object-contain" />
           <h2 class="sm:hidden text-sm font-bold text-black">KPopick</h2>
           
           <button
