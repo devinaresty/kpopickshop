@@ -4,7 +4,7 @@
       <div class="flex items-center justify-center">
         <div class="rounded-lg sm:rounded-xl border border-gray-300/50 backdrop-blur-sm bg-gray-300/40 px-3.5 sm:px-4 md:px-5 py-2.5 sm:py-3 flex items-center gap-3 sm:gap-3.5 md:gap-4 max-w-max overflow-visible">
           <div class="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 flex items-center justify-center overflow-visible -mx-1 sm:-mx-1.5 md:-mx-2">
-            <img src="/logo (7).png" alt="K Logo" class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain" />
+            <img src="/logo (5).png" alt="K Logo" class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 object-contain" />
           </div>
 
           <div class="hidden sm:block w-px h-5 sm:h-5 md:h-6 bg-gray-300"></div>
