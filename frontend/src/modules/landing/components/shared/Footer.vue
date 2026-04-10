@@ -3,8 +3,8 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 lg:gap-8 mb-6 sm:mb-8">
         <div>
-          <div class="flex items-center overflow-visible mb-6 sm:mb-8 -m-1 sm:-m-2">
-            <img src="/logo (4).png" alt="K Logo" class="w-24 h-24 sm:w-32 sm:h-32 object-contain" />
+          <div class="flex items-center overflow-visible mb-8 sm:mb-10 -m-2 sm:-m-3">
+            <img src="/logo (4).png" alt="K Logo" class="w-32 h-32 sm:w-48 sm:h-48 object-contain" />
           </div>
           <p class="text-gray-600 text-xs sm:text-sm leading-relaxed">
             {{ i18nStore.t('footer.description') }}

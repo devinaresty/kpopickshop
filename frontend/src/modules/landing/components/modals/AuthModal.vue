@@ -15,7 +15,6 @@
     >
       <div class="hidden sm:flex flex-col items-center justify-center p-8 lg:p-10 bg-gradient-to-br from-gray-50 to-gray-100">
         <img src="/logo (4).png" alt="K Logo" class="w-40 h-40 lg:w-48 lg:h-48 object-contain mb-6" />
-        <h2 class="text-xl lg:text-2xl font-black text-black text-center mb-2">KPopick</h2>
         <p class="text-xs lg:text-sm text-gray-600 text-center leading-relaxed">
           Your ultimate K-pop destination for albums, merchandise, and exclusive collectibles.
         </p>
