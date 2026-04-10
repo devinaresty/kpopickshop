@@ -1,27 +1,27 @@
 <template>
-  <div class="bg-white rounded-lg border border-gray-200">
-    <div class="flex justify-between items-center p-6 border-b border-gray-200">
-      <h3 class="text-xl font-bold text-black">{{ i18nStore.t('personalProfile.title') }}</h3>
+  <div class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+    <div class="flex justify-between items-center px-8 py-7 border-b border-gray-100 bg-gradient-to-r from-gray-50 to-white">
+      <h3 class="text-2xl font-bold text-gray-900">{{ i18nStore.t('personalProfile.title') }}</h3>
       <button
         @click="isEditing = !isEditing"
-        class="px-6 py-2 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition"
+        class="px-5 py-2.5 bg-black text-white font-semibold rounded-lg hover:bg-gray-900 active:scale-95 transition-all duration-150 shadow-sm"
       >
         {{ isEditing ? i18nStore.t('common.cancel') : i18nStore.t('common.edit') }}
       </button>
     </div>
 
-    <div class="p-6">
+    <div class="px-8 py-8">
       <template v-if="!isEditing">
-        <div class="grid grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
           <div class="flex flex-col items-center">
-            <div class="w-40 h-40 rounded-full bg-gradient-to-br from-gray-300 to-gray-500 flex items-center justify-center overflow-hidden mb-6 shadow-md border-4 border-gray-100">
+            <div class="w-48 h-48 rounded-full bg-gradient-to-br from-gray-200 to-gray-400 flex items-center justify-center overflow-hidden mb-8 shadow-lg border-4 border-white hover:shadow-xl transition-shadow">
               <img v-if="profile?.photoUrl" :src="profile.photoUrl" :alt="profile.name" class="w-full h-full object-cover">
-              <svg v-else class="w-20 h-20 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <svg v-else class="w-24 h-24 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
               </svg>
             </div>
 
-            <div class="w-full">
+            <div class="w-full space-y-3">
               <label class="block w-full">
                 <input
                   type="file"
@@ -30,43 +30,43 @@
                   class="hidden"
                   :disabled="isUploadingPhoto"
                 />
-                <div class="w-full px-4 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition cursor-pointer text-center disabled:opacity-50 disabled:cursor-not-allowed"
+                <div class="w-full px-5 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-900 active:scale-95 transition-all duration-150 cursor-pointer text-center disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                   :class="{ 'opacity-50 cursor-not-allowed': isUploadingPhoto }">
                   {{ isUploadingPhoto ? i18nStore.t('personalProfile.uploading') : i18nStore.t('personalProfile.choosePhoto') }}
                 </div>
               </label>
             </div>
 
-            <p class="text-xs text-gray-600 mt-4 text-center">
+            <p class="text-xs text-gray-500 mt-5 text-center leading-relaxed">
               {{ i18nStore.t('personalProfile.fileSizeInfo') }}
             </p>
           </div>
 
-          <div class="space-y-4">
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('personalProfile.fullName') }}</label>
-              <div class="px-4 py-3 bg-gray-100 text-gray-900 rounded-lg font-medium">
+          <div class="space-y-5">
+            <div class="bg-gray-50 rounded-lg p-5 border border-gray-100 hover:border-gray-200 transition-colors">
+              <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{{ i18nStore.t('personalProfile.fullName') }}</label>
+              <div class="text-lg font-semibold text-gray-900">
                 {{ profile?.name }}
               </div>
             </div>
 
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('personalProfile.dateOfBirth') }}</label>
-              <div class="px-4 py-3 bg-gray-100 text-gray-900 rounded-lg font-medium">
+            <div class="bg-gray-50 rounded-lg p-5 border border-gray-100 hover:border-gray-200 transition-colors">
+              <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{{ i18nStore.t('personalProfile.dateOfBirth') }}</label>
+              <div class="text-lg font-semibold text-gray-900">
                 {{ profile?.dateOfBirth ? new Date(profile.dateOfBirth).toLocaleDateString('id-ID') : '-' }}
               </div>
             </div>
 
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('common.email') }}</label>
-              <div class="px-4 py-3 bg-gray-100 text-gray-900 rounded-lg font-medium">
+            <div class="bg-gray-50 rounded-lg p-5 border border-gray-100 hover:border-gray-200 transition-colors">
+              <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{{ i18nStore.t('common.email') }}</label>
+              <div class="text-lg font-semibold text-gray-900">
                 {{ profile?.email }}
               </div>
             </div>
 
-            <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('personalProfile.phoneNumber') }}</label>
-              <div class="px-4 py-3 bg-gray-100 text-gray-900 rounded-lg font-medium">
+            <div class="bg-gray-50 rounded-lg p-5 border border-gray-100 hover:border-gray-200 transition-colors">
+              <label class="block text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">{{ i18nStore.t('personalProfile.phoneNumber') }}</label>
+              <div class="text-lg font-semibold text-gray-900">
                 {{ profile?.phone || '-' }}
               </div>
             </div>
@@ -75,11 +75,11 @@
       </template>
 
       <template v-else>
-        <div class="grid grid-cols-2 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
           <div class="flex flex-col items-center">
-            <div class="relative w-40 h-40 rounded-full bg-gradient-to-br from-gray-300 to-gray-500 flex items-center justify-center overflow-hidden mb-6 shadow-md border-4 border-gray-100 group cursor-pointer">
+            <div class="relative w-48 h-48 rounded-full bg-gradient-to-br from-gray-200 to-gray-400 flex items-center justify-center overflow-hidden mb-8 shadow-lg border-4 border-white hover:shadow-xl transition-all group cursor-pointer">
               <img v-if="formData.photoPreview || profile?.photoUrl" :src="formData.photoPreview || profile?.photoUrl" :alt="profile?.name" class="w-full h-full object-cover">
-              <svg v-else class="w-20 h-20 text-white" fill="currentColor" viewBox="0 0 20 20">
+              <svg v-else class="w-24 h-24 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
                 <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
               </svg>
               
@@ -87,14 +87,14 @@
                 v-if="formData.photoPreview"
                 @click.stop="deletePhoto"
                 type="button"
-                class="absolute inset-0 w-full h-full bg-gray-800 bg-opacity-60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+                class="absolute inset-0 w-full h-full bg-gray-900 bg-opacity-70 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200"
                 title="Remove photo"
               >
                 <span class="text-white font-semibold text-sm">{{ i18nStore.t('personalProfile.removePhoto') }}</span>
               </button>
             </div>
 
-            <div class="w-full">
+            <div class="w-full space-y-3">
               <label class="block w-full">
                 <input
                   type="file"
@@ -103,80 +103,80 @@
                   class="hidden"
                   :disabled="isUploadingPhoto"
                 />
-                <div class="w-full px-4 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition cursor-pointer text-center disabled:opacity-50 disabled:cursor-not-allowed"
+                <div class="w-full px-5 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-900 active:scale-95 transition-all duration-150 cursor-pointer text-center disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                   :class="{ 'opacity-50 cursor-not-allowed': isUploadingPhoto }">
-                  {{ isUploadingPhoto ? 'Uploading...' : '+ Choose Photo' }}
+                  {{ isUploadingPhoto ? i18nStore.t('personalProfile.uploading') : i18nStore.t('personalProfile.choosePhoto') }}
                 </div>
               </label>
             </div>
 
-            <p class="text-xs text-gray-600 mt-4 text-center">
-              Besar file: maksimum 10.000.000 bytes (10 Megabytes). Ekstensi file yang diperbolehkan: JPG, JPEG, PNG
+            <p class="text-xs text-gray-500 mt-5 text-center leading-relaxed">
+              {{ i18nStore.t('personalProfile.fileSizeInfo') }}
             </p>
           </div>
->
-          <div class="space-y-4">
+
+          <div class="space-y-5">
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('personalProfile.fullName') }} <span class="text-red-500">*</span></label>
+              <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-3">{{ i18nStore.t('personalProfile.fullName') }} <span class="text-red-500">*</span></label>
               <input
                 v-model="formData.name"
                 type="text"
                 :placeholder="i18nStore.t('personalProfile.fullName')"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-gray-900"
+                class="w-full px-5 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-gray-900 placeholder-gray-500 transition-all"
               />
             </div>
 
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('personalProfile.dateOfBirth') }}</label>
+              <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-3">{{ i18nStore.t('personalProfile.dateOfBirth') }}</label>
               <input
                 v-model="formData.dateOfBirth"
                 type="date"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-gray-900"
+                class="w-full px-5 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-gray-900 transition-all"
               />
             </div>
 
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('common.email') }}</label>
+              <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-3">{{ i18nStore.t('common.email') }}</label>
               <input
                 v-model="formData.email"
                 type="email"
                 :placeholder="i18nStore.t('common.email')"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-gray-900"
+                class="w-full px-5 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-gray-900 placeholder-gray-500 transition-all"
               />
             </div>
 
             <div>
-              <label class="block text-sm font-semibold text-gray-700 mb-2">{{ i18nStore.t('personalProfile.phoneNumber') }}</label>
+              <label class="block text-xs font-semibold text-gray-700 uppercase tracking-wide mb-3">{{ i18nStore.t('personalProfile.phoneNumber') }}</label>
               <input
                 v-model="formData.phone"
                 type="text"
                 :placeholder="i18nStore.t('personalProfile.phoneNumber')"
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black text-gray-900"
+                class="w-full px-5 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent text-gray-900 placeholder-gray-500 transition-all"
               />
             </div>
           </div>
         </div>
 
-        <div class="mt-6 space-y-3">
-          <div v-if="error" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+        <div class="mt-8 space-y-4">
+          <div v-if="error" class="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm font-medium">
             {{ error }}
           </div>
-          <div v-if="successMessage" class="p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
+          <div v-if="successMessage" class="p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm font-medium">
             {{ successMessage }}
           </div>
         </div>
 
-        <div class="mt-6 flex gap-3">
+        <div class="mt-8 flex gap-3">
           <button
             @click="saveProfile"
             :disabled="isSaving"
-            class="flex-1 px-4 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            class="flex-1 px-5 py-3 bg-black text-white font-semibold rounded-lg hover:bg-gray-900 active:scale-95 transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
           >
             {{ isSaving ? i18nStore.t('personalProfile.saving') : i18nStore.t('personalProfile.saveChanges') }}
           </button>
           <button
             @click="isEditing = false"
-            class="px-4 py-3 bg-gray-100 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 transition"
+            class="px-5 py-3 bg-gray-100 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 active:scale-95 transition-all duration-150"
           >
             {{ i18nStore.t('common.cancel') }}
           </button>
@@ -185,20 +185,20 @@
     </div>
   </div>
 
-  <div v-if="showDeleteConfirm" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 rounded-lg">
-    <div class="bg-white rounded-lg shadow-lg p-6 max-w-sm mx-4">
-      <h3 class="text-lg font-bold text-gray-900 mb-2">{{ i18nStore.t('personalProfile.deletePhotoConfirmTitle') }}</h3>
-      <p class="text-gray-600 mb-6">{{ i18nStore.t('personalProfile.deletePhotoConfirm') }}</p>
+  <div v-if="showDeleteConfirm" class="fixed inset-0 bg-black bg-opacity-40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-xl shadow-xl p-8 max-w-sm w-full">
+      <h3 class="text-xl font-bold text-gray-900 mb-3">{{ i18nStore.t('personalProfile.deletePhotoConfirmTitle') }}</h3>
+      <p class="text-gray-600 text-sm mb-8 leading-relaxed">{{ i18nStore.t('personalProfile.deletePhotoConfirm') }}</p>
       <div class="flex gap-3">
         <button
           @click="showDeleteConfirm = false"
-          class="flex-1 px-4 py-2 bg-gray-200 text-gray-900 font-semibold rounded-lg hover:bg-gray-300 transition"
+          class="flex-1 px-4 py-2.5 bg-gray-100 text-gray-900 font-semibold rounded-lg hover:bg-gray-200 active:scale-95 transition-all duration-150"
         >
           {{ i18nStore.t('common.cancel') }}
         </button>
         <button
           @click="confirmDeletePhoto"
-          class="flex-1 px-4 py-2 bg-black text-white font-semibold rounded-lg hover:bg-gray-800 transition"
+          class="flex-1 px-4 py-2.5 bg-black text-white font-semibold rounded-lg hover:bg-gray-900 active:scale-95 transition-all duration-150 shadow-sm"
         >
           {{ i18nStore.t('personalProfile.deletePhoto') }}
         </button>

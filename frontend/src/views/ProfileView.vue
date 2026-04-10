@@ -8,15 +8,15 @@
       <template v-else-if="profile">
         <ProfileHeaderBar :profile="profile" />
 
-        <div class="mb-6 bg-white border border-gray-200 rounded-t-lg">
-          <div class="flex border-b border-gray-200">
+        <div class="mb-8 bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden">
+          <div class="flex border-b border-gray-100 bg-gray-50">
             <button
               @click="activeTab = 'personal'"
               :class="[
-                'flex-1 px-6 py-4 font-semibold text-center transition',
+                'flex-1 px-6 py-4 font-semibold text-center transition-all duration-150',
                 activeTab === 'personal'
                   ? 'text-black border-b-2 border-black bg-white'
-                  : 'text-gray-600 hover:text-black'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-white'
               ]"
             >
               {{ i18nStore.t('personalProfile.title') }}
@@ -24,10 +24,10 @@
             <button
               @click="activeTab = 'address'"
               :class="[
-                'flex-1 px-6 py-4 font-semibold text-center transition',
+                'flex-1 px-6 py-4 font-semibold text-center transition-all duration-150',
                 activeTab === 'address'
                   ? 'text-black border-b-2 border-black bg-white'
-                  : 'text-gray-600 hover:text-black'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-white'
               ]"
             >
               {{ i18nStore.t('personalProfile.listAddress') }}
@@ -35,10 +35,10 @@
             <button
               @click="activeTab = 'transaction'"
               :class="[
-                'flex-1 px-6 py-4 font-semibold text-center transition',
+                'flex-1 px-6 py-4 font-semibold text-center transition-all duration-150',
                 activeTab === 'transaction'
                   ? 'text-black border-b-2 border-black bg-white'
-                  : 'text-gray-600 hover:text-black'
+                  : 'text-gray-600 hover:text-gray-900 hover:bg-white'
               ]"
             >
               {{ i18nStore.t('personalProfile.transactions') }}
@@ -46,7 +46,7 @@
           </div>
         </div>
 
-        <div class="bg-white border border-t-0 border-gray-200 rounded-b-lg">
+        <div class="bg-white border border-gray-100 rounded-xl shadow-sm overflow-hidden">
           <div v-if="activeTab === 'personal'">
             <PersonalProfileTab
               :profile="profile"
