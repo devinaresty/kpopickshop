@@ -19,22 +19,6 @@ services:
       timeout: 5s
       retries: 5
 
-  redis:
-    image: redis:7-alpine
-    container_name: kpk_redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - redis_data:/data
-    networks:
-      - kpk_network
-    command: redis-server --appendonly yes 
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   minio:
     image: minio/minio:latest
     container_name: kpoppick_minio
@@ -57,7 +41,6 @@ services:
 
 volumes:
   postgres_data:
-  redis_data:
   minio_data:
 
 networks:
