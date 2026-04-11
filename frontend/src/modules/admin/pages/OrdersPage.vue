@@ -268,7 +268,13 @@ const formatDate = (value: any): string => {
       if (isNaN(date.getTime())) {
         return '-'
       }
-      return date.toLocaleDateString('id-ID')
+      const day = String(date.getDate()).padStart(2, '0')
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const year = date.getFullYear()
+      const hours = String(date.getHours()).padStart(2, '0')
+      const minutes = String(date.getMinutes()).padStart(2, '0')
+      const seconds = String(date.getSeconds()).padStart(2, '0')
+      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
     } catch (error) {
       return '-'
     }
@@ -279,7 +285,13 @@ const formatDate = (value: any): string => {
       if (isNaN(value.getTime())) {
         return '-'
       }
-      return value.toLocaleDateString('id-ID')
+      const day = String(value.getDate()).padStart(2, '0')
+      const month = String(value.getMonth() + 1).padStart(2, '0')
+      const year = value.getFullYear()
+      const hours = String(value.getHours()).padStart(2, '0')
+      const minutes = String(value.getMinutes()).padStart(2, '0')
+      const seconds = String(value.getSeconds()).padStart(2, '0')
+      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
     } catch (error) {
       return '-'
     }
@@ -290,7 +302,13 @@ const formatDate = (value: any): string => {
     if (isNaN(date.getTime())) {
       return '-'
     }
-    return date.toLocaleDateString('id-ID')
+    const day = String(date.getDate()).padStart(2, '0')
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const year = date.getFullYear()
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    const seconds = String(date.getSeconds()).padStart(2, '0')
+    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
   } catch (error) {
     return '-'
   }
