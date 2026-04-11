@@ -75,7 +75,7 @@
                     {{ formatStatus(order.status) }}
                   </span>
                 </td>
-                <td class="px-5 py-3 align-middle text-xs text-gray-500">{{ formatDate(order.createdAt) }}</td>
+                <td class="px-5 py-3 align-middle text-xs text-gray-500">{{ formatDateWithTime(order.createdAt) }}</td>
                 <td class="px-5 py-3 align-middle text-center">
                   <select 
                     @change="updateStatus(order.id, ($event.target as HTMLSelectElement).value)"
@@ -134,6 +134,7 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue'
 import { apiClient } from '@/core/api'
+import { formatDateWithTime } from '@/shared/utils/dateFormatter'
 import AdminTopbar from '@/modules/admin/components/AdminTopbar.vue'
 
 const orders = ref<any[]>([])
@@ -247,70 +248,6 @@ const getStatusColor = (status: string): string => {
     case 'COMPLETED': return 'bg-green-50 text-green-700 border-green-200 border'
     case 'CANCELLED': return 'bg-orange-50 text-orange-700 border-orange-200 border'
     default: return 'bg-gray-50 text-gray-700 border-gray-200 border'
-  }
-}
-
-const formatDate = (value: any): string => {
-  if (value === null || value === undefined) {
-    return '-'
-  }
-
-  if (typeof value === 'object' && Object.keys(value).length === 0) {
-    return '-'
-  }
-
-  if (typeof value === 'string') {
-    if (value.trim() === '') {
-      return '-'
-    }
-    try {
-      const date = new Date(value)
-      if (isNaN(date.getTime())) {
-        return '-'
-      }
-      const day = String(date.getDate()).padStart(2, '0')
-      const month = String(date.getMonth() + 1).padStart(2, '0')
-      const year = date.getFullYear()
-      const hours = String(date.getHours()).padStart(2, '0')
-      const minutes = String(date.getMinutes()).padStart(2, '0')
-      const seconds = String(date.getSeconds()).padStart(2, '0')
-      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
-    } catch (error) {
-      return '-'
-    }
-  }
-
-  if (value instanceof Date) {
-    try {
-      if (isNaN(value.getTime())) {
-        return '-'
-      }
-      const day = String(value.getDate()).padStart(2, '0')
-      const month = String(value.getMonth() + 1).padStart(2, '0')
-      const year = value.getFullYear()
-      const hours = String(value.getHours()).padStart(2, '0')
-      const minutes = String(value.getMinutes()).padStart(2, '0')
-      const seconds = String(value.getSeconds()).padStart(2, '0')
-      return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
-    } catch (error) {
-      return '-'
-    }
-  }
-
-  try {
-    const date = new Date(value)
-    if (isNaN(date.getTime())) {
-      return '-'
-    }
-    const day = String(date.getDate()).padStart(2, '0')
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const year = date.getFullYear()
-    const hours = String(date.getHours()).padStart(2, '0')
-    const minutes = String(date.getMinutes()).padStart(2, '0')
-    const seconds = String(date.getSeconds()).padStart(2, '0')
-    return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`
-  } catch (error) {
-    return '-'
   }
 }
 

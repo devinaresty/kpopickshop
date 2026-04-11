@@ -29,12 +29,12 @@
         <span class="text-sm">Subtotal</span>
         <span class="font-semibold">Rp {{ formatPrice(subtotal) }}</span>
       </div>
-      <div class="flex justify-between text-gray-600">
+      <div v-if="shippingFee > 0" class="flex justify-between text-gray-600">
         <span class="text-sm">Shipping Fee</span>
         <span class="font-semibold">Rp {{ formatPrice(shippingFee) }}</span>
       </div>
-      <div class="flex justify-between text-gray-600">
-        <span class="text-sm">Tax (10%)</span>
+      <div v-if="tax > 0" class="flex justify-between text-gray-600">
+        <span class="text-sm">Tax</span>
         <span class="font-semibold">Rp {{ formatPrice(tax) }}</span>
       </div>
     </div>
@@ -56,6 +56,7 @@
 import { computed } from 'vue'
 import type { CartItem } from '@/modules/landing/types'
 import { useCartStore } from '@/shared/stores'
+import { getShippingFee, calculateTax } from '@/shared/config/shippingAndTax'
 
 const cartStore = useCartStore()
 
@@ -64,11 +65,11 @@ const subtotal = computed(() => {
 })
 
 const shippingFee = computed(() => {
-  return 10000 
+  return getShippingFee()
 })
 
 const tax = computed(() => {
-  return Math.round(subtotal.value * 0.1)
+  return calculateTax(subtotal.value)
 })
 
 const total = computed(() => {

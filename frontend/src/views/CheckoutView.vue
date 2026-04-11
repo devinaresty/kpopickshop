@@ -92,6 +92,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useCheckoutStore, useCartStore, useOrderStore, useAuthStore, useI18nStore } from '@/shared/stores'
+import { getShippingFee, calculateTax } from '@/shared/config/shippingAndTax'
 import CheckoutStepIndicator from '@/modules/checkout/components/CheckoutStepIndicator.vue'
 import ConsumerInfoStep from '@/modules/checkout/components/steps/ConsumerInfoStep.vue'
 import ShippingStep from '@/modules/checkout/components/steps/ShippingStep.vue'
@@ -132,8 +133,8 @@ const completedSteps = computed(() => {
 
 const orderSummary = computed(() => {
   const subtotal = cartStore.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const shippingCost = 10000
-  const tax = Math.round(subtotal * 0.1)
+  const shippingCost = getShippingFee()
+  const tax = calculateTax(subtotal)
   const discount = 0
   
   return {
@@ -180,8 +181,8 @@ const canProceed = computed(() => {
 
 const orderTotal = computed(() => {
   const subtotal = cartStore.items.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const shippingFee = 10000
-  const tax = Math.round(subtotal * 0.1)
+  const shippingFee = getShippingFee()
+  const tax = calculateTax(subtotal)
   return subtotal + shippingFee + tax
 })
 
