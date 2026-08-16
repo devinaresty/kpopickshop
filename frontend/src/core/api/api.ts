@@ -364,6 +364,32 @@ class ApiClient {
       method: "GET",
     });
   }
+
+  async getCart(): Promise<any> {
+    return this.request("/cart", {
+    method: "GET",
+    });
+  }
+
+  async addToCart(productId: number, quantity: number): Promise<any> { 
+    return this.request("/cart", {
+      method: "POST",
+      body: JSON.stringify({ productId, quantity }),
+    });
+  }
+
+  async updateCartItemQuantity(cartItemId: number, quantity: number): Promise<any> {
+    return this.request(`/cart/items/${cartItemId}`, {
+      method: "PATCH",
+      body: JSON.stringify({ quantity }),
+    });
+  }
+
+  async removeCartItem(cartItemId: number): Promise<any> {
+    return this.request(`/cart/items/${cartItemId}`, {
+      method: "DELETE",
+    });
+  }
 }
 
 export const apiClient = new ApiClient(API_BASE_URL);
