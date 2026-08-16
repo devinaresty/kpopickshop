@@ -1,4 +1,4 @@
-import { Controller,  Get,  Post,  Body,   Put, Param, Delete, Query, UseGuards, ParseIntPipe, UseInterceptors, UploadedFile, BadRequestException, } from "@nestjs/common";
+import { Controller,  Get,  Post,  Body,   Put, Param, Delete, Query, UserGuards, ParseIntPipe, UseInterceptors, UploadedFile, BadRequestException, } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiOperation, ApiTags, ApiResponse, ApiBearerAuth, ApiQuery, ApiBody, ApiConsumes,} from "@nestjs/swagger";
 import { ProductService } from "./product.service";
@@ -18,7 +18,7 @@ export class ProductController {
   ) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UserGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Create a new product (Admin only)" })
@@ -90,7 +90,7 @@ export class ProductController {
   }
 
   @Put(":id")
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UserGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Update a product (Admin only) - Send all fields" })
@@ -117,7 +117,7 @@ export class ProductController {
   }
 
   @Delete(":id")
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UserGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Delete a product (Admin only)" })
@@ -126,7 +126,7 @@ export class ProductController {
   }
 
   @Post("upload")
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UserGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin")
   @ApiBearerAuth()
   @UseInterceptors(FileInterceptor("file"))

@@ -1,13 +1,14 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, OnModuleDestroy, OnModuleInit } from "@nestjs/common";
 import { PrismaClient } from "@prisma/client";
 
 let prismaInstance: PrismaClient | null = null;
 
 @Injectable()
-export class PrismaService {
+export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   private prisma: PrismaClient;
 
   constructor() {
+    super();
     if (!prismaInstance) {
       prismaInstance = new PrismaClient();
     }
@@ -38,8 +39,12 @@ export class PrismaService {
     return this.prisma.userAddress;
   }
 
-  $transaction(callback: (tx: PrismaClient) => Promise<any>) {
-    return this.prisma.$transaction(callback);
+  get cart() {
+    return this.prisma.cart;
+  }
+
+  get cartItem() {
+    return this.prisma.cartItem;
   }
 
   async disconnect() {
@@ -47,5 +52,13 @@ export class PrismaService {
       await prismaInstance.$disconnect();
       prismaInstance = null;
     }
+  }
+
+  async onModuleInit() {
+    await this.prisma.$connect();
+  }
+
+  async onModuleDestroy() {
+    await this.disconnect();
   }
 }

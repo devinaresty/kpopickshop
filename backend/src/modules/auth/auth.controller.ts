@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpCode, Post, Delete, UseGuards, Request, BadRequestException, UseInterceptors, UploadedFile } from "@nestjs/common";
+import { Body, Controller, Get, HttpCode, Post, Delete, UserGuards, Request, BadRequestException, UseInterceptors, UploadedFile } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { ApiOperation, ApiTags, ApiResponse, ApiBearerAuth, ApiBody, ApiConsumes} from "@nestjs/swagger";
 import { AuthService } from "./auth.service";
@@ -84,7 +84,7 @@ export class AuthController {
   }
 
   @Get("me")
-  @UseGuards(JwtAuthGuard)
+  @UserGuards(JwtAuthGuard)
   @UseInterceptors(ImageUrlInterceptor)
   @ApiBearerAuth()
   @ApiOperation({ summary: "Get current user profile" })
@@ -101,7 +101,7 @@ export class AuthController {
   }
 
   @Get("users")
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UserGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin")
   @UseInterceptors(ImageUrlInterceptor)
   @ApiBearerAuth()
@@ -116,7 +116,7 @@ export class AuthController {
   }
 
   @Post("upload-profile-photo")
-  @UseGuards(JwtAuthGuard)
+  @UserGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor("file"), ImageUrlInterceptor)
   @ApiBearerAuth()
   @ApiConsumes('multipart/form-data')
@@ -170,7 +170,7 @@ export class AuthController {
   }
 
   @Delete("delete-profile-photo")
-  @UseGuards(JwtAuthGuard)
+  @UserGuards(JwtAuthGuard)
   @UseInterceptors(ImageUrlInterceptor)
   @ApiBearerAuth()
   @ApiOperation({ summary: "Delete user profile photo" })

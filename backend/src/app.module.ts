@@ -11,6 +11,7 @@ import { PaymentModule } from "./modules/payment/payment.module";
 import { OrdersModule } from "./modules/orders/orders.module";
 import { AddressesModule } from "./modules/addresses/addresses.module";
 import { ImageUrlInterceptor } from "./interceptors/image-url.interceptor";
+import { CartModule } from './modules/cart/cart.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ImageUrlInterceptor } from "./interceptors/image-url.interceptor";
     PaymentModule,
     OrdersModule,
     AddressesModule,
+    CartModule,
   ],
   controllers: [AppController],
   providers: [
