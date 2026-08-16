@@ -6,7 +6,7 @@ import {
   Put,
   Param,
   Delete,
-  UserGuards,
+  useGuards,
   ParseIntPipe,
 } from "@nestjs/common";
 import {
@@ -29,7 +29,7 @@ export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
   @Post()
-  @UserGuards(JwtAuthGuard, RolesGuard)
+  @useGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Create a new category (Admin only)" })
@@ -64,7 +64,7 @@ export class CategoryController {
   }
 
   @Put(":id")
-  @UserGuards(JwtAuthGuard, RolesGuard)
+  @useGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Update a category (Admin only) - Send all fields" })
@@ -87,7 +87,7 @@ export class CategoryController {
   }
 
   @Delete(":id")
-  @UserGuards(JwtAuthGuard, RolesGuard)
+  @useGuards(JwtAuthGuard, RolesGuard)
   @Roles("admin")
   @ApiBearerAuth()
   @ApiOperation({ summary: "Delete a category (Admin only)" })

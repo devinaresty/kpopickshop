@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, UserGuards, Param, ParseIntPipe, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, useGuards, Param, ParseIntPipe, Put } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiBearerAuth, ApiBody } from '@nestjs/swagger';
 import { OrdersService } from './orders.service';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -11,7 +11,7 @@ import { User } from '@prisma/client';
 
 @ApiTags('Orders')
 @Controller('api/orders')
-@UserGuards(JwtAuthGuard, RolesGuard)
+@useGuards(JwtAuthGuard, RolesGuard)
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
