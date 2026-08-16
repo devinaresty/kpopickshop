@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Req, Body, Param, BadRequestException, useGuards } from '@nestjs/common';
+import { Controller, Post, Get, Req, Body, Param, BadRequestException, UseGuards } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
 import { Request } from 'express';
 import { PaymentService } from './payment.service';
@@ -15,7 +15,7 @@ export class PaymentController {
   ) {}
 
   @Post('create')
-  @useGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Create payment invoice for order (User)' })
   @ApiBody({
@@ -140,7 +140,7 @@ export class PaymentController {
   }
 
   @Get('status/:orderId')
-  @useGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Check payment status for order from Xendit (User)' })
   async checkPaymentStatus(

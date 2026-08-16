@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, useGuards, Request, BadRequestException, } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, BadRequestException, } from '@nestjs/common';
 import { AddressesService } from './addresses.service';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 
 @Controller('api/addresses')
-@useGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 export class AddressesController {
   constructor(private readonly addressesService: AddressesService) {}
 
